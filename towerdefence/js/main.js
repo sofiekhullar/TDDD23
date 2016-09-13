@@ -1,4 +1,4 @@
-var game = new Phaser.Game(640, 480, Phaser.AUTO, 'game');
+var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
 
     var PhaserGame = function () {
 
@@ -25,8 +25,12 @@ var game = new Phaser.Game(640, 480, Phaser.AUTO, 'game');
         },
 
         create: function () {
+        
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            //this.scale.minHeight = 0;
+
             game.add.sprite(0,0, 'background'); 
-            
+
             this.bmd = this.add.bitmapData(this.game.width, this.game.height); // bitmap data som är som en canvas ish
             this.bmd.addToWorld();
 
@@ -39,7 +43,7 @@ var game = new Phaser.Game(640, 480, Phaser.AUTO, 'game');
             {
                 py[i] = this.rnd.between(32, 432); // flyttar punkterna i y-led, just nu random men kan sättas till fasta punkter
             }
-
+        
             this.plot();
         },
 
