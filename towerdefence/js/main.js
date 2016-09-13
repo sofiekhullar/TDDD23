@@ -1,5 +1,17 @@
 var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
 
+    var towerButton1;
+    var towerButton2;
+    var towerButton3;
+
+    var tower;
+    var towers = [];
+    var setTower = false;
+    
+    var user = new user("Love", "Earth");
+
+
+
     var PhaserGame = function () {
 
         this.bmd = null;
@@ -16,12 +28,14 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
 
     };
 
+
     PhaserGame.prototype = {
 
         preload: function () {
             // load assets
             this.load.image('background', 'assets/space.jpeg');
             this.load.image('alien', 'assets/alien.png');
+            this.load.image('tower', 'assets/tower.png');
         },
 
         create: function () {
@@ -30,6 +44,19 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
             //this.scale.minHeight = 0;
 
             game.add.sprite(0,0, 'background'); 
+
+            towerButton1 = game.add.button(game.world.centerX - 200, 450, 'tower', addTower1, this, 2, 1, 0);
+            towerButton1.height = 50;
+            towerButton1.width = 50;
+
+            towerButton2 = game.add.button(game.world.centerX, 450, 'tower', addTower2, this, 2, 1, 0);
+            towerButton2.height = 50;
+            towerButton2.width = 50;
+
+            towerButton3 = game.add.button(game.world.centerX + 200, 450, 'tower', addTower3, this, 2, 1, 0);
+            towerButton3.height = 50;
+            towerButton3.width = 50;
+            
 
             this.bmd = this.add.bitmapData(this.game.width, this.game.height); // bitmap data som är som en canvas ish
             this.bmd.addToWorld();
@@ -83,7 +110,54 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
             {
                 this.pi = 0;
             }
+
+
+
         }
     };
+
+    function addTower1(){
+
+        var cost = 100;
+
+        if(user.getMoney() > cost){
+            
+            user.buy(cost);
+            //console.log(user.getMoney());
+
+        }
+
+        tower = game.add.button(game.input.mousePointer.x, game.input.mousePointer.y, 'tower');
+
+    };
+
+    function addTower2(){
+        
+        var cost = 200;
+
+        if(user.getMoney() > cost){
+            
+            user.buy(cost);
+            console.log(user.getMoney());
+
+        }
+
+        tower = game.add.button(game.input.mousePointer.x, game.input.mousePointer.y, 'tower');
+    }
+
+    function addTower3(){
+        
+        var cost = 300;
+
+        if(user.getMoney() > cost){
+            
+            user.buy(cost);
+            console.log(user.getMoney());
+
+        }
+
+        tower = game.add.button(game.input.mousePointer.x, game.input.mousePointer.y, 'tower');
+    }
+
 
     game.state.add('Game', PhaserGame, true);
