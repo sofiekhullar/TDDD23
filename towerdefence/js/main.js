@@ -7,16 +7,16 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     var updateText = false;
 
-    var shipButton;
-    var spaceShip;
+    var shipButton1;
+    var shipButton2;
+
     var ship;
+    var spaceShip;
     var spaceSpriteArray = [];
-    var n_ships = 0;
 
     var PhaserGame = function () {
 
         this.bmd = null;
-        this.alien = null;
         this.mode = 0;
         var background = null; 
 
@@ -34,7 +34,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         preload: function () {
             // load assets
             this.load.image('background', 'assets/space.jpeg');
-            this.load.image('alien', 'assets/alien.png');
+            this.load.image('ship1', 'assets/ship1.png');
+            this.load.image('ship2', 'assets/alien.png');
             this.load.image('tower', 'assets/tower.png');
             this.load.image('coin', 'assets/coin.png');
             this.load.image('heart', 'assets/heart.png');
@@ -76,7 +77,14 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.bmd = this.add.bitmapData(this.game.width, this.game.height);
             this.bmd.addToWorld();
 
-            shipButton = game.add.button(this.game.width - 200, 600, 'alien', addShip, this, 2, 1, 0);
+            shipButton1 = game.add.button(this.game.width - 100, 650, 'ship1', addShip , this, 2, 1, 0);
+            shipButton2 = game.add.button(this.game.width - 300, 600, 'ship2', addShip, this, 2, 1, 0);
+
+            shipButton1.type = "ship1";
+            shipButton2.type = "ship2";
+
+            shipButton1.cost = 200;
+            shipButton2.cost = 300;
 
             this.plot();
         },
@@ -85,7 +93,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             this.path = [];
 
-            var x = 1 / (game.width );
+            var x = 1 / (game.width); // ta *5 för långsammare!!
 
             for (var i = 0; i <= 1; i += x)
             {
@@ -108,7 +116,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             }
 
             if(user.spaceShips.length != null){
-            
                 for( i = 0; i < user.spaceShips.length; i++){
 
                     spaceSpriteArray[i].x = this.path[user.spaceShips[i].getPathIndex()].x;
@@ -121,22 +128,26 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                         spaceSpriteArray[i].kill();
                         spaceSpriteArray.splice(i, 1);
                         user.spaceShips.splice(i, 1);
-
                     }
                 }
             }
         }
     };
 
-    function addShip(){
+    function addShip(input){
 
-        this.ship = this.add.sprite(0,0, "alien");
-        this.ship.anchor.set(0.5);
-        spaceSpriteArray.push(this.ship);
+        if(user.getMoney() >= input.cost){
 
-        spaceShip = new SpaceShip(0); 
-        user.spaceShips.push(spaceShip);
-        console.log(user.spaceShips);
+            updateText = true; 
+            this.ship = this.add.sprite(0,0, input.type);
+            this.ship.anchor.set(0.5);
+            spaceSpriteArray.push(this.ship);
+
+            spaceShip = new SpaceShip(0, type); 
+            user.spaceShips.push(spaceShip);
+            console.log(user.spaceShips);
+            user.buy(input.cost);
+        }
     }
 
     function addTower(){

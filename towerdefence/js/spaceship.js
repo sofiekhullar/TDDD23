@@ -3,10 +3,11 @@ var damage = 100;
 var health = 100;
 var type;
 
-function SpaceShip(pathIndex) {
+function SpaceShip(pathIndex, type) {
 
 	this.pathIndex = pathIndex; 
-
+	this.type = type;
+	
 	this.getCost = function(){
 		return cost;
 	}
