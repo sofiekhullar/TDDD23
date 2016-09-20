@@ -1,4 +1,4 @@
-function tower(x, y, id) {
+function Tower(x, y, id) {
 
 	this.x = x;
 	this.y = y;

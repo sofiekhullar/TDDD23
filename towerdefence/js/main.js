@@ -5,8 +5,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var towerSprite;
     var placingTower = false;
     var updateText = false;
-    var user = new user("Love", "earth");
-    this.path = [];
+    var user = new User("Love", "earth");
+    var path = [];
     var id = 0;
     var centerTower = 25;
     var DISTANCE_FROM_PATH = 50;
@@ -15,10 +15,16 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var pathSprite;
     var denied = false;
 
+    var shipButton1;
+    var shipButton2;
+
+    var ship;
+    var spaceShip;
+    var spaceSpriteArray = [];
+
     var PhaserGame = function () {
 
         this.bmd = null;
-        this.alien = null;
         this.mode = 0;
         var background = null; 
 
@@ -26,10 +32,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             'x': [ 50, 200, 400, 600, 800, 950 ],
             'y': [ 350, 100, 500, 100, 500, 350 ]
         };
-
-        this.pi = 0;
-        this.path = [];
-
     };
 
     PhaserGame.prototype = {
@@ -37,7 +39,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         preload: function () {
             // load assets
             this.load.image('background', 'assets/space.jpeg');
-            this.load.image('alien', 'assets/alien.png');
+            this.load.image('ship1', 'assets/ship1.png');
+            this.load.image('ship2', 'assets/alien.png');
             this.load.image('tower', 'assets/tower.png');
             this.load.image('coin', 'assets/coin.png');
             this.load.image('heart', 'assets/heart.png');
@@ -87,8 +90,14 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.bmd = this.add.bitmapData(this.game.width, this.game.height);
             this.bmd.addToWorld();
 
-            this.alien = this.add.sprite(0,0, "alien");
-            this.alien.anchor.set(0.5);
+            shipButton1 = game.add.button(this.game.width - 100, 650, 'ship1', addShip , this, 2, 1, 0);
+            shipButton2 = game.add.button(this.game.width - 300, 600, 'ship2', addShip, this, 2, 1, 0);
+
+            shipButton1.type = "ship1";
+            shipButton2.type = "ship2";
+
+            shipButton1.cost = 200;
+            shipButton2.cost = 300;
 
             addTowerButton = game.add.button(300, 650, "tower", placeTower, 2, 1, 0);
             addTowerButton.height = 50;
@@ -101,6 +110,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             var x = 1 / game.width;
             var j = 0;
+            this.path = [];
 
             for (var i = 0; i <= 1; i += x, j++)
             {
@@ -111,7 +121,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                 if(j % 10 == 0)
                 {
-                    pathSprite = game.add.sprite(px, py, 'invisible');
+                    pathSprite = game.add.sprite(px, py, 'tower');
                     pathSprite.height = SIZE_OF_PATH;
                     pathSprite.width = SIZE_OF_PATH;
                     pathSprite.anchor.setTo(0.5, 0.5);
@@ -132,15 +142,21 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 updateText = false;
             }
 
-            // får alien att följa linjen
-            this.alien.x = path[this.pi].x;
-            this.alien.y = path[this.pi].y;
+            if(user.spaceShips.length != null){
+                for( i = 0; i < user.spaceShips.length; i++){
 
-            this.pi++;
+                    spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
+                    spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
 
-            if (this.pi >= path.length)
-            {
-                this.pi = 0;
+                    user.spaceShips[i].addPathIndex();
+
+                    if (user.spaceShips[i].getPathIndex() >= path.length)
+                    {
+                        spaceSpriteArray[i].kill();
+                        spaceSpriteArray.splice(i, 1);
+                        user.spaceShips.splice(i, 1);
+                    }
+                }
             }
 
 
@@ -168,10 +184,27 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     function checkCollision(spriteA, spriteB){
         var boundsA = spriteA.getBounds();
         var boundsB = spriteB.getBounds();
-
+        
         return Phaser.Rectangle.intersects(boundsA, boundsB);
     }
 
+    function addShip(input){
+
+        if(user.getMoney() >= input.cost){
+
+            updateText = true; 
+            this.ship = this.add.sprite(0,0, input.type);
+            this.ship.anchor.set(0.5);
+            spaceSpriteArray.push(this.ship);
+
+            spaceShip = new SpaceShip(0, type); 
+            user.spaceShips.push(spaceShip);
+            console.log(user.spaceShips);
+            user.buy(input.cost);
+        }
+    }
+
+    
     function availableSpot(){
 
         var available = true;
@@ -202,7 +235,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         if(user.getMoney() >= towerCost)
         {
             user.buy(towerCost);
-            var tower1 = new tower(towerSprite.position.x, towerSprite.position.y, id);
+            var tower1 = new Tower(towerSprite.position.x, towerSprite.position.y, id);
 
             attackTower = game.add.button(towerSprite.position.x, towerSprite.position.y, "tower", levelUp, 2, 1, 0);
             attackTower.height = 50;

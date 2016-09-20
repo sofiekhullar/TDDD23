@@ -1,14 +1,15 @@
 var money = 1000;
-var health = 1000;
 
-function user(name, type) {
+function User(name, type) {
 
 	this.name = name;
 	this.type = type;
 	// this.health = 1000;
 	// this.money = 1000;
 	this.towers = [];
-
+	this.spaceShips = [];
+    var health = 1000;
+	
 	this.getName = function(){
 		return name;
 	}
