@@ -1,15 +1,17 @@
 var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
-    var towerButton1;
-    var towerButton2;
-    var towerButton3;
-
     var tower;
     var towers = [];
     var setTower = false;
-    var user = new user("Love", "earth");
+    var user = new User("Love", "earth");
 
     var updateText = false;
+
+    var shipButton;
+    var spaceShip;
+    var ship;
+    var spaceSpriteArray = [];
+    var n_ships = 0;
 
     var PhaserGame = function () {
 
@@ -23,9 +25,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             'y': [ 350, 100, 500, 100, 500, 350 ]
         };
 
-        this.pi = 0;
         this.path = [];
-
     };
 
 
@@ -46,8 +46,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-            this.scale.maxHeigth = 700;
-            this.scale.maxWidh = 1000;
+            this.scale.maxHeight = 500;
+            this.scale.maxWidth = 1000;
 
             var background = game.add.sprite(0,0, 'background'); 
             background.scale.setTo(2,2);
@@ -76,8 +76,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.bmd = this.add.bitmapData(this.game.width, this.game.height);
             this.bmd.addToWorld();
 
-            this.alien = this.add.sprite(0,0, "alien");
-            this.alien.anchor.set(0.5);
+            shipButton = game.add.button(this.game.width - 200, 600, 'alien', addShip, this, 2, 1, 0);
 
             this.plot();
         },
@@ -86,7 +85,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             this.path = [];
 
-            var x = 1 / game.width;
+            var x = 1 / (game.width );
 
             for (var i = 0; i <= 1; i += x)
             {
@@ -97,13 +96,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                 this.bmd.rect(px, py, 1, 1, 'rgba(255, 255, 255, 1)'); // skapar linjen/vägen
              }
-
-             // to draw rects bra för debug
-            for (var p = 0; p < this.points.x.length; p++)
-            {
-                this.bmd.rect(this.points.x[p]-3, this.points.y[p]-3, 6, 6, 'rgba(255, 0, 0, 1)');
-            }
-
         },
 
         update: function () {
@@ -115,19 +107,37 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 updateText = false;
             }
 
-            // får alien att följa linjen
-            this.alien.x = this.path[this.pi].x;
-            this.alien.y = this.path[this.pi].y;
+            if(user.spaceShips.length != null){
+            
+                for( i = 0; i < user.spaceShips.length; i++){
 
-            this.pi++;
+                    spaceSpriteArray[i].x = this.path[user.spaceShips[i].getPathIndex()].x;
+                    spaceSpriteArray[i].y = this.path[user.spaceShips[i].getPathIndex()].y;
 
-            if (this.pi >= this.path.length)
-            {
-                this.pi = 0;
+                    user.spaceShips[i].addPathIndex();
+
+                    if (user.spaceShips[i].getPathIndex() >= this.path.length)
+                    {
+                        spaceSpriteArray[i].kill();
+                        spaceSpriteArray.splice(i, 1);
+                        user.spaceShips.splice(i, 1);
+
+                    }
+                }
             }
         }
     };
 
+    function addShip(){
+
+        this.ship = this.add.sprite(0,0, "alien");
+        this.ship.anchor.set(0.5);
+        spaceSpriteArray.push(this.ship);
+
+        spaceShip = new SpaceShip(0); 
+        user.spaceShips.push(spaceShip);
+        console.log(user.spaceShips);
+    }
 
     function addTower(){
 
@@ -138,7 +148,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         towerButton2.width = 50;
         towerButton2.onInputOver.add(hoverTower, this);
 
-        tower1 = new tower(0 + id * 60, 610, id);
+        tower1 = new Tower(0 + id * 60, 610, id);
         tower1.setLevel();
 
         user.towers.push(tower1);
