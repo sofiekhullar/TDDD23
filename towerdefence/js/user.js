@@ -1,41 +1,40 @@
 var health = 1000;
 var money = 1000;
-var planetType;
+var planetType = 'earth';
 var name;
+var towers = [];
 
 function user(name, type) {
 
-
-
 	this.name = name;
 	this.planetType = type;
-	
-}
+	this.towers = towers;
 
-user.prototype.loseHealth = function(damage){
+this.loseHealth = function(damage){
 	health -= damage;
 }
 
-user.prototype.buy = function(towerCost){
+this.buy = function(towerCost){
 	money -= towerCost;
 }
 
-user.prototype.sell = function(towerCost){
+this.sell = function(towerCost){
 	money += towerCost;
 }
 
-user.prototype.getMoney = function(){
+this.getMoney = function(){
 	return money;
 }
 
-user.prototype.getHealth = function(){
+this.getHealth = function(){
 	return health;
 }
 
-user.prototype.getName = function(){
+this.getName = function(){
 	return name;
 }
 
-user.prototype.getType = function(){
+this.getType = function(){
 	return planetType;
+}
 }
