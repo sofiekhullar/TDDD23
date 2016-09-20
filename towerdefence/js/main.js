@@ -1,15 +1,19 @@
 var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
-    var towerButton1;
-    var towerButton2;
-    var towerButton3;
-
+    var addTowerButton;
     var tower;
-    var towers = [];
-    var setTower = false;
-    var user = new user("Love", "earth");
-
+    var towerSprite;
+    var placingTower = false;
     var updateText = false;
+    var user = new user("Love", "earth");
+    this.path = [];
+    var id = 0;
+    var centerTower = 25;
+    var DISTANCE_FROM_PATH = 50;
+    var SIZE_OF_PATH = 70;
+    var pathArray = [];
+    var pathSprite;
+    var denied = false;
 
     var PhaserGame = function () {
 
@@ -28,7 +32,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     };
 
-
     PhaserGame.prototype = {
 
         preload: function () {
@@ -40,17 +43,25 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.load.image('heart', 'assets/heart.png');
             this.load.image('earth', 'assets/earth.png');
             this.load.image('saturn', 'assets/saturn.png');
+            this.load.image('towerDenied', 'assets/towerDenied.png');
+            // this.load.image('tower1Level1', 'assets/tower1Level1.png');
+            // this.load.image('tower1Level2', 'assets/tower1Level2.png');
+            // this.load.image('tower1Level3', 'assets/tower1Level3.png');
+            // this.load.image('tower1Level4', 'assets/tower1Level4.png');
+            // this.load.image('tower1Level5', 'assets/tower1Level5.png');
         },
 
         create: function () {
         
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-            this.scale.maxHeigth = 700;
-            this.scale.maxWidh = 1000;
+            this.scale.maxHeight = 500;
+            this.scale.maxWidth = 1000;
 
             var background = game.add.sprite(0,0, 'background'); 
+            background.inputEnabled = true;
             background.scale.setTo(2,2);
+            background.events.onInputDown.add(availableSpot, this);
 
             var graphics = game.add.graphics(100, 100);
             graphics.beginFill(0x999999);
@@ -61,7 +72,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             planetSprite.scale.setTo(0.5, 0.5);
 
             var planetSprite2 = game.add.sprite(this.game.height, this.game.width/2, 'saturn');
-            planetSprite2.scale.setTo(0.3, 0.3);
+            planetSprite2.scale.setTo(0.5, 0.5);
 
             var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 
@@ -79,31 +90,37 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.alien = this.add.sprite(0,0, "alien");
             this.alien.anchor.set(0.5);
 
+            addTowerButton = game.add.button(300, 650, "tower", placeTower, 2, 1, 0);
+            addTowerButton.height = 50;
+            addTowerButton.width = 50;
+
             this.plot();
         },
 
         plot: function () {
 
-            this.path = [];
-
             var x = 1 / game.width;
+            var j = 0;
 
-            for (var i = 0; i <= 1; i += x)
+            for (var i = 0; i <= 1; i += x, j++)
             {
                 var px = this.math.catmullRomInterpolation(this.points.x, i);
                 var py = this.math.catmullRomInterpolation(this.points.y, i);
            
-                this.path.push( { x: px, y: py });
+                path.push( { x: px, y: py });
+
+                if(j % 10 == 0)
+                {
+                    pathSprite = game.add.sprite(px, py, 'invisible');
+                    pathSprite.height = SIZE_OF_PATH;
+                    pathSprite.width = SIZE_OF_PATH;
+                    pathSprite.anchor.setTo(0.5, 0.5);
+                    pathSprite.alpha = 0;
+                    pathArray.push(pathSprite);
+                }
 
                 this.bmd.rect(px, py, 1, 1, 'rgba(255, 255, 255, 1)'); // skapar linjen/vägen
              }
-
-             // to draw rects bra för debug
-            for (var p = 0; p < this.points.x.length; p++)
-            {
-                this.bmd.rect(this.points.x[p]-3, this.points.y[p]-3, 6, 6, 'rgba(255, 0, 0, 1)');
-            }
-
         },
 
         update: function () {
@@ -116,34 +133,127 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             }
 
             // får alien att följa linjen
-            this.alien.x = this.path[this.pi].x;
-            this.alien.y = this.path[this.pi].y;
+            this.alien.x = path[this.pi].x;
+            this.alien.y = path[this.pi].y;
 
             this.pi++;
 
-            if (this.pi >= this.path.length)
+            if (this.pi >= path.length)
             {
                 this.pi = 0;
+            }
+
+
+            if(placingTower)
+            {
+                towerSprite.position.x = game.input.x - centerTower;
+                towerSprite.position.y = game.input.y - centerTower;
+
+                for (var i = 0;i < pathArray.length; i++)
+                {
+                    if(checkCollision(towerSprite, pathArray[i]))
+                    {
+                        towerSprite.loadTexture("towerDenied", 1);
+                        break;
+                    }
+                    else
+                    {
+                        towerSprite.loadTexture("tower", 1);
+                    }
+                }
             }
         }
     };
 
+    function checkCollision(spriteA, spriteB){
+        var boundsA = spriteA.getBounds();
+        var boundsB = spriteB.getBounds();
 
-    function addTower(){
+        return Phaser.Rectangle.intersects(boundsA, boundsB);
+    }
 
-        id++;
+    function availableSpot(){
 
-        towerButton2 = game.add.button(0 + id * 60, 610, 'tower', levelUp, 2, 1, 0);
-        towerButton2.height = 50;
-        towerButton2.width = 50;
-        towerButton2.onInputOver.add(hoverTower, this);
+        var available = true;
 
-        tower1 = new tower(0 + id * 60, 610, id);
-        tower1.setLevel();
+        if(!placingTower)
+        {
+            return;
+        }
+        else
+        {
+            for (var i = 0; i < pathArray.length; i++)
+            {
+                if(checkCollision(towerSprite, pathArray[i]))
+                {
+                    available = false;
+                }
+            }
 
-        user.towers.push(tower1);
-        console.log(user.towers);
-        console.log(tower1);
+            if(available)
+                setTower();
+        }
+    }
+
+    function setTower(){
+
+        var towerCost = 100;
+
+        if(user.getMoney() >= towerCost)
+        {
+            user.buy(towerCost);
+            var tower1 = new tower(towerSprite.position.x, towerSprite.position.y, id);
+
+            attackTower = game.add.button(towerSprite.position.x, towerSprite.position.y, "tower", levelUp, 2, 1, 0);
+            attackTower.height = 50;
+            attackTower.width = 50;
+            attackTower.id = id;
+            attackTower.alpha = 0;
+
+            attackTowerSprite = game.add.sprite(towerSprite.position.x, towerSprite.position.y, "tower");
+            attackTowerSprite.height = 50;
+            attackTowerSprite.width = 50;
+
+            updateText = true;
+            placingTower = false;
+
+            user.towers.push(tower1);
+            pathArray.push(attackTowerSprite);
+
+            id++;
+
+        }
+        else{
+            console.log("no money!");
+            placingTower = false;
+            towerSprite.position.x = 1000;
+            towerSprite.position.y = 1000;
+        }
+    }
+
+    function levelUp(button){
+        
+        console.log(user.towers[button.id].level);
+        user.towers[button.id].level++;
+        user.towers[button.id].damage += 10;
+
+        // if(user.towers[button.id].level == 2)
+        //     attackTowerSprite = loadTexture("tower1Level2", 1);
+        // if(user.towers[button.id].level == 3)
+        //     attackTowerSprite = loadTexture("tower1Level3", 1);
+        // if(user.towers[button.id].level == 4)
+        //     attackTowerSprite = loadTexture("tower1Level4", 1);
+        // if(user.towers[button.id].level == 5)
+        //     attackTowerSprite = loadTexture(, 1);
+    }
+
+
+    function placeTower(){
+        
+        placingTower = true;
+        towerSprite = game.add.sprite(game.input.x - centerTower, game.input.y - centerTower, "tower");
+        towerSprite.height = 50;
+        towerSprite.width = 50;
     };
 
     game.state.add('Game', PhaserGame, true);

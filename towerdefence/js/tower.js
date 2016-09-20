@@ -15,7 +15,7 @@ function tower(x, y, id) {
 	}
 
 	this.getDamage = function(){
-		
+		return damage;
 	}
 
 	this.setLevel = function(){
