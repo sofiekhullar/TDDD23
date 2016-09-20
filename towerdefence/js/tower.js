@@ -27,3 +27,4 @@ function tower(x, y, id) {
 		return id;
 	}
 }	
+

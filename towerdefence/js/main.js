@@ -1,4 +1,4 @@
-    var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
+var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     var towerButton1;
     var towerButton2;
@@ -7,13 +7,9 @@
     var tower;
     var towers = [];
     var setTower = false;
-    
-    var user = new user("Love", "Earth");
-    var text1;
-    var text2;
-    var id = 0;
-    var tower1;
+    var user = new user("Love", "earth");
 
+    var updateText = false;
 
     var PhaserGame = function () {
 
@@ -40,33 +36,49 @@
             this.load.image('background', 'assets/space.jpeg');
             this.load.image('alien', 'assets/alien.png');
             this.load.image('tower', 'assets/tower.png');
+            this.load.image('coin', 'assets/coin.png');
+            this.load.image('heart', 'assets/heart.png');
+            this.load.image('earth', 'assets/earth.png');
+            this.load.image('saturn', 'assets/saturn.png');
         },
 
         create: function () {
         
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.scale.maxHeight = 500;
-            this.scale.maxwidth = 1000;
 
-             
-            background = game.add.sprite(0,0, 'background'); 
-            background.height = game.world.height;
-            background.width = game.world.width;
+            this.scale.maxHeigth = 700;
+            this.scale.maxWidh = 1000;
 
+            var background = game.add.sprite(0,0, 'background'); 
+            background.scale.setTo(2,2);
 
-            this.bmd = this.add.bitmapData(this.game.width, this.game.height); // bitmap data som är som en canvas ish
+            var graphics = game.add.graphics(100, 100);
+            graphics.beginFill(0x999999);
+            graphics.drawRect(-100, this.game.height - 150, 1000, 50);
+            window.graphics = graphics;
+
+            var planetSprite = game.add.sprite(0, this.game.width/4, user.getType());
+            planetSprite.scale.setTo(0.5, 0.5);
+
+            var planetSprite2 = game.add.sprite(this.game.height, this.game.width/2, 'saturn');
+            planetSprite2.scale.setTo(0.3, 0.3);
+
+            var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+
+            moneyText = game.add.text(30, 0, user.getMoney() , style);
+            var coinSprite = game.add.sprite(0, 0, 'coin');
+            coinSprite.scale.setTo(0.1,0.1);
+
+            healthText = game.add.text(30, 20, user.getHealth(), style);
+            var heartSprite = game.add.sprite(0, 20, 'heart');
+            heartSprite.scale.setTo(0.02, 0.02);
+
+            this.bmd = this.add.bitmapData(this.game.width, this.game.height);
             this.bmd.addToWorld();
 
-            this.alien = this.add.sprite(0, 0, 'alien');
-            this.alien.anchor.set(0.5); // hur mycket off spriten är från banan
+            this.alien = this.add.sprite(0,0, "alien");
+            this.alien.anchor.set(0.5);
 
-            text1 = game.add.text(game.world.centerX, 100, user.getName(), { fill: '#ffffff' });
-            text2 = game.add.text(game.world.centerX + 80, 100, user.getType(), { fill: '#ffffff' });
-
-            var addTowerButton = game.add.button(100, 100, "tower", addTower, 2, 1, 0);
-            addTowerButton.height = 50;
-            addTowerButton.width = 50;
-        
             this.plot();
         },
 
@@ -96,6 +108,13 @@
 
         update: function () {
 
+            if(updateText){
+                moneyText.setText(user.getMoney());
+                healthText.setText(user.getHealth());
+
+                updateText = false;
+            }
+
             // får alien att följa linjen
             this.alien.x = this.path[this.pi].x;
             this.alien.y = this.path[this.pi].y;
@@ -106,7 +125,6 @@
             {
                 this.pi = 0;
             }
-
         }
     };
 
@@ -126,20 +144,6 @@
         user.towers.push(tower1);
         console.log(user.towers);
         console.log(tower1);
-
     };
-
-    function hoverTower(){
-
-        console.log(user.name);
-
-    }
-
-    function levelUp(tower){
-
-       // tower.setLevel();
-        //console.log(tower1.level);
-
-    }
 
     game.state.add('Game', PhaserGame, true);
