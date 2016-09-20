@@ -1,4 +1,4 @@
-var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
+    var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     var towerButton1;
     var towerButton2;
@@ -9,7 +9,10 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
     var setTower = false;
     
     var user = new user("Love", "Earth");
-
+    var text1;
+    var text2;
+    var id = 0;
+    var tower1;
 
 
     var PhaserGame = function () {
@@ -17,10 +20,11 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
         this.bmd = null;
         this.alien = null;
         this.mode = 0;
+        var background = null; 
 
         this.points = {
-            'x': [ 32, 128, 256, 384, 512, 608 ],
-            'y': [ 240, 240, 240, 240, 240, 240 ]
+            'x': [ 50, 200, 400, 600, 800, 950 ],
+            'y': [ 350, 100, 500, 100, 500, 350 ]
         };
 
         this.pi = 0;
@@ -41,22 +45,14 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
         create: function () {
         
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            //this.scale.minHeight = 0;
+            this.scale.maxHeight = 500;
+            this.scale.maxwidth = 1000;
 
-            game.add.sprite(0,0, 'background'); 
+             
+            background = game.add.sprite(0,0, 'background'); 
+            background.height = game.world.height;
+            background.width = game.world.width;
 
-            towerButton1 = game.add.button(game.world.centerX - 200, 450, 'tower', addTower1, this, 2, 1, 0);
-            towerButton1.height = 50;
-            towerButton1.width = 50;
-
-            towerButton2 = game.add.button(game.world.centerX, 450, 'tower', addTower2, this, 2, 1, 0);
-            towerButton2.height = 50;
-            towerButton2.width = 50;
-
-            towerButton3 = game.add.button(game.world.centerX + 200, 450, 'tower', addTower3, this, 2, 1, 0);
-            towerButton3.height = 50;
-            towerButton3.width = 50;
-            
 
             this.bmd = this.add.bitmapData(this.game.width, this.game.height); // bitmap data som är som en canvas ish
             this.bmd.addToWorld();
@@ -64,12 +60,12 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
             this.alien = this.add.sprite(0, 0, 'alien');
             this.alien.anchor.set(0.5); // hur mycket off spriten är från banan
 
-            var py = this.points.y; // Första punkten i y-led dvs 240
+            text1 = game.add.text(game.world.centerX, 100, user.getName(), { fill: '#ffffff' });
+            text2 = game.add.text(game.world.centerX + 80, 100, user.getType(), { fill: '#ffffff' });
 
-            for (var i = 0; i < py.length; i++)
-            {
-                py[i] = this.rnd.between(32, 432); // flyttar punkterna i y-led, just nu random men kan sättas till fasta punkter
-            }
+            var addTowerButton = game.add.button(100, 100, "tower", addTower, 2, 1, 0);
+            addTowerButton.height = 50;
+            addTowerButton.width = 50;
         
             this.plot();
         },
@@ -91,10 +87,10 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
              }
 
              // to draw rects bra för debug
-            /*for (var p = 0; p < this.points.x.length; p++)
+            for (var p = 0; p < this.points.x.length; p++)
             {
                 this.bmd.rect(this.points.x[p]-3, this.points.y[p]-3, 6, 6, 'rgba(255, 0, 0, 1)');
-            }*/
+            }
 
         },
 
@@ -111,53 +107,39 @@ var game = new Phaser.Game(758, 530, Phaser.AUTO, 'game');
                 this.pi = 0;
             }
 
-
-
         }
     };
 
-    function addTower1(){
 
-        var cost = 100;
+    function addTower(){
 
-        if(user.getMoney() > cost){
-            
-            user.buy(cost);
-            //console.log(user.getMoney());
+        id++;
 
-        }
+        towerButton2 = game.add.button(0 + id * 60, 610, 'tower', levelUp, 2, 1, 0);
+        towerButton2.height = 50;
+        towerButton2.width = 50;
+        towerButton2.onInputOver.add(hoverTower, this);
 
-        tower = game.add.button(game.input.mousePointer.x, game.input.mousePointer.y, 'tower');
+        tower1 = new tower(0 + id * 60, 610, id);
+        tower1.setLevel();
+
+        user.towers.push(tower1);
+        console.log(user.towers);
+        console.log(tower1);
 
     };
 
-    function addTower2(){
-        
-        var cost = 200;
+    function hoverTower(){
 
-        if(user.getMoney() > cost){
-            
-            user.buy(cost);
-            console.log(user.getMoney());
+        console.log(user.name);
 
-        }
-
-        tower = game.add.button(game.input.mousePointer.x, game.input.mousePointer.y, 'tower');
     }
 
-    function addTower3(){
-        
-        var cost = 300;
+    function levelUp(tower){
 
-        if(user.getMoney() > cost){
-            
-            user.buy(cost);
-            console.log(user.getMoney());
+       // tower.setLevel();
+        //console.log(tower1.level);
 
-        }
-
-        tower = game.add.button(game.input.mousePointer.x, game.input.mousePointer.y, 'tower');
     }
-
 
     game.state.add('Game', PhaserGame, true);
