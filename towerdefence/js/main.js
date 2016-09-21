@@ -9,8 +9,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var path = [];
     var id = 0;
     var centerTower = 25;
-    var DISTANCE_FROM_PATH = 50;
-    var SIZE_OF_PATH = 70;
+    var SIZE_OF_PATH = 30;
     var pathArray = [];
     var pathSprite;
     var denied = false;
@@ -30,7 +29,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
         this.points = {
             'x': [ 50, 200, 400, 600, 800, 950 ],
-            'y': [ 350, 100, 500, 100, 500, 350 ]
+            'y': [ 350, 200, 500, 200, 500, 350 ]
         };
     };
 
@@ -39,11 +38,12 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         preload: function () {
             // load assets
             this.load.image('background', 'assets/space.jpeg');
-            this.load.image('ship1', 'assets/ship1.png');
-            this.load.image('ship2', 'assets/alien.png');
+            this.load.image('ship1', 'assets/ships/ship1.png');
+            this.load.image('ship2', 'assets/ships/ship2.png');
+            this.load.image('ship3', 'assets/ships/ship3.png');
             this.load.image('tower', 'assets/tower.png');
-            this.load.image('coin', 'assets/coin.png');
-            this.load.image('heart', 'assets/heart.png');
+            this.load.image('coin', 'assets/diamond.png');
+            this.load.image('heart', 'assets/health.png');
             this.load.image('earth', 'assets/earth.png');
             this.load.image('saturn', 'assets/saturn.png');
             this.load.image('towerDenied', 'assets/towerDenied.png');
@@ -71,38 +71,42 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             graphics.drawRect(-100, this.game.height - 150, 1000, 50);
             window.graphics = graphics;
 
-            var planetSprite = game.add.sprite(0, this.game.width/4, user.getType());
-            planetSprite.scale.setTo(0.5, 0.5);
-
-            var planetSprite2 = game.add.sprite(this.game.height, this.game.width/2, 'saturn');
-            planetSprite2.scale.setTo(0.5, 0.5);
-
             var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 
-            moneyText = game.add.text(30, 0, user.getMoney() , style);
-            var coinSprite = game.add.sprite(0, 0, 'coin');
-            coinSprite.scale.setTo(0.1,0.1);
+            moneyText = game.add.text(30, this.game.height - 50, user.getMoney() , style);
+            game.add.sprite(0, this.game.height - 50, 'coin');
 
-            healthText = game.add.text(30, 20, user.getHealth(), style);
-            var heartSprite = game.add.sprite(0, 20, 'heart');
-            heartSprite.scale.setTo(0.02, 0.02);
+            healthText = game.add.text(30, this.game.height - 20, user.getHealth(), style);
+            game.add.sprite(0, this.game.height - 20, 'heart');
 
             this.bmd = this.add.bitmapData(this.game.width, this.game.height);
             this.bmd.addToWorld();
 
             shipButton1 = game.add.button(this.game.width - 100, 650, 'ship1', addShip , this, 2, 1, 0);
-            shipButton2 = game.add.button(this.game.width - 300, 600, 'ship2', addShip, this, 2, 1, 0);
+            shipButton2 = game.add.button(this.game.width - 200, 650, 'ship2', addShip, this, 2, 1, 0);
+            shipButton3 = game.add.button(this.game.width - 300, 650, 'ship3', addShip, this, 2, 1, 0);
 
             shipButton1.type = "ship1";
             shipButton2.type = "ship2";
+            shipButton3.type = "ship3";
 
             shipButton1.cost = 200;
             shipButton2.cost = 300;
+            shipButton3.cost = 500;
+
+            shipButton1.rot = true;
+            shipButton2.rot = false;
+            shipButton3.rot = true;
 
             addTowerButton = game.add.button(300, 650, "tower", placeTower, 2, 1, 0);
             addTowerButton.height = 50;
             addTowerButton.width = 50;
 
+            var planetSprite = game.add.sprite(0, this.game.width/4, user.getType());
+            planetSprite.scale.setTo(0.5, 0.5);
+
+            var planetSprite2 = game.add.sprite(this.game.width - 200, this.game.height /2, 'saturn');
+            planetSprite2.scale.setTo(0.3, 0.3);
             this.plot();
         },
 
@@ -148,6 +152,14 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
 
+
+                    if(user.spaceShips[i].getRotation()){
+                        if(spaceSpriteArray[i].y > 350)
+                            spaceSpriteArray[i].angle -= 0.45;
+                        else
+                            spaceSpriteArray[i].angle += 0.45;
+                    }
+
                     user.spaceShips[i].addPathIndex();
 
                     if (user.spaceShips[i].getPathIndex() >= path.length)
@@ -191,13 +203,12 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     function addShip(input){
 
         if(user.getMoney() >= input.cost){
-
             updateText = true; 
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
             spaceSpriteArray.push(this.ship);
 
-            spaceShip = new SpaceShip(0, type); 
+            spaceShip = new SpaceShip(0, type, input.rot); 
             user.spaceShips.push(spaceShip);
             console.log(user.spaceShips);
             user.buy(input.cost);

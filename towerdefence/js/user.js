@@ -1,4 +1,4 @@
-var money = 1000;
+var money = 60000;
 
 function User(name, type) {
 
