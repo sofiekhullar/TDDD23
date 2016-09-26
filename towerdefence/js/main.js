@@ -21,6 +21,13 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var spaceShip;
     var spaceSpriteArray = [];
 
+    var ship1Bullet;
+    var ship2Bullet;
+    var ship3Bullet;
+    var explosions;
+    var firingTimer = 0;
+    var planetSprite2;
+
     var PhaserGame = function () {
 
         this.bmd = null;
@@ -46,12 +53,17 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.load.image('heart', 'assets/health.png');
             this.load.image('earth', 'assets/earth.png');
             this.load.image('saturn', 'assets/saturn.png');
+            this.load.image('bullet1', 'assets/bullet.png');
+            this.load.image('bullet2', 'assets/bullet2.png');
+            this.load.image('bullet3', 'assets/bullet3.png');
             this.load.image('towerDenied', 'assets/towerDenied.png');
             // this.load.image('tower1Level1', 'assets/tower1Level1.png');
             // this.load.image('tower1Level2', 'assets/tower1Level2.png');
             // this.load.image('tower1Level3', 'assets/tower1Level3.png');
             // this.load.image('tower1Level4', 'assets/tower1Level4.png');
             // this.load.image('tower1Level5', 'assets/tower1Level5.png');
+       
+            this.load.spritesheet('boom', 'assets/explode.png', 128,128);
         },
 
         create: function () {
@@ -105,9 +117,37 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             var planetSprite = game.add.sprite(0, this.game.width/4, user.getType());
             planetSprite.scale.setTo(0.5, 0.5);
 
-            var planetSprite2 = game.add.sprite(this.game.width - 200, this.game.height /2, 'saturn');
+            planetSprite2 = game.add.sprite(this.game.width - 200, this.game.height /2, 'saturn');
             planetSprite2.scale.setTo(0.3, 0.3);
             this.plot();
+
+            // The enemy's bullets
+            ship1Bullet = game.add.group();
+            ship1Bullet.enableBody = true;
+            ship1Bullet.physicsBodyType = Phaser.Physics.ARCADE;
+            ship1Bullet.createMultiple(30, 'bullet1');
+            ship1Bullet.setAll('anchor.x', 0.5);
+            ship1Bullet.setAll('anchor.y', 1);
+            ship1Bullet.setAll('outOfBoundsKill', true);
+            ship1Bullet.setAll('checkWorldBounds', true);
+
+            ship2Bullet = game.add.group();
+            ship2Bullet.enableBody = true;
+            ship2Bullet.physicsBodyType = Phaser.Physics.ARCADE;
+            ship2Bullet.createMultiple(30, 'bullet2');
+            ship2Bullet.setAll('anchor.x', 0.5);
+            ship2Bullet.setAll('anchor.y', 1);
+            ship2Bullet.setAll('outOfBoundsKill', true);
+            ship2Bullet.setAll('checkWorldBounds', true);
+
+            ship3Bullet = game.add.group();
+            ship3Bullet.enableBody = true;
+            ship3Bullet.physicsBodyType = Phaser.Physics.ARCADE;
+            ship3Bullet.createMultiple(30, 'bullet3');
+            ship3Bullet.setAll('anchor.x', 0.5);
+            ship3Bullet.setAll('anchor.y', 1);
+            ship3Bullet.setAll('outOfBoundsKill', true);
+            ship3Bullet.setAll('checkWorldBounds', true);
         },
 
         plot: function () {
@@ -146,12 +186,13 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 updateText = false;
             }
 
-            if(user.spaceShips.length != null){
+            if(user.spaceShips.length != 0){
                 for( i = 0; i < user.spaceShips.length; i++){
 
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
 
+                    //shoot(i, i);
 
                     if(user.spaceShips[i].getRotation()){
                         if(spaceSpriteArray[i].y > 350)
@@ -171,7 +212,14 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 }
             }
 
-
+        if(user.spaceShips.length != 0){
+            if (game.time.now > firingTimer)
+            {
+                fireShip();
+            }
+         }
+            
+            
             if(placingTower)
             {
                 towerSprite.position.x = game.input.x - centerTower;
@@ -208,13 +256,53 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.ship.anchor.set(0.5);
             spaceSpriteArray.push(this.ship);
 
-            spaceShip = new SpaceShip(0, type, input.rot); 
+            spaceShip = new SpaceShip(0, input.type, input.rot); 
             user.spaceShips.push(spaceShip);
             console.log(user.spaceShips);
             user.buy(input.cost);
         }
     }
 
+    function fireShip() {
+
+    // randomly select one of them
+    var random=game.rnd.integerInRange(0,spaceSpriteArray.length-1);
+    var shooter=spaceSpriteArray[random];
+    var type = user.spaceShips[random].getType();
+    
+    switch(type){
+        case 'ship1':
+            bullet = ship1Bullet.getFirstExists(false);
+        break;
+        case 'ship2':
+            bullet = ship2Bullet.getFirstExists(false);
+        break;
+        case 'ship3':
+            bullet = ship3Bullet.getFirstExists(false);
+        break;
+    }
+
+    // And fire the bullet from this enemy
+    bullet.reset(shooter.x, shooter.y);
+    game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+    bullet.body.velocity.x = 100;
+
+    if(spaceSpriteArray.length > 5 && spaceSpriteArray.length < 10){
+        firingTimer = game.time.now + 2000;
+    }
+    if(spaceSpriteArray.length > 10 && spaceSpriteArray.length < 15){
+        firingTimer = game.time.now + 1000;
+    }
+    if(spaceSpriteArray.length > 15 && spaceSpriteArray.length < 20){
+        firingTimer = game.time.now + 500;
+    }
+    if(spaceSpriteArray.length > 20){
+        firingTimer = game.time.now + 300;
+    }
+    else{
+        firingTimer = game.time.now + 2500;
+        }    
+    }
     
     function availableSpot(){
 

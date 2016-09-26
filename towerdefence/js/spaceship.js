@@ -30,8 +30,11 @@ function SpaceShip(pathIndex, type, rotation) {
 		return rotation;
 	}
 
+	this.getType = function(){
+		return type;
+	}
+
 	this.addPathIndex = function(){
 		pathIndex++;
 	}
-
 }
