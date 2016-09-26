@@ -13,6 +13,18 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var pathArray = [];
     var pathSprite;
     var denied = false;
+    var menuBackground;
+    var levelText;
+    var sell;
+    var sellText;
+    var upgradeText;
+    var upgrade;
+    var available = true;
+    var towerSpriteNow;
+    var costNow;
+    var damageNow;
+    var typeNow;
+    var menuActive = false;
 
     var shipButton1;
     var shipButton2;
@@ -20,6 +32,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var ship;
     var spaceShip;
     var spaceSpriteArray = [];
+    var attackTowerArray = [];
+    var attackTowers = [];
 
     var ship1Bullet;
     var ship2Bullet;
@@ -44,11 +58,11 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
         preload: function () {
             // load assets
-            this.load.image('background', 'assets/space.jpeg');
+            this.load.image('background', 'assets/background_blue-red.png');
             this.load.image('ship1', 'assets/ships/ship1.png');
             this.load.image('ship2', 'assets/ships/ship2.png');
             this.load.image('ship3', 'assets/ships/ship3.png');
-            this.load.image('tower', 'assets/tower.png');
+            this.load.image('blackhole', 'assets/blackhole.png');
             this.load.image('coin', 'assets/diamond.png');
             this.load.image('heart', 'assets/health.png');
             this.load.image('earth', 'assets/earth.png');
@@ -62,7 +76,14 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             // this.load.image('tower1Level3', 'assets/tower1Level3.png');
             // this.load.image('tower1Level4', 'assets/tower1Level4.png');
             // this.load.image('tower1Level5', 'assets/tower1Level5.png');
-       
+            
+            this.load.image('satellite', 'assets/satellite.png');
+            this.load.image('satellite-denied', 'assets/satellite-denied.png');
+            this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
+            this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
+            this.load.image('menuItem', 'assets/menu-item.png');
+            this.load.image('menuBackground', 'assets/menu-background.png');
+
             this.load.spritesheet('boom', 'assets/explode.png', 128,128);
         },
 
@@ -75,7 +96,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             var background = game.add.sprite(0,0, 'background'); 
             background.inputEnabled = true;
-            background.scale.setTo(2,2);
             background.events.onInputDown.add(availableSpot, this);
 
             var graphics = game.add.graphics(100, 100);
@@ -110,14 +130,38 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             shipButton2.rot = false;
             shipButton3.rot = true;
 
-            addTowerButton = game.add.button(300, 650, "tower", placeTower, 2, 1, 0);
-            addTowerButton.height = 50;
-            addTowerButton.width = 50;
+            addTowerButton1 = game.add.button(200, 650, "blackhole", placeTower);
+            addTowerButton1.height = 50;
+            addTowerButton1.width = 50;
+
+            addTowerButton2 = game.add.button(300, 650, "satellite", placeTower);
+            addTowerButton2.height = 50;
+            addTowerButton2.width = 50;
+
+            addTowerButton3 = game.add.button(400, 650, "blackhole", placeTower);
+            addTowerButton3.height = 50;
+            addTowerButton3.width = 50;
+
+            addTowerButton1.cost = 100;
+            addTowerButton2.cost = 200;
+            addTowerButton3.cost = 300;
+
+            addTowerButton1.damage = 100;
+            addTowerButton2.damage = 200;
+            addTowerButton3.damage = 300;
+
+            addTowerButton1.type = "blackhole";
+            addTowerButton2.type = "satellite";
+            addTowerButton3.type = "meteorite";
+
+            addTowerButton1.spriteName = "blackhole";
+            addTowerButton2.spriteName = "satellite";
+            addTowerButton3.spriteName = "blackhole";
 
             var planetSprite = game.add.sprite(0, this.game.width/4, user.getType());
             planetSprite.scale.setTo(0.5, 0.5);
 
-            planetSprite2 = game.add.sprite(this.game.width - 200, this.game.height /2, 'saturn');
+            planetSprite2 = game.add.sprite(this.game.width - 150, game.world.centerY - 70, 'saturn');
             planetSprite2.scale.setTo(0.3, 0.3);
             this.plot();
 
@@ -165,7 +209,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                 if(j % 10 == 0)
                 {
-                    pathSprite = game.add.sprite(px, py, 'tower');
+                    pathSprite = game.add.sprite(px, py, 'blackhole');
                     pathSprite.height = SIZE_OF_PATH;
                     pathSprite.width = SIZE_OF_PATH;
                     pathSprite.anchor.setTo(0.5, 0.5);
@@ -180,6 +224,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         update: function () {
 
             if(updateText){
+
                 moneyText.setText(user.getMoney());
                 healthText.setText(user.getHealth());
 
@@ -191,8 +236,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
-
-                    //shoot(i, i);
 
                     if(user.spaceShips[i].getRotation()){
                         if(spaceSpriteArray[i].y > 350)
@@ -219,32 +262,45 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             }
          }
             
-            
             if(placingTower)
             {
                 towerSprite.position.x = game.input.x - centerTower;
                 towerSprite.position.y = game.input.y - centerTower;
+                available = true;
 
-                for (var i = 0;i < pathArray.length; i++)
+                for (var i = 0; i < pathArray.length; i++)
                 {
-                    if(checkCollision(towerSprite, pathArray[i]))
-                    {
-                        towerSprite.loadTexture("towerDenied", 1);
-                        break;
-                    }
-                    else
-                    {
-                        towerSprite.loadTexture("tower", 1);
-                    }
+                    
+                        if(checkCollision(towerSprite, pathArray[i]))
+                        {
+                            towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
+                            available = false;
+                            break;
+                        }
+                        else
+                        {
+                            towerSprite.loadTexture(towerSpriteNow, 1);
+                        }
+                }
+
+                for (var i = 0; i < attackTowerArray.length; i++)
+                {
+                        if(checkCollision(towerSprite, attackTowerArray[i]))
+                        {
+                            towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
+                            available = false;
+                            break;
+                        }
                 }
             }
         }
+
     };
 
     function checkCollision(spriteA, spriteB){
+
         var boundsA = spriteA.getBounds();
         var boundsB = spriteB.getBounds();
-        
         return Phaser.Rectangle.intersects(boundsA, boundsB);
     }
 
@@ -258,7 +314,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             spaceShip = new SpaceShip(0, input.type, input.rot); 
             user.spaceShips.push(spaceShip);
-            console.log(user.spaceShips);
             user.buy(input.cost);
         }
     }
@@ -306,86 +361,136 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     
     function availableSpot(){
 
-        var available = true;
+        if(placingTower && available)
+            setTower();
 
-        if(!placingTower)
-        {
-            return;
-        }
-        else
-        {
-            for (var i = 0; i < pathArray.length; i++)
-            {
-                if(checkCollision(towerSprite, pathArray[i]))
-                {
-                    available = false;
-                }
-            }
-
-            if(available)
-                setTower();
-        }
+        towerSprite.kill();
+        placingTower = false;
     }
 
     function setTower(){
 
-        var towerCost = 100;
-
-        if(user.getMoney() >= towerCost)
+        if(user.getMoney() >= costNow)
         {
-            user.buy(towerCost);
-            var tower1 = new Tower(towerSprite.position.x, towerSprite.position.y, id);
+            placingTower = false;
+            user.buy(costNow);
+            var tower1 = new Tower(towerSprite.position.x, towerSprite.position.y, id, damageNow, typeNow, costNow);
 
-            attackTower = game.add.button(towerSprite.position.x, towerSprite.position.y, "tower", levelUp, 2, 1, 0);
+            attackTower = game.add.button(towerSprite.position.x, towerSprite.position.y, towerSpriteNow, towerMenu);
             attackTower.height = 50;
             attackTower.width = 50;
             attackTower.id = id;
             attackTower.alpha = 0;
 
-            attackTowerSprite = game.add.sprite(towerSprite.position.x, towerSprite.position.y, "tower");
-            attackTowerSprite.height = 50;
-            attackTowerSprite.width = 50;
+            attackTowerSprite = game.add.sprite(towerSprite.position.x, towerSprite.position.y, towerSpriteNow);
+
+            if(towerSpriteNow == "blackhole")
+            {
+                attackTowerSprite.loadTexture("blackhole-animation", 1);
+                var spin = attackTowerSprite.animations.add('spins');
+                attackTowerSprite.animations.play('spins', 8, true);
+                
+            }
+            
+            attackTowerSprite.scale.setTo(0.5, 0.5);
+            attackTowerSprite.id = id;
+            attackTowerSprite.inputEnabled = true;
+            attackTowerSprite.input.useHandCursor = true;
+            attackTowerSprite.events.onInputDown.add(towerMenu, this);
 
             updateText = true;
-            placingTower = false;
 
             user.towers.push(tower1);
-            pathArray.push(attackTowerSprite);
-
+            attackTowers.push(attackTower);
+            attackTowerArray.push(attackTowerSprite);
             id++;
-
         }
         else{
-            console.log("no money!");
-            placingTower = false;
-            towerSprite.position.x = 1000;
-            towerSprite.position.y = 1000;
+            
         }
+    }
+
+    function towerMenu(button){
+
+        if(!placingTower)
+        {
+            menuActive = true;
+            
+            menuBackground = game.add.sprite(user.towers[button.id].x, user.towers[button.id].y, 'menuBackground');
+
+            if(menuBackground.position.x > 750)
+                menuBackground.position.x = 750;
+            if(menuBackground.position.x < 50)
+                menuBackground.position.x = 50;
+            if(menuBackground.position.y > 500)
+                menuBackground.position.y = 500;
+            if(menuBackground.position.y < 50)
+                menuBackground.position.y = 50;
+
+            levelText = game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 20, "Level " + user.towers[button.id].level);
+            menuBackground.scale.setTo(2.5,2);
+            upgrade = game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 60, 'menuItem', levelUp, button);
+            upgradeText = game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 70, "Upgrade $" + costNow);
+            upgrade.scale.setTo(2.9,2);
+            sell = game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 120, 'menuItem', function() {sellTower(button)}, this);
+            sellText = game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 130, "Sell $" + user.towers[button.id].level * 100 * 0.9);
+            sell.scale.setTo(2.9,2);
+        }
+        else {
+            towerSprite.kill();
+            placingTower = false;
+        }
+    }
+
+    function sellTower(button){
+
+        user.sell(user.towers[button.id].cost);
+        updateText = true;
+        attackTowerArray[button.id].position.x = 2000;
+        attackTowers[button.id].position.x = 2000;
+
+        if(menuActive)
+        {            
+            killMenu();
+        }
+
     }
 
     function levelUp(button){
-        
-        console.log(user.towers[button.id].level);
-        user.towers[button.id].level++;
-        user.towers[button.id].damage += 10;
 
-        // if(user.towers[button.id].level == 2)
-        //     attackTowerSprite = loadTexture("tower1Level2", 1);
-        // if(user.towers[button.id].level == 3)
-        //     attackTowerSprite = loadTexture("tower1Level3", 1);
-        // if(user.towers[button.id].level == 4)
-        //     attackTowerSprite = loadTexture("tower1Level4", 1);
-        // if(user.towers[button.id].level == 5)
-        //     attackTowerSprite = loadTexture(, 1);
+        if(menuActive)
+        {            
+            killMenu();
+        }
     }
 
+    function placeTower(button){
 
-    function placeTower(){
-        
+        damageNow = button.damage;
+        costNow = button.cost;
+        towerSpriteNow = button.spriteName;
+        typeNow = button.type;
+
         placingTower = true;
-        towerSprite = game.add.sprite(game.input.x - centerTower, game.input.y - centerTower, "tower");
+        towerSprite = game.add.sprite(game.input.x - centerTower, game.input.y - centerTower, towerSpriteNow);
         towerSprite.height = 50;
         towerSprite.width = 50;
+
+        if(menuActive)
+        {            
+            killMenu();
+        }
+    };
+
+    function killMenu() {
+
+        levelText.kill();
+        menuBackground.kill();
+        upgradeText.kill();
+        upgrade.kill();
+        sell.kill();
+        sellText.kill();
+        menuActive = false;
     };
 
     game.state.add('Game', PhaserGame, true);
