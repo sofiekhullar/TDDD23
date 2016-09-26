@@ -28,6 +28,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     var shipButton1;
     var shipButton2;
+    var shipButton3;
 
     var ship;
     var spaceShip;
@@ -38,8 +39,11 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var ship1Bullet;
     var ship2Bullet;
     var ship3Bullet;
+
     var explosions;
     var firingTimer = 0;
+
+    var planetSprite1;
     var planetSprite2;
 
     var PhaserGame = function () {
@@ -84,7 +88,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.load.image('menuItem', 'assets/menu-item.png');
             this.load.image('menuBackground', 'assets/menu-background.png');
 
-            this.load.spritesheet('boom', 'assets/explode.png', 128,128);
+            this.load.spritesheet('explosion', 'assets/explode.png', 128,128);
         },
 
         create: function () {
@@ -158,8 +162,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             addTowerButton2.spriteName = "satellite";
             addTowerButton3.spriteName = "blackhole";
 
-            var planetSprite = game.add.sprite(0, this.game.width/4, user.getType());
-            planetSprite.scale.setTo(0.5, 0.5);
+            planetSprite1 = game.add.sprite(0, this.game.width/4, user.getType());
+            planetSprite1.scale.setTo(0.5, 0.5);
 
             planetSprite2 = game.add.sprite(this.game.width - 150, game.world.centerY - 70, 'saturn');
             planetSprite2.scale.setTo(0.3, 0.3);
@@ -192,6 +196,17 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             ship3Bullet.setAll('anchor.y', 1);
             ship3Bullet.setAll('outOfBoundsKill', true);
             ship3Bullet.setAll('checkWorldBounds', true);
+
+            // An explosion pool
+            explosions = game.add.group();
+            explosions.enableBody = true;
+            explosions.physicsBodyType = Phaser.Physics.ARCADE;
+            explosions.createMultiple(30, 'explosion');
+            explosions.setAll('anchor.x', 0.5);
+            explosions.setAll('anchor.y', 0.5);
+            explosions.forEach( function(explosion) {
+            explosion.animations.add('explosion');  
+        });
         },
 
         plot: function () {
@@ -248,6 +263,12 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                     if (user.spaceShips[i].getPathIndex() >= path.length)
                     {
+                        var explosion = explosions.getFirstExists(false);
+                        explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
+                        //explosion.body.velocity.y = enemy.body.velocity.y;
+                        explosion.alpha = 0.7;
+                        explosion.play('explosion', 30, false, true);
+                                            
                         spaceSpriteArray[i].kill();
                         spaceSpriteArray.splice(i, 1);
                         user.spaceShips.splice(i, 1);
@@ -389,7 +410,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 attackTowerSprite.loadTexture("blackhole-animation", 1);
                 var spin = attackTowerSprite.animations.add('spins');
                 attackTowerSprite.animations.play('spins', 8, true);
-                
             }
             
             attackTowerSprite.scale.setTo(0.5, 0.5);
