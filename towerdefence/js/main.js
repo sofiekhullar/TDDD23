@@ -28,7 +28,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     var shipButton1;
     var shipButton2;
-
+    var ships;
     var ship;
     var spaceShip;
     var spaceSpriteArray = [];
@@ -91,7 +91,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         create: function () {
 
             game.physics.startSystem(Phaser.Physics.ARCADE);
-        
+            
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
             this.scale.maxHeight = 500;
@@ -202,12 +202,11 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             towerBullets = game.add.group();
             towerBullets.enableBody = true;
-            towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
+            // towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
 
             for (var i = 0; i < 20; i++)
             {
                 var b = towerBullets.create(0, 0, 'bullet1');
-                b.name = 'bullet' + i;
                 b.exists = false;
                 b.visible = false;
                 b.checkWorldBounds = true;
@@ -333,8 +332,12 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                     }
                 }
             }
+            for(var i = 0; i < spaceSpriteArray.length; i++)
+                game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandler);
 
-            game.physics.arcade.overlap(towerBullets, spaceSpriteArray, collisionHandler, null, this);
+            
+            game.physics.arcade.collide(planetSprite2, towerBullets, fuckThis);
+            // console.log(spaceSpriteArray);
 
             // for (var i = 0; i < towerBullets.length; i ++)
             // {
@@ -367,9 +370,15 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         }
     };
 
+    function fuckThis() {
+
+        console.log("cock sucker");
+    }
+
     function resetBullet (bullet) {
 
         bullet.kill();
+        console.log("bullet out of this world");
 
     }
 
@@ -377,6 +386,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
         bullet.kill();
         ship.kill();
+        console.log("ship should be destroyed");
 
     }
 
@@ -416,7 +426,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
             spaceSpriteArray.push(this.ship);
-
+            game.physics.enable(this.ship, Phaser.Physics.ARCADE);
+            this.ship.body.immovable = true;
             spaceShip = new SpaceShip(0, input.type, input.rot); 
             user.spaceShips.push(spaceShip);
             user.buy(input.cost);
