@@ -7,6 +7,8 @@ function Tower(x, y, id, damage, type, cost) {
 	this.id = id;
 	this.type = type;
 	this.cost = cost;
+	this.lastFiringTime = 2;
+	this.fireTime = 0;
 
 	this.getLevel = function(){
 		return level;

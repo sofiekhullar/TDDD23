@@ -42,6 +42,13 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var firingTimer = 0;
     var planetSprite2;
 
+    var towerBullet;
+    var towerBullets;
+    var towerFiringTime = 1;
+    var timer = 0;
+    var prevTime = 0;
+
+
     var PhaserGame = function () {
 
         this.bmd = null;
@@ -71,12 +78,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.load.image('bullet2', 'assets/bullet2.png');
             this.load.image('bullet3', 'assets/bullet3.png');
             this.load.image('towerDenied', 'assets/towerDenied.png');
-            // this.load.image('tower1Level1', 'assets/tower1Level1.png');
-            // this.load.image('tower1Level2', 'assets/tower1Level2.png');
-            // this.load.image('tower1Level3', 'assets/tower1Level3.png');
-            // this.load.image('tower1Level4', 'assets/tower1Level4.png');
-            // this.load.image('tower1Level5', 'assets/tower1Level5.png');
-            
             this.load.image('satellite', 'assets/satellite.png');
             this.load.image('satellite-denied', 'assets/satellite-denied.png');
             this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
@@ -88,6 +89,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         },
 
         create: function () {
+
+            game.physics.startSystem(Phaser.Physics.ARCADE);
         
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -150,6 +153,10 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             addTowerButton2.damage = 200;
             addTowerButton3.damage = 300;
 
+            // addTowerButton1.damage = 100;
+            // addTowerButton2.damage = 200;
+            // addTowerButton3.damage = 300;
+
             addTowerButton1.type = "blackhole";
             addTowerButton2.type = "satellite";
             addTowerButton3.type = "meteorite";
@@ -192,6 +199,20 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             ship3Bullet.setAll('anchor.y', 1);
             ship3Bullet.setAll('outOfBoundsKill', true);
             ship3Bullet.setAll('checkWorldBounds', true);
+
+            towerBullets = game.add.group();
+            towerBullets.enableBody = true;
+            towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
+
+            for (var i = 0; i < 20; i++)
+            {
+                var b = towerBullets.create(0, 0, 'bullet1');
+                b.name = 'bullet' + i;
+                b.exists = false;
+                b.visible = false;
+                b.checkWorldBounds = true;
+                b.events.onOutOfBounds.add(resetBullet, this);
+            }
         },
 
         plot: function () {
@@ -255,12 +276,13 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 }
             }
 
-        if(user.spaceShips.length != 0){
-            if (game.time.now > firingTimer)
-            {
-                fireShip();
-            }
-         }
+
+            if(user.spaceShips.length != 0){
+                if (game.time.now > firingTimer)
+                {
+                    fireShip();
+                }
+             }
             
             if(placingTower)
             {
@@ -293,9 +315,92 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                         }
                 }
             }
+
+            timer = Math.floor(game.time.now / 1000);
+
+            for (var i = 0; i < attackTowers.length; i++)
+            {
+                for(var j = 0; j < user.spaceShips.length; j++)
+                {
+                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < 150 && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < 150)
+                    {
+                        
+                        if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
+                        {
+                            towerFire(i, j);
+                            user.towers[i].lastFiringTime = timer;
+                        }
+                    }
+                }
+            }
+
+            game.physics.arcade.overlap(towerBullets, spaceSpriteArray, collisionHandler, null, this);
+
+            // for (var i = 0; i < towerBullets.length; i ++)
+            // {
+            //     if(spaceSpriteArray[towerBullets[i].id])
+            //     {
+            //         game.physics.arcade.moveToObject(towerBullets[i], spaceSpriteArray[towerBullets[i].id], 200);
+            //     }
+
+            //     for(var j = 0; j < spaceSpriteArray.length; j++)
+            //     {
+            //         if(towerBullets[i] && spaceSpriteArray[j])
+            //         {
+            //             if(checkCollision(towerBullets[i], spaceSpriteArray[j]))
+            //             {
+            //                 console.log("death");
+            //                 spaceSpriteArray[j].kill();
+            //                 spaceSpriteArray.splice(i, 1);
+            //                 user.spaceShips.splice(i, 1);
+            //                 towerBullets[i].kill();
+            //                 towerBullets.splice(i, 1);
+            //                 j--;
+            //                 i--;
+            //                 break;
+            //             }
+            //         }
+            //     }
+            // }
+
+
+        }
+    };
+
+    function resetBullet (bullet) {
+
+        bullet.kill();
+
+    }
+
+    function collisionHandler (bullet, ship) {
+
+        bullet.kill();
+        ship.kill();
+
+    }
+
+    function towerFire(id1, id2){
+
+
+        // console.log("woo fire from tower: " + user.towers[id1].id + " towards spaceship: " + user.spaceShips[id2].type);
+        // towerBullet = game.add.sprite(user.towers[id1].x, user.towers[id1].y, "bullet1");
+        // game.physics.enable(towerBullet, Phaser.Physics.ARCADE);
+        // towerBullet.anchor.setTo(0.5, 0.5);
+        // towerBullets.push(towerBullet);
+        // towerBullet.id = id2;
+        // towerBullet.set('outOfBoundsKill', true);
+        // towerBullet.set('checkWorldBounds', true);
+
+        towerBullet = towerBullets.getFirstExists(false);
+
+        if (towerBullet)
+        {
+            towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
         }
 
-    };
+    }
 
     function checkCollision(spriteA, spriteB){
 
