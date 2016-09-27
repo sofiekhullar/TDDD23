@@ -1,6 +1,6 @@
 var cost = 50;
 var damage = 100;
-var health = 100;
+var health = 150;
 var type;
 
 function SpaceShip(pathIndex, type, rotation) {
