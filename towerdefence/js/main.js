@@ -254,6 +254,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             if(user.spaceShips.length != 0){
                 for( i = 0; i < user.spaceShips.length; i++){
 
+
+
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
                     spaceSpriteArray[i].id = i;
@@ -274,6 +276,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                         user.spaceShips.splice(i, 1);
 
                     }
+
+                    game.physics.arcade.collide(spaceSpriteArray[i], towerBullets,collisionHandler, null, {i:i});
                 }
             }
 
@@ -325,7 +329,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 {
                     if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < 150 && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < 150)
                     {
-                        // game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandler);
+                        
                         
                         if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                         {
@@ -336,7 +340,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 }
             }
 
-            game.physics.arcade.collide(spaceSpriteArray, towerBullets, collisionHandler);
+            // game.physics.arcade.collide(spaceSpriteArray, towerBullets, collisionHandler);
             // for(var i = 0; i < spaceSpriteArray.length; i++)
                 
             //     game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandler, null, i);
@@ -381,16 +385,14 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     function collisionHandler (bullet, ship) {
 
+        console.log(bullet);
+        console.log(ship);
+        console.log(this.i);
+
+        spaceSpriteArray.splice(this.i, 1);
+        user.spaceShips.splice(this.i, 1);
         bullet.kill();
         ship.kill();
-        console.log(spaceSpriteArray.length);
-        spaceSpriteArray.splice(ship, 1);
-        console.log(spaceSpriteArray.length);
-        console.log("paus ssa");
-        console.log(user.spaceShips.length);
-        user.spaceShips.splice(ship, 1);
-        console.log(user.spaceShips.length);
-        console.log("paus uss");
     }
 
     function towerFire(id1, id2){
@@ -419,7 +421,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
             this.ship.id = 0;
-            console.log(this.ship.id);
             spaceSpriteArray.push(this.ship);
             game.physics.enable(this.ship, Phaser.Physics.ARCADE);
             this.ship.body.immovable = true;
