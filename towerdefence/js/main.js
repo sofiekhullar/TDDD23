@@ -256,6 +256,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
+                    spaceSpriteArray[i].id = i;
 
                     if(user.spaceShips[i].getRotation()){
                         if(spaceSpriteArray[i].y > 350)
@@ -271,6 +272,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                         spaceSpriteArray[i].kill();
                         spaceSpriteArray.splice(i, 1);
                         user.spaceShips.splice(i, 1);
+
                     }
                 }
             }
@@ -323,6 +325,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 {
                     if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < 150 && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < 150)
                     {
+                        // game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandler);
                         
                         if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                         {
@@ -332,12 +335,12 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                     }
                 }
             }
-            for(var i = 0; i < spaceSpriteArray.length; i++)
-                game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandler);
 
-            
-            game.physics.arcade.collide(planetSprite2, towerBullets, fuckThis);
-            // console.log(spaceSpriteArray);
+            game.physics.arcade.collide(spaceSpriteArray, towerBullets, collisionHandler);
+            // for(var i = 0; i < spaceSpriteArray.length; i++)
+                
+            //     game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandler, null, i);
+
 
             // for (var i = 0; i < towerBullets.length; i ++)
             // {
@@ -370,37 +373,27 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         }
     };
 
-    function fuckThis() {
-
-        console.log("cock sucker");
-    }
-
     function resetBullet (bullet) {
 
         bullet.kill();
         console.log("bullet out of this world");
-
     }
 
     function collisionHandler (bullet, ship) {
 
         bullet.kill();
         ship.kill();
-        console.log("ship should be destroyed");
-
+        console.log(spaceSpriteArray.length);
+        spaceSpriteArray.splice(ship, 1);
+        console.log(spaceSpriteArray.length);
+        console.log("paus ssa");
+        console.log(user.spaceShips.length);
+        user.spaceShips.splice(ship, 1);
+        console.log(user.spaceShips.length);
+        console.log("paus uss");
     }
 
     function towerFire(id1, id2){
-
-
-        // console.log("woo fire from tower: " + user.towers[id1].id + " towards spaceship: " + user.spaceShips[id2].type);
-        // towerBullet = game.add.sprite(user.towers[id1].x, user.towers[id1].y, "bullet1");
-        // game.physics.enable(towerBullet, Phaser.Physics.ARCADE);
-        // towerBullet.anchor.setTo(0.5, 0.5);
-        // towerBullets.push(towerBullet);
-        // towerBullet.id = id2;
-        // towerBullet.set('outOfBoundsKill', true);
-        // towerBullet.set('checkWorldBounds', true);
 
         towerBullet = towerBullets.getFirstExists(false);
 
@@ -425,6 +418,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             updateText = true; 
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
+            this.ship.id = 0;
+            console.log(this.ship.id);
             spaceSpriteArray.push(this.ship);
             game.physics.enable(this.ship, Phaser.Physics.ARCADE);
             this.ship.body.immovable = true;
@@ -436,42 +431,43 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     function fireShip() {
 
-    // randomly select one of them
-    var random=game.rnd.integerInRange(0,spaceSpriteArray.length-1);
-    var shooter=spaceSpriteArray[random];
-    var type = user.spaceShips[random].getType();
-    
-    switch(type){
-        case 'ship1':
-            bullet = ship1Bullet.getFirstExists(false);
-        break;
-        case 'ship2':
-            bullet = ship2Bullet.getFirstExists(false);
-        break;
-        case 'ship3':
-            bullet = ship3Bullet.getFirstExists(false);
-        break;
-    }
+        // randomly select one of them
+        var random=game.rnd.integerInRange(0,spaceSpriteArray.length-1);
+        var shooter=spaceSpriteArray[random];
+        var type = user.spaceShips[random].getType();
+        
+        switch(type){
+            case 'ship1':
+                bullet = ship1Bullet.getFirstExists(false);
+            break;
+            case 'ship2':
+                bullet = ship2Bullet.getFirstExists(false);
+            break;
+            case 'ship3':
+                bullet = ship3Bullet.getFirstExists(false);
+            break;
+        }
 
-    // And fire the bullet from this enemy
-    bullet.reset(shooter.x, shooter.y);
-    game.physics.arcade.moveToObject(bullet,planetSprite2,120);
-    bullet.body.velocity.x = 100;
+        // And fire the bullet from this enemy
+        bullet.reset(shooter.x, shooter.y);
+        game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+        bullet.body.velocity.x = 100;
 
-    if(spaceSpriteArray.length > 5 && spaceSpriteArray.length < 10){
-        firingTimer = game.time.now + 2000;
-    }
-    if(spaceSpriteArray.length > 10 && spaceSpriteArray.length < 15){
-        firingTimer = game.time.now + 1000;
-    }
-    if(spaceSpriteArray.length > 15 && spaceSpriteArray.length < 20){
-        firingTimer = game.time.now + 500;
-    }
-    if(spaceSpriteArray.length > 20){
-        firingTimer = game.time.now + 300;
-    }
-    else{
-        firingTimer = game.time.now + 2500;
+        if(spaceSpriteArray.length > 5 && spaceSpriteArray.length < 10){
+            firingTimer = game.time.now + 2000;
+        }
+        if(spaceSpriteArray.length > 10 && spaceSpriteArray.length < 15){
+            firingTimer = game.time.now + 1000;
+        }
+        if(spaceSpriteArray.length > 15 && spaceSpriteArray.length < 20){
+            firingTimer = game.time.now + 500;
+        }
+        if(spaceSpriteArray.length > 20){
+            firingTimer = game.time.now + 300;
+        }
+        else
+        {
+            firingTimer = game.time.now + 2500;
         }    
     }
     
@@ -521,15 +517,16 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             attackTowerArray.push(attackTowerSprite);
             id++;
         }
-        else{
-            
-        }
     }
 
     function towerMenu(button){
 
         if(!placingTower)
         {
+
+            if(menuActive)
+                killMenu();
+
             menuActive = true;
             
             menuBackground = game.add.sprite(user.towers[button.id].x, user.towers[button.id].y, 'menuBackground');
