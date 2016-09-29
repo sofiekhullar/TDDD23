@@ -8,7 +8,7 @@ function User(name, type) {
 	// this.money = 1000;
 	this.towers = [];
 	this.spaceShips = [];
-    var health = 50;
+    var health = 100;
 	
 	this.getName = function(){
 		return name;
@@ -22,6 +22,9 @@ function User(name, type) {
 		money -= towerCost;
 	}
 
+	this.killPlanet = function(){
+		health = 0;
+	}
 	this.sell = function(towerCost){
 		money += towerCost;
 	}

@@ -36,9 +36,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var spaceSpriteArray = [];
     var attackTowerArray = [];
     var attackTowers = [];
-    var bulletsArray = [];
-    var healthShipArray = [];
-    var healthPlanetArray = [];
+    var healthArray = [];
 
     var ship1Bullet;
     var ship2Bullet;
@@ -113,18 +111,21 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 
-            moneyText = game.add.text(30, this.game.height - 50, user.getMoney() , style);
+            moneyTextUser = game.add.text(30, this.game.height - 50, user.getMoney() , style);
             game.add.sprite(0, this.game.height - 50, 'coin');
 
-            healthText = game.add.text(30, this.game.height - 20, user.getHealth(), style);
+            healthTextUser = game.add.text(30, this.game.height - 20, user.getHealth(), style);
             game.add.sprite(0, this.game.height - 20, 'heart');
+
+            healthTextOpponent = game.add.text(this.game.width - 50, this.game.height - 20, opponent.getHealth(), style);
+            game.add.sprite(this.game.width - 80, this.game.height - 20, 'heart');
 
             this.bmd = this.add.bitmapData(this.game.width, this.game.height);
             this.bmd.addToWorld();
 
-            shipButton1 = game.add.button(this.game.width - 100, 650, 'ship1', addShip , this, 2, 1, 0);
-            shipButton2 = game.add.button(this.game.width - 200, 650, 'ship2', addShip, this, 2, 1, 0);
-            shipButton3 = game.add.button(this.game.width - 300, 650, 'ship3', addShip, this, 2, 1, 0);
+            shipButton1 = game.add.button(this.game.width - 150, 650, 'ship1', addShip , this, 2, 1, 0);
+            shipButton2 = game.add.button(this.game.width - 250, 650, 'ship2', addShip, this, 2, 1, 0);
+            shipButton3 = game.add.button(this.game.width - 350, 650, 'ship3', addShip, this, 2, 1, 0);
 
             shipButton1.type = "ship1";
             shipButton2.type = "ship2";
@@ -154,9 +155,9 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             addTowerButton2.cost = 200;
             addTowerButton3.cost = 300;
 
-            addTowerButton1.damage = 100;
-            addTowerButton2.damage = 200;
-            addTowerButton3.damage = 300;
+            addTowerButton1.damage = 10;
+            addTowerButton2.damage = 20;
+            addTowerButton3.damage = 50;
 
             addTowerButton1.type = "blackhole";
             addTowerButton2.type = "satellite";
@@ -167,12 +168,17 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             addTowerButton3.spriteName = "blackhole";
 
             planetSprite1 = game.add.sprite(0, this.game.width/4, user.getType());
-            healthPlanetArray.push(createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
+            healthArray.push(createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
             planetSprite1.scale.setTo(0.5, 0.5);
 
             planetSprite2 = game.add.sprite(this.game.width - 150, game.world.centerY - 70, opponent.getType());
-            healthPlanetArray.push(createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
+            healthArray.push(createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
             planetSprite2.scale.setTo(0.3, 0.3);
+            game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
+            //planetSprite2.enableBody = true;
+            planetSprite2.immovable = true;
+            //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
+
             this.plot();
 
             // The enemy's bullets
@@ -202,6 +208,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             ship3Bullet.setAll('anchor.y', 1);
             ship3Bullet.setAll('outOfBoundsKill', true);
             ship3Bullet.setAll('checkWorldBounds', true);
+            ship3Bullet.setDamage = 20;
+
 
             // An explosion pool
             explosions = game.add.group();
@@ -213,7 +221,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             explosions.forEach( function(explosion) {
             explosion.animations.add('explosion');  
         });
-        },
+    },
 
         plot: function () {
 
@@ -238,16 +246,20 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                     pathArray.push(pathSprite);
                 }
 
-                this.bmd.rect(px, py, 1, 1, 'rgba(255, 255, 255, 1)'); // skapar linjen/vägen
+                this.bmd.rect(px, py, 1, 1, 'rgba(255, 255, 255, 1)'); 
              }
         },
 
         update: function () {
 
+            planetSprite2.x = this.game.width - 150;
+            planetSprite2.y = game.world.centerY - 70;
+
             if(updateText){
 
-                moneyText.setText(user.getMoney());
-                healthText.setText(user.getHealth());
+                moneyTextUser.setText(user.getMoney());
+                healthTextUser.setText(user.getHealth());
+                healthTextOpponent.setText(opponent.getHealth());
 
                 updateText = false;
             }
@@ -258,8 +270,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
 
-                    healthShipArray[i].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
-                    healthShipArray[i].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
+                    healthArray[i+2].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
+                    healthArray[i+2].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
 
                     if(user.spaceShips[i].getRotation()){
                         if(spaceSpriteArray[i].y > 350)
@@ -277,28 +289,28 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                         //explosion.body.velocity.y = enemy.body.velocity.y;
                         explosion.alpha = 0.7;
                         explosion.play('explosion', 30, false, true);
-                        
-                        spaceSpriteArray[i].kill();
-                        spaceSpriteArray.splice(i, 1);
-                        healthShipArray[i].kill();
-                        healthShipArray.splice(i,1);
-                        user.spaceShips.splice(i, 1);
 
-                        if(healthPlanetArray[1].width > 0){
-                            updateHealthBar();
+                        if(healthArray[1].width > 0){
+                            updateHealthBar(1, user.spaceShips[i].getDamage());
                         } else {
+                            updateText = true;
                             // player 1 won!!!
                         }
+                        spaceSpriteArray[i].kill();
+                        spaceSpriteArray.splice(i, 1);
+                        healthArray[i+2].kill();
+                        healthArray.splice(i+2,1);
+                        user.spaceShips.splice(i, 1);
                     }
                 }
             }
 
-        if(user.spaceShips.length != 0){
-            if (game.time.now > firingTimer)
-            {
-                fireShip();
-            }
-         }
+            if(user.spaceShips.length != 0){
+                if (game.time.now > firingTimer)
+                    {
+                        fireShip();
+                    }
+             }
             
             if(placingTower)
             {
@@ -333,23 +345,37 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             }
 
             // check planet health
-            if(healthPlanetArray[1].width > 0){
-                if(bulletsArray.length != 0){
-                    for(var i = 0; i < bulletsArray.length; i++){
-                        if(checkCollision(bulletsArray[i], planetSprite2)){
-                            bulletsArray[i].kill();
-                            bulletsArray.splice(i,1);
-                            console.log("updateHealthBar");
-                            updateHealthBar(opponent);
-                        }
-                    }
-                }
-            } else{
+            if(healthArray[1].width > 0){
+                game.physics.arcade.collide(planetSprite2, ship1Bullet, collisionHandlerPlanet);
+                game.physics.arcade.collide(planetSprite2, ship2Bullet, collisionHandlerPlanet);
+                game.physics.arcade.collide(planetSprite2, ship3Bullet, collisionHandlerPlanet);
+            }
+             else{
                 // Player 1 won yeyy!
             }
         }
 
     };
+
+    function collisionHandlerPlanet(planetSprite2, bullet){
+        var bulletType = bullet.key;
+        var damage;
+
+        switch(bulletType){
+        case 'bullet1':
+            damage = 1;
+        break;
+        case 'bullet2':
+            damage = 2;
+        break;
+        case 'bullet3':
+            damage = 5;
+        break;
+        }
+
+        bullet.kill();
+        updateHealthBar(1, damage);
+    }
 
     function checkCollision(spriteA, spriteB){
 
@@ -365,7 +391,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
             spaceSpriteArray.push(this.ship);
-            healthShipArray.push(createHealthBar(40, 5,0,0));
+            healthArray.push(createHealthBar(40, 5,0,0));
     
             spaceShip = new SpaceShip(0, input.type, input.rot); 
             user.spaceShips.push(spaceShip);
@@ -375,44 +401,42 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     function fireShip() {
 
-    // randomly select one of them
-    var random=game.rnd.integerInRange(0,spaceSpriteArray.length-1);
-    var shooter=spaceSpriteArray[random];
-    var type = user.spaceShips[random].getType();
-    
-    switch(type){
-        case 'ship1':
-            bullet = ship1Bullet.getFirstExists(false);
-        break;
-        case 'ship2':
-            bullet = ship2Bullet.getFirstExists(false);
-        break;
-        case 'ship3':
-            bullet = ship3Bullet.getFirstExists(false);
-        break;
-    }
+        // randomly select one of them
+        var random = game.rnd.integerInRange(0,spaceSpriteArray.length-1);
+        var shooter = spaceSpriteArray[random];
+        var type = user.spaceShips[random].getType();
+        
+        switch(type){
+            case 'ship1':
+                bullet = ship1Bullet.getFirstExists(false);
+            break;
+            case 'ship2':
+                bullet = ship2Bullet.getFirstExists(false);
+            break;
+            case 'ship3':
+                bullet = ship3Bullet.getFirstExists(false);
+            break;
+        }
 
-    // And fire the bullet from this enemy
-    bullet.reset(shooter.x, shooter.y);
-    game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+        // And fire the bullet from this enemy
+        bullet.reset(shooter.x, shooter.y);
+        game.physics.arcade.moveToObject(bullet,planetSprite2,120);
 
-    bulletsArray.push(bullet);
-
-    if(spaceSpriteArray.length > 5 && spaceSpriteArray.length < 10){
-        firingTimer = game.time.now + 2000;
-    }
-    if(spaceSpriteArray.length > 10 && spaceSpriteArray.length < 15){
-        firingTimer = game.time.now + 1000;
-    }
-    if(spaceSpriteArray.length > 15 && spaceSpriteArray.length < 20){
-        firingTimer = game.time.now + 500;
-    }
-    if(spaceSpriteArray.length > 20){
-        firingTimer = game.time.now + 300;
-    }
-    else{
-        firingTimer = game.time.now + 2500;
-        }    
+        /*if(spaceSpriteArray.length > 5 && spaceSpriteArray.length < 10){
+            firingTimer = game.time.now + 2000;
+        }
+        if(spaceSpriteArray.length > 10 && spaceSpriteArray.length < 15){
+            firingTimer = game.time.now + 1000;
+        }
+        if(spaceSpriteArray.length > 15 && spaceSpriteArray.length < 20){
+            firingTimer = game.time.now + 500;
+        }
+        if(spaceSpriteArray.length > 20){
+            firingTimer = game.time.now + 300;
+        }
+        else{*/
+            firingTimer = game.time.now + 2000;
+     //   }    
     }
     
     function availableSpot(){
@@ -550,19 +574,30 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     function createHealthBar(w,h,x,y) {
  
-    // create a red rectangle to use as the health meter itself
-    var healthBitmap = game.add.bitmapData(w, h);
-    healthBitmap.ctx.beginPath();
-    healthBitmap.ctx.rect(0, 0, healthBitmap.width, healthBitmap.height);
-    healthBitmap.ctx.fillStyle = '#00e600';
-    healthBitmap.ctx.fill();
- 
-    // create the health Sprite using the red rectangle bitmap data
-    return health = game.add.sprite(x, y, healthBitmap);
-    //meters.add(health);
+        // create a red rectangle to use as the health meter itself
+        var healthBitmap = game.add.bitmapData(w, h);
+        healthBitmap.ctx.beginPath();
+        healthBitmap.ctx.rect(0, 0, healthBitmap.width, healthBitmap.height);
+        healthBitmap.ctx.fillStyle = '#00e600';
+        healthBitmap.ctx.fill();
+     
+        // create the health Sprite using the red rectangle bitmap data
+        return health = game.add.sprite(x, y, healthBitmap);
+
     }
 
-    function updateHealthBar() {
-        healthPlanetArray[1].width -= 5;  // user.getHealth 
+    function updateHealthBar(id, damage) {
+        if(id < 2){
+            console.log(opponent.getHealth() - damage);
+            if((opponent.getHealth() - damage) > 0){
+            console.log(damage);
+            healthArray[id].width -= damage;  // user.getHealth 
+            opponent.loseHealth(damage);
+            updateText = true;
+        } else{
+            healthArray[id].width = 0;
+            opponent.killPlanet();
+            }
+        }
 }
     game.state.add('Game', PhaserGame, true);
