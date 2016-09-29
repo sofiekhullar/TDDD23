@@ -48,6 +48,13 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     var planetSprite1;
     var planetSprite2;
 
+    var towerBullet;
+    var towerBullets;
+    var towerFiringTime = 1;
+    var timer = 0;
+    var prevTime = 0;
+
+
     var PhaserGame = function () {
 
         this.bmd = null;
@@ -77,12 +84,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             this.load.image('bullet2', 'assets/bullet2.png');
             this.load.image('bullet3', 'assets/bullet3.png');
             this.load.image('towerDenied', 'assets/towerDenied.png');
-            // this.load.image('tower1Level1', 'assets/tower1Level1.png');
-            // this.load.image('tower1Level2', 'assets/tower1Level2.png');
-            // this.load.image('tower1Level3', 'assets/tower1Level3.png');
-            // this.load.image('tower1Level4', 'assets/tower1Level4.png');
-            // this.load.image('tower1Level5', 'assets/tower1Level5.png');
-            
             this.load.image('satellite', 'assets/satellite.png');
             this.load.image('satellite-denied', 'assets/satellite-denied.png');
             this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
@@ -94,7 +95,9 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         },
 
         create: function () {
-        
+
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
             this.scale.maxHeight = 500;
@@ -159,6 +162,10 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             addTowerButton2.damage = 20;
             addTowerButton3.damage = 50;
 
+            // addTowerButton1.damage = 100;
+            // addTowerButton2.damage = 200;
+            // addTowerButton3.damage = 300;
+
             addTowerButton1.type = "blackhole";
             addTowerButton2.type = "satellite";
             addTowerButton3.type = "meteorite";
@@ -218,10 +225,22 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             explosions.createMultiple(30, 'explosion');
             explosions.setAll('anchor.x', 0.5);
             explosions.setAll('anchor.y', 0.5);
-            explosions.forEach( function(explosion) {
-            explosion.animations.add('explosion');  
-        });
-    },
+
+            explosions.forEach( function(explosion) {explosion.animations.add('explosion');});
+
+            towerBullets = game.add.group();
+            towerBullets.enableBody = true;
+            // towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
+
+            for (var i = 0; i < 20; i++)
+            {
+                var b = towerBullets.create(0, 0, 'bullet1');
+                b.exists = false;
+                b.visible = false;
+                b.checkWorldBounds = true;
+                b.events.onOutOfBounds.add(resetBullet, this);
+            }
+        },
 
         plot: function () {
 
@@ -252,6 +271,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
         update: function () {
 
+
             planetSprite2.x = this.game.width - 150;
             planetSprite2.y = game.world.centerY - 70;
 
@@ -264,16 +284,19 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 updateText = false;
             }
 
-            if(user.spaceShips.length != 0){
-                for( i = 0; i < user.spaceShips.length; i++){
-
+            if(user.spaceShips.length != 0)
+            {
+                for( i = 0; i < user.spaceShips.length; i++)
+                {
                     spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
                     spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
+                    spaceSpriteArray[i].id = i;
 
                     healthArray[i+2].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
                     healthArray[i+2].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
 
-                    if(user.spaceShips[i].getRotation()){
+                    if(user.spaceShips[i].getRotation())
+                    {
                         if(spaceSpriteArray[i].y > 350)
                             spaceSpriteArray[i].angle -= 0.45;
                         else
@@ -296,12 +319,15 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                             updateText = true;
                             // player 1 won!!!
                         }
+
                         spaceSpriteArray[i].kill();
                         spaceSpriteArray.splice(i, 1);
                         healthArray[i+2].kill();
                         healthArray.splice(i+2,1);
                         user.spaceShips.splice(i, 1);
                     }
+
+                    game.physics.arcade.collide(spaceSpriteArray[i], towerBullets,collisionHandler, null, {i:i});
                 }
             }
 
@@ -310,6 +336,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                     {
                         fireShip();
                     }
+
              }
             
             if(placingTower)
@@ -351,11 +378,32 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                 game.physics.arcade.collide(planetSprite2, ship3Bullet, collisionHandlerPlanet);
             }
              else{
+                updateText = true;
                 // Player 1 won yeyy!
             }
-        }
+        
 
+            timer = Math.floor(game.time.now / 1000);
+
+            for (var i = 0; i < attackTowers.length; i++)
+            {
+                for(var j = 0; j < user.spaceShips.length; j++)
+                {
+                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < 150 && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < 150)
+                    {
+                        
+                        
+                        if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
+                        {
+                            towerFire(i, j);
+                            user.towers[i].lastFiringTime = timer;
+                        }
+                    }
+                }
+            }
+        }
     };
+
 
     function collisionHandlerPlanet(planetSprite2, bullet){
         var bulletType = bullet.key;
@@ -375,6 +423,37 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
         bullet.kill();
         updateHealthBar(1, damage);
+}
+    function resetBullet (bullet) {
+
+        bullet.kill();
+        console.log("bullet out of this world");
+    }
+
+    function collisionHandler (bullet, ship) {
+
+        console.log(bullet);
+        console.log(ship);
+        console.log(this.i);
+
+        spaceSpriteArray.splice(this.i, 1);
+        user.spaceShips.splice(this.i, 1);
+        healthArray[this.i+2].kill();
+        healthArray.splice(this.i+2,1);
+        bullet.kill();
+        ship.kill();
+    }
+
+    function towerFire(id1, id2){
+
+        towerBullet = towerBullets.getFirstExists(false);
+
+        if (towerBullet)
+        {
+            towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
+        }
+
     }
 
     function checkCollision(spriteA, spriteB){
@@ -390,9 +469,13 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             updateText = true; 
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
+            this.ship.id = 0;
             spaceSpriteArray.push(this.ship);
+
             healthArray.push(createHealthBar(40, 5,0,0));
-    
+
+            game.physics.enable(this.ship, Phaser.Physics.ARCADE);
+            this.ship.body.immovable = true;
             spaceShip = new SpaceShip(0, input.type, input.rot); 
             user.spaceShips.push(spaceShip);
             user.buy(input.cost);
@@ -404,6 +487,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         // randomly select one of them
         var random = game.rnd.integerInRange(0,spaceSpriteArray.length-1);
         var shooter = spaceSpriteArray[random];
+
         var type = user.spaceShips[random].getType();
         
         switch(type){
@@ -421,6 +505,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
         // And fire the bullet from this enemy
         bullet.reset(shooter.x, shooter.y);
         game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+
 
         /*if(spaceSpriteArray.length > 5 && spaceSpriteArray.length < 10){
             firingTimer = game.time.now + 2000;
@@ -484,15 +569,16 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             attackTowerArray.push(attackTowerSprite);
             id++;
         }
-        else{
-            
-        }
     }
 
     function towerMenu(button){
 
         if(!placingTower)
         {
+
+            if(menuActive)
+                killMenu();
+
             menuActive = true;
             
             menuBackground = game.add.sprite(user.towers[button.id].x, user.towers[button.id].y, 'menuBackground');
@@ -536,6 +622,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     }
 
     function levelUp(button){
+
+        user.towers[button.id].levelUp();
 
         if(menuActive)
         {            
@@ -583,7 +671,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
      
         // create the health Sprite using the red rectangle bitmap data
         return health = game.add.sprite(x, y, healthBitmap);
-
     }
 
     function updateHealthBar(id, damage) {
