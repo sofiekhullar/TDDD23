@@ -98,11 +98,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             game.physics.startSystem(Phaser.Physics.ARCADE);
             
-            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-            this.scale.maxHeight = 500;
-            this.scale.maxWidth = 1000;
-
             var background = game.add.sprite(0,0, 'background'); 
             background.inputEnabled = true;
             background.events.onInputDown.add(availableSpot, this);

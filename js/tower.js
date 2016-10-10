@@ -1,5 +1,3 @@
-// var level = 1;
-
 function Tower(x, y, id, damage, type, cost) {
 
 	this.x = x;
