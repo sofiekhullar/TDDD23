@@ -120,6 +120,9 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             healthTextUser = game.add.text(30, this.game.height - 20, user.getHealth(), style);
             game.add.sprite(0, this.game.height - 20, 'heart');
 
+            moneyTextOpponent = game.add.text(this.game.width - 50, this.game.height - 50, opponent.getMoney() , style);
+            game.add.sprite(this.game.width - 80, this.game.height - 50, 'coin');
+
             healthTextOpponent = game.add.text(this.game.width - 50, this.game.height - 20, opponent.getHealth(), style);
             game.add.sprite(this.game.width - 80, this.game.height - 20, 'heart');
 
@@ -160,7 +163,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
             addTowerButton1.damage = 10;
             addTowerButton2.damage = 20;
-            addTowerButton3.damage = 50;
+            addTowerButton3.damage = 30;
 
             // addTowerButton1.damage = 100;
             // addTowerButton2.damage = 200;
@@ -216,7 +219,6 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
             ship3Bullet.setAll('outOfBoundsKill', true);
             ship3Bullet.setAll('checkWorldBounds', true);
             ship3Bullet.setDamage = 20;
-
 
             // An explosion pool
             explosions = game.add.group();
@@ -279,6 +281,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
                 moneyTextUser.setText(user.getMoney());
                 healthTextUser.setText(user.getHealth());
+                moneyTextOpponent.setText(opponent.getMoney());
                 healthTextOpponent.setText(opponent.getHealth());
 
                 updateText = false;
@@ -327,7 +330,7 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
                         user.spaceShips.splice(i, 1);
                     }
 
-                    game.physics.arcade.collide(spaceSpriteArray[i], towerBullets,collisionHandler, null, {i:i});
+                    game.physics.arcade.collide(spaceSpriteArray[i], towerBullets,collisionHandlerTower, null, {i:i});
                 }
             }
 
@@ -423,25 +426,29 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
         bullet.kill();
         updateHealthBar(1, damage);
-}
+    }
+    
     function resetBullet (bullet) {
 
         bullet.kill();
         console.log("bullet out of this world");
     }
 
-    function collisionHandler (bullet, ship) {
+    function collisionHandlerTower (ship, bullet) {
+        if(healthArray[this.i+2].width > 0)
+        {
+            updateHealthBar(this.i +2, 7);
+        } 
+        else 
+        {
+            spaceSpriteArray.splice(this.i, 1);
+            user.spaceShips.splice(this.i, 1);
+            healthArray[this.i+2].kill();
+            healthArray.splice(this.i+2,1); 
+            ship.kill();
+        }
 
-        console.log(bullet);
-        console.log(ship);
-        console.log(this.i);
-
-        spaceSpriteArray.splice(this.i, 1);
-        user.spaceShips.splice(this.i, 1);
-        healthArray[this.i+2].kill();
-        healthArray.splice(this.i+2,1);
         bullet.kill();
-        ship.kill();
     }
 
     function towerFire(id1, id2){
@@ -465,7 +472,8 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
 
     function addShip(input){
 
-        if(user.getMoney() >= input.cost){
+        if(user.getMoney() >= input.cost)
+        {
             updateText = true; 
             this.ship = this.add.sprite(0,0, input.type);
             this.ship.anchor.set(0.5);
@@ -674,17 +682,29 @@ var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'game');
     }
 
     function updateHealthBar(id, damage) {
-        if(id < 2){
-            console.log(opponent.getHealth() - damage);
-            if((opponent.getHealth() - damage) > 0){
-            console.log(damage);
-            healthArray[id].width -= damage;  // user.getHealth 
-            opponent.loseHealth(damage);
-            updateText = true;
-        } else{
-            healthArray[id].width = 0;
-            opponent.killPlanet();
+        if(id < 2)
+        {
+            if((opponent.getHealth() - damage) > 0)
+            {
+                healthArray[id].width -= damage;  // user.getHealth 
+                opponent.loseHealth(damage);
+                updateText = true;
+             } else
+             {
+                healthArray[id].width = 0;
+                opponent.killPlanet();
             }
+        } else{
+
+            if((user.spaceShips[id-2].getHealth() - damage) > 0)
+            {
+                healthArray[id].width -= damage;
+                user.spaceShips[id -2].loseHealth(damage);
+            }else
+            {
+                healthArray[id].width = 0;
+                user.spaceShips[id-2].killShip();
+            } 
         }
 }
     game.state.add('Game', PhaserGame, true);
