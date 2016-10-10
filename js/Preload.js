@@ -39,10 +39,13 @@ Game.Preload.prototype = {
 	    this.load.image('multi_button', 'assets/multi_button.png');
 	    this.load.image('help_button', 'assets/help_button.png');
 	    this.load.image('mainMenuBackground', 'assets/space.jpeg');
+
+	    // HelpMenu.js
+	    this.load.image('help', 'assets/help.jpeg');
 	},
 
 	create:function(){
-		this.state.start('MainMenu');
-
+		//this.state.start('MainMenu');
+		this.state.start('Play');
 	}
 }

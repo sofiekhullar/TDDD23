@@ -1,9 +1,10 @@
+var level = 1;
 function Tower(x, y, id, damage, type, cost) {
 
 	this.x = x;
 	this.y = y;
 	this.damage = damage;
-	this.level = 1;
+	//this.level = 1;
 	this.id = id;
 	this.type = type;
 	this.cost = cost;
@@ -23,7 +24,7 @@ function Tower(x, y, id, damage, type, cost) {
 	}
 
 	this.levelUp = function(){
-
+		console.log(level);
 		level++;
 	}
 

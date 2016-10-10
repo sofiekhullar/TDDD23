@@ -6,7 +6,6 @@ Game.MainMenu.prototype = {
 
 
 	create:function(game){
-		game.stage.backgroundColor = '#182d3b';
 
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
 		background.scale.setTo(2,2);
@@ -28,6 +27,7 @@ Game.MainMenu.prototype = {
 
 	},
 	actionOnClickHelp:function(){
+		this.state.start('HelpMenu');
 
 	}
 }

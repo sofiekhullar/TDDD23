@@ -65,8 +65,8 @@ Game.Play = function (game) {
 };
 
 Game.Play.prototype = {
-	
-	create: function(){
+
+	create: function(game){
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -451,7 +451,7 @@ Game.Play.prototype = {
 
         if(menuActive)
         {            
-            killMenu();
+            this.killMenu();
         }
     },
 
@@ -461,11 +461,11 @@ Game.Play.prototype = {
         {
 
             if(menuActive)
-                killMenu();
+                this.killMenu();
 
             menuActive = true;
             
-            menuBackground = game.add.sprite(user.towers[button.id].x, user.towers[button.id].y, 'menuBackground');
+            menuBackground = this.game.add.sprite(user.towers[button.id].x, user.towers[button.id].y, 'menuBackground');
 
             if(menuBackground.position.x > 750)
                 menuBackground.position.x = 750;
@@ -476,13 +476,13 @@ Game.Play.prototype = {
             if(menuBackground.position.y < 50)
                 menuBackground.position.y = 50;
 
-            levelText = game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 20, "Level " + user.towers[button.id].level);
+            levelText = this.game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 20, "Level " + user.towers[button.id].getLevel());
             menuBackground.scale.setTo(2.5,2);
-            upgrade = game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 60, 'menuItem', levelUp, button);
-            upgradeText = game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 70, "Upgrade $" + costNow);
+            upgrade = this.game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 60, 'menuItem', function() {this.levelUp(button)}, this);
+            upgradeText = this.game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 70, "Upgrade $" + costNow);
             upgrade.scale.setTo(2.9,2);
-            sell = game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 120, 'menuItem', function() {sellTower(button)}, this);
-            sellText = game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 130, "Sell $" + user.towers[button.id].level * 100 * 0.9);
+            sell = this.game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 120, 'menuItem', function() {this.sellTower(button)}, this);
+            sellText = this.game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 130, "Sell $" + user.towers[button.id].getLevel() * 100 * 0.9);
             sell.scale.setTo(2.9,2);
         }
         else {
@@ -500,7 +500,7 @@ Game.Play.prototype = {
 
         if(menuActive)
         {            
-            killMenu();
+            this.killMenu();
         }
 
     },
@@ -511,7 +511,7 @@ Game.Play.prototype = {
 
         if(menuActive)
         {            
-            killMenu();
+            this.killMenu();
         }
     },
 
