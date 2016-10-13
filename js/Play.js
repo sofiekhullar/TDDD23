@@ -8,6 +8,7 @@
     var path = [];
     var id = 0;
     var centerTower = 25;
+    var centerRange = 150;
     var SIZE_OF_PATH = 30;
     var pathArray = [];
     var pathSprite = null;
@@ -35,6 +36,7 @@
     var attackTowerArray = [];
     var attackTowers = [];
     var healthArray = [];
+    var towerRangeArray = [];
 
     var ship1Bullet = null;
     var ship2Bullet = null;
@@ -53,7 +55,8 @@
     var prevTime = 0;
     var bitmaphealth = null;
 
-    var playAgainButton = null;
+    var towerRange = 150;
+    var towerRangeSprite;
 
 Game.Play = function (game) {
  	this.bmd = null;
@@ -72,8 +75,6 @@ Game.Play.prototype = {
         
         user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
-
-        console.log(opponent.getMoney());
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -129,14 +130,17 @@ Game.Play.prototype = {
 	 	addTowerButton1 = this.game.add.button(200, 650, "blackhole", this.placeTower);
 	    addTowerButton1.height = 50;
 	    addTowerButton1.width = 50;
+        addTowerButton1.range = 50;
 
 	    addTowerButton2 = this.game.add.button(300, 650, "satellite", this.placeTower);
 	    addTowerButton2.height = 50;
 	    addTowerButton2.width = 50;
+        addTowerButton2.range = 100;
 
 	    addTowerButton3 = this.game.add.button(400, 650, "blackhole", this.placeTower);
 	    addTowerButton3.height = 50;
 	    addTowerButton3.width = 50;
+        addTowerButton3.range = 150;
 
 	    addTowerButton1.cost = 100;
 	    addTowerButton2.cost = 200;
@@ -320,6 +324,9 @@ Game.Play.prototype = {
             {
                 towerSprite.position.x = this.game.input.x - centerTower;
                 towerSprite.position.y = this.game.input.y - centerTower;
+                towerRangeSprite.position.x = this.game.input.x - 150;
+                towerRangeSprite.position.y = this.game.input.y -150;
+
                 available = true;
 
                 for (var i = 0; i < pathArray.length; i++)
@@ -365,10 +372,8 @@ Game.Play.prototype = {
             {
                 for(var j = 0; j < user.spaceShips.length; j++)
                 {
-                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < 150 && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < 150)
+                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange())
                     {
-                        
-                        
                         if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                         {
                             this.towerFire(i, j);
@@ -397,6 +402,8 @@ Game.Play.prototype = {
         ship1Bullet.callAll('kill');
         ship2Bullet.callAll('kill');
         ship3Bullet.callAll('kill');
+        towerBullets.callAll('kill');
+
 
         playAgainButton = game.add.button(game.world.centerX - 250, this.game.height - 700, 'play_button', this.actionOnClickAgainPlay, this, 2, 1, 0);
         exitButton = game.add.button(game.world.centerX - 250, this.game.height-200, 'help_button', this.actionOnClickExit, this, 2, 1, 0);
@@ -411,6 +418,7 @@ Game.Play.prototype = {
         this.resetVariables();
         this.game.state.start('MainMenu');
     },
+
 	/*********************************/
     /********  Tower functions *******/
     /*********************************/
@@ -426,7 +434,7 @@ Game.Play.prototype = {
             attackTower = this.game.add.button(towerSprite.position.x, towerSprite.position.y, towerSpriteNow, this.towerMenu);
             attackTower.height = 50;
             attackTower.width = 50;
-            attackTower.id = id;
+            attackTower.id = id;    
             attackTower.alpha = 0;
 
             attackTowerSprite = this.game.add.sprite(towerSprite.position.x, towerSprite.position.y, towerSpriteNow);
@@ -449,6 +457,8 @@ Game.Play.prototype = {
             user.towers.push(tower1);
             attackTowers.push(attackTower);
             attackTowerArray.push(attackTowerSprite);
+            towerRangeSprite.alpha = 0.1;
+            towerRangeArray.push(towerRangeSprite);
             id++;
         }
     },
@@ -482,11 +492,15 @@ Game.Play.prototype = {
         costNow = button.cost;
         towerSpriteNow = button.spriteName;
         typeNow = button.type;
-
+        rangeNow = button.range;
         placingTower = true;
-        towerSprite = this.game.add.sprite(this.game.input.x - centerTower, this.game.input.y - centerTower, towerSpriteNow);
+
+        towerRangeSprite = this.game.add.sprite(this.game.input.x - 150 , this.game.input.y - 150, 'towerRange' + rangeNow);
+        towerSprite = this.game.add.sprite(this.game.input.x - centerTower, this.game.input.y - centerTower, towerSpriteNow); 
         towerSprite.height = 50;
         towerSprite.width = 50;
+
+        towerRangeSprite.alpha = 0.5;
 
         if(menuActive)
         {            
@@ -536,7 +550,9 @@ Game.Play.prototype = {
         updateText = true;
         attackTowerArray[button.id].position.x = 2000;
         attackTowers[button.id].position.x = 2000;
+        towerRangeArray[button.id].position.x = 2000;
 
+        console.log(button.id);
         if(menuActive)
         {            
             this.killMenu();
@@ -547,7 +563,7 @@ Game.Play.prototype = {
     levelUp:function(button){
 
         user.towers[button.id].levelUp();
-
+        console.log(button.id);
         if(menuActive)
         {            
             this.killMenu();
@@ -631,11 +647,13 @@ Game.Play.prototype = {
     	},
 
         resetVariables:function(){
+
             healthArray = [];
             spaceSpriteArray = [];
             attackTowerArray = [];
             attackTowers = [];
             healthArray = [];
+            towerRangeArray = [];
 
             shipButton1 = null;
             shipButton2 = null;

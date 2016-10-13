@@ -1,15 +1,16 @@
-var level = 1;
+
 function Tower(x, y, id, damage, type, cost) {
 
 	this.x = x;
 	this.y = y;
 	this.damage = damage;
-	//this.level = 1;
+	var level = 1;
 	this.id = id;
 	this.type = type;
 	this.cost = cost;
 	this.lastFiringTime = 2;
 	this.fireTime = 0;
+	var range;
 
 	this.getLevel = function(){
 		return level;
@@ -31,5 +32,23 @@ function Tower(x, y, id, damage, type, cost) {
 	this.getID = function(){
 		return id;
 	}
+
+	this.getRange = function(){
+		return range;
+	}
+
+	this.setRange = function(){
+		if(type == "blackhole"){
+			range = 50;
+		}
+		if(type == "satellite"){
+			range = 100;
+		}
+		if(type == "meteorite"){
+			range = 150;
+		}
+	}
+
+	this.setRange();
 }	
 
