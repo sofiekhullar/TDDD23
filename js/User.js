@@ -1,4 +1,3 @@
-var money = 60000;
 
 function User(name, type) {
 
@@ -9,7 +8,8 @@ function User(name, type) {
 	this.towers = [];
 	this.spaceShips = [];
     var health = 100;
-	
+    var money = 60000;
+
 	this.getName = function(){
 		return name;
 	}

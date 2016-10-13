@@ -1,20 +1,20 @@
-	var addTowerButton;
-    var tower;
-    var towerSprite;
+	var addTowerButton = null;
+    var tower = null;
+    var towerSprite = null;
     var placingTower = false;
     var updateText = false;
-    var user = new User("Love", "earth");
-    var opponent = new User("Sofie", "saturn");
+    var user; 
+    var opponent;
     var path = [];
     var id = 0;
     var centerTower = 25;
     var SIZE_OF_PATH = 30;
     var pathArray = [];
-    var pathSprite;
+    var pathSprite = null;
     var denied = false;
-    var menuBackground;
-    var levelText;
-    var sell;
+    var menuBackground = null;
+    var levelText = null;
+    var sell = null;
     var sellText;
     var upgradeText;
     var upgrade;
@@ -25,33 +25,35 @@
     var typeNow;
     var menuActive = false;
 
-    var shipButton1;
-    var shipButton2;
-    var shipButton3;
+    var shipButton1 = null;
+    var shipButton2 = null;
+    var shipButton3 = null;
 
-    var ship;
-    var spaceShip;
+    var ship = null;
+    var spaceShip = null;
     var spaceSpriteArray = [];
     var attackTowerArray = [];
     var attackTowers = [];
     var healthArray = [];
 
-    var ship1Bullet;
-    var ship2Bullet;
-    var ship3Bullet;
+    var ship1Bullet = null;
+    var ship2Bullet = null;
+    var ship3Bullet  = null;
 
-    var explosions;
+    var explosions = null;
     var firingTimer = 0;
 
-    var planetSprite1;
-    var planetSprite2;
+    var planetSprite1 = null;
+    var planetSprite2 = null;
 
-    var towerBullet;
-    var towerBullets;
+    var towerBullet = null;
+    var towerBullets = null;
     var towerFiringTime = 1;
     var timer = 0;
     var prevTime = 0;
-    var bitmaphealth;
+    var bitmaphealth = null;
+
+    var playAgainButton = null;
 
 Game.Play = function (game) {
  	this.bmd = null;
@@ -67,6 +69,11 @@ Game.Play = function (game) {
 Game.Play.prototype = {
 
 	create: function(game){
+        
+        user = new User("Love", "earth");
+        opponent = new User("Sofie", "saturn");
+
+        console.log(opponent.getMoney());
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -241,7 +248,7 @@ Game.Play.prototype = {
          }
     },
 
-	update: function(){
+	update: function(game){
 		planetSprite2.x = this.game.width - 150;
         planetSprite2.y = this.game.world.centerY - 70;
 
@@ -255,7 +262,7 @@ Game.Play.prototype = {
             updateText = false;
 	     }
 
-	      if(user.spaceShips.length != 0)
+	      if(user.spaceShips.length != 0 && healthArray.length != 0)
             {
                 for( i = 0; i < user.spaceShips.length; i++)
                 {
@@ -288,7 +295,7 @@ Game.Play.prototype = {
                             updateHealthBar(1, user.spaceShips[i].getDamage());
                         } else {
                             updateText = true;
-                            // player 1 won!!!
+                            this.gameOver(this.game);
                         }
 
                         spaceSpriteArray[i].kill();
@@ -301,12 +308,12 @@ Game.Play.prototype = {
                     this.game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandlerTower, null, {i:i});
                 }
             }
+
              if(user.spaceShips.length != 0){
                 if (this.game.time.now > firingTimer)
                     {
                         this.fireShip();
                     }
-
              }
 
              if(placingTower)
@@ -349,7 +356,7 @@ Game.Play.prototype = {
             }
              else{
                 updateText = true;
-                // Player 1 won yeyy!
+                this.gameOver(this.game);
             }
 
             timer = Math.floor(this.game.time.now / 1000);
@@ -372,6 +379,38 @@ Game.Play.prototype = {
             }
         },
 
+    gameOver: function(game){
+
+        shipButton1.inputEnabled = false;
+        shipButton2.inputEnabled = false;
+        shipButton3.inputEnabled = false;
+
+        addTowerButton1.inputEnabled = false;
+        addTowerButton2.inputEnabled = false;
+        addTowerButton3.inputEnabled = false;
+
+        for(var i = 0; i < spaceSpriteArray.length; i++){
+            spaceSpriteArray[i].destroy();
+            healthArray[i+2].destroy();
+        }
+
+        ship1Bullet.callAll('kill');
+        ship2Bullet.callAll('kill');
+        ship3Bullet.callAll('kill');
+
+        playAgainButton = game.add.button(game.world.centerX - 250, this.game.height - 700, 'play_button', this.actionOnClickAgainPlay, this, 2, 1, 0);
+        exitButton = game.add.button(game.world.centerX - 250, this.game.height-200, 'help_button', this.actionOnClickExit, this, 2, 1, 0);
+    },
+
+    actionOnClickAgainPlay:function(){
+        this.resetVariables();
+        this.game.state.start(this.game.state.current);
+    },
+
+    actionOnClickExit:function(){
+        this.resetVariables();
+        this.game.state.start('MainMenu');
+    },
 	/*********************************/
     /********  Tower functions *******/
     /*********************************/
@@ -590,6 +629,54 @@ Game.Play.prototype = {
         firingTimer = this.game.time.now + 2000;
    
     	},
+
+        resetVariables:function(){
+            healthArray = [];
+            spaceSpriteArray = [];
+            attackTowerArray = [];
+            attackTowers = [];
+            healthArray = [];
+
+            shipButton1 = null;
+            shipButton2 = null;
+
+            addTowerButton = null;
+            tower = null;
+            towerSprite = null;
+            placingTower = false;
+            updateText = false;
+
+            user = null;
+            opponent = null;
+
+            path = [];
+            id = 0;
+            centerTower = 25;
+            SIZE_OF_PATH = 30;
+            pathArray = [];
+            pathSprite = null;
+            denied = false;
+            menuBackground = null;
+            levelText = null;
+            sell = null;
+            sellText;
+            upgradeText;
+            upgrade;
+            available = true;
+            towerSpriteNow;
+            costNow;
+            damageNow;
+            typeNow;
+            menuActive = false;
+            shipButton3 = null;
+
+            moneyTextUser = null;
+            moneyTextOpponent = null;
+
+            ship = null;
+            spaceShip = null;
+
+        },
 
 
 	/*********************************/
