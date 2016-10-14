@@ -38,6 +38,7 @@
     var healthArray = [];
     var towerRangeArray = [];
 
+    var bullet;
     var ship1Bullet = null;
     var ship2Bullet = null;
     var ship3Bullet  = null;
@@ -59,6 +60,10 @@
     var towerRangeSprite;
     var localUser;
     var remotePlayers;
+    var gameCopy;
+    var thisCopy;
+    var currType;
+    var currRot;
 
 Game.Play = function (game) {
  	this.bmd = null;
@@ -74,6 +79,9 @@ Game.Play = function (game) {
 Game.Play.prototype = {
 
 	create: function(game){
+
+        gameCopy = this.game;
+        thisCopy = this;
         
         socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
@@ -233,14 +241,14 @@ Game.Play.prototype = {
 
         // Initialise remote players array
         remotePlayers = [];
-        this.setEventHandlers();
+        this.setEventHandlers(game);
 	},
 
     /**************************************************
     ** GAME EVENT HANDLERS
     **************************************************/
 
-    setEventHandlers: function() {
+    setEventHandlers: function(game) {
         console.log("setEventHandlers");
         // Socket connection successful
         socket.on("connect", this.onSocketConnected);
@@ -256,6 +264,9 @@ Game.Play.prototype = {
 
         // Player removed message received
         socket.on("remove player", this.onRemovePlayer);
+
+        socket.on("add ship", this.onAddShip);
+
     },
 
     // Socket connected
@@ -299,16 +310,20 @@ Game.Play.prototype = {
 
     // Remove player
     onRemovePlayer:function(data) {
-    var removePlayer = playerById(data.id);
+        var removePlayer = playerById(data.id);
 
-    // Player not found
-    if (!removePlayer) {
-        console.log("Player not found: "+data.id);
-        return;
-    };
+        // Player not found
+        if (!removePlayer) {
+            console.log("Player not found: "+data.id);
+            return;
+        };
 
         // Remove player from array
         remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
+    },
+
+    onAddShip:function(data){
+        thisCopy.addShipStep2(data.rot, data.type);
     },
 
 
@@ -692,22 +707,46 @@ Game.Play.prototype = {
     /*********************************/
     addShip: function(input){
 
+        currRot = input.rot;
+        currType = input.type;
+
+
         if(user.getMoney() >= input.cost)
         {
-            updateText = true; 
-            this.ship = this.add.sprite(0,0, input.type);
-            this.ship.anchor.set(0.5);
-            this.ship.id = 0;
-            spaceSpriteArray.push(this.ship);
+            socket.emit("add ship", {rot: input.rot, type: input.type});
+            
+            // updateText = true;
+            // this.ship = this.add.sprite(0,0, input.type);
+            // this.ship.anchor.set(0.5);
+            // this.ship.id = 0;
+            // spaceSpriteArray.push(this.ship);
 
-            healthArray.push(this.createHealthBar(40, 5,0,0));
+            // healthArray.push(this.createHealthBar(40, 5,0,0));
 
-            this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
-            this.ship.body.immovable = true;
-            spaceShip = new SpaceShip(0, input.type, input.rot); 
-            user.spaceShips.push(spaceShip);
+            // this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
+            // this.ship.body.immovable = true;
+            // spaceShip = new SpaceShip(0, input.type, input.rot);
+            // user.spaceShips.push(spaceShip);
+            // user.buy(input.cost);
             user.buy(input.cost);
         }
+    },
+
+    addShipStep2: function(rot, type){
+
+        updateText = true;
+        this.ship = this.add.sprite(0,0, type);
+        this.ship.anchor.set(0.5);
+        this.ship.id = 0;
+        spaceSpriteArray.push(this.ship);
+
+        healthArray.push(this.createHealthBar(40, 5,0,0));
+
+        this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
+        this.ship.body.immovable = true;
+        spaceShip = new SpaceShip(0, type, rot);
+        user.spaceShips.push(spaceShip);
+
     },
 
     fireShip: function() {
@@ -715,7 +754,6 @@ Game.Play.prototype = {
         // randomly select one of them
         var random = this.game.rnd.integerInRange(0,spaceSpriteArray.length-1);
         var shooter = spaceSpriteArray[random];
-
         var type = user.spaceShips[random].getType();
         
         switch(type){
@@ -731,8 +769,11 @@ Game.Play.prototype = {
         }
 
         // And fire the bullet from this enemy
-        bullet.reset(shooter.x, shooter.y);
-        this.game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+        if(bullet)
+        {
+            bullet.reset(shooter.x, shooter.y);
+            this.game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+        }
 
         firingTimer = this.game.time.now + 2000;
    
@@ -777,6 +818,8 @@ Game.Play.prototype = {
             costNow;
             damageNow;
             typeNow;
+            currRot;
+            currType;
             menuActive = false;
             shipButton3 = null;
 
@@ -874,7 +917,4 @@ Game.Play.prototype = {
 	    }
 	    bullet.kill();
 	};
-
-
-
    

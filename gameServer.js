@@ -52,6 +52,8 @@ function onSocketConnection(client) {
 	// Listen for move player message
 	client.on("move player", onMovePlayer);
 
+	client.on("add ship", onAddShip)
+
 };
 
 // Socket client has disconnected
@@ -117,14 +119,22 @@ function onMovePlayer(data) {
 **************************************************/
 // Find player by ID
 function playerById(id) {
-	var i;
-	for (i = 0; i < players.length; i++) {
+
+	for (var i = 0; i < players.length; i++) {
 		if (players[i].id == id)
 			return players[i];
 	};
 	
 	return false;
 };
+
+function onAddShip(data){
+	console.log(data);
+	console.log(data.type);
+	console.log("added ship in gameserver.js");
+	this.emit("add ship", {type: data.type, rot: data.rot});
+	this.broadcast.emit("add ship", {type: data.type, rot: data.rot});
+}
 
 /**************************************************
 ** RUN THE GAME
