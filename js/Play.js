@@ -311,7 +311,6 @@ Game.Play.prototype = {
         remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
     },
 
-
  	plot: function () {
         var x = 1 / this.game.width;
         var j = 0;
@@ -874,6 +873,17 @@ Game.Play.prototype = {
 	    }
 	    bullet.kill();
 	};
+
+    // Find player by ID
+    function playerById(id) {
+        var i;
+        for (i = 0; i < remotePlayers.length; i++) {
+            if (remotePlayers[i].id == id)
+                return remotePlayers[i];
+        };
+        
+        return false;
+    };
 
 
 
