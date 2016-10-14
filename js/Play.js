@@ -64,6 +64,7 @@
     var thisCopy;
     var currType;
     var currRot;
+    var pathReversed = [];
 
 Game.Play = function (game) {
  	this.bmd = null;
@@ -351,6 +352,13 @@ Game.Play.prototype = {
 
             this.bmd.rect(px, py, 1, 1, 'rgba(255, 255, 255, 1)'); 
          }
+
+         for (var i = 0; i < path.length; i++)
+         {
+            pathReversed[i] = path[path.length - i - 1];
+         }
+
+         console.log(pathReversed);
     },
 
 	update: function(game){
@@ -707,27 +715,13 @@ Game.Play.prototype = {
     /*********************************/
     addShip: function(input){
 
-        currRot = input.rot;
-        currType = input.type;
+        // currRot = input.rot;
+        // currType = input.type;
 
 
         if(user.getMoney() >= input.cost)
         {
             socket.emit("add ship", {rot: input.rot, type: input.type});
-            
-            // updateText = true;
-            // this.ship = this.add.sprite(0,0, input.type);
-            // this.ship.anchor.set(0.5);
-            // this.ship.id = 0;
-            // spaceSpriteArray.push(this.ship);
-
-            // healthArray.push(this.createHealthBar(40, 5,0,0));
-
-            // this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
-            // this.ship.body.immovable = true;
-            // spaceShip = new SpaceShip(0, input.type, input.rot);
-            // user.spaceShips.push(spaceShip);
-            // user.buy(input.cost);
             user.buy(input.cost);
         }
     },
