@@ -473,6 +473,9 @@ Game.Play.prototype = {
         if(placingTower && available)
             this.setTower();
 
+        if(menuActive)
+            this.killMenu();
+
         towerSprite.kill();
         towerRangeSprite.kill();
         placingTower = false;
