@@ -442,6 +442,7 @@ Game.Play.prototype = {
             attackTower.alpha = 0;
 
             attackTowerSprite = this.game.add.sprite(towerSprite.position.x, towerSprite.position.y, towerSpriteNow);
+            var attackTowerRangeSprite = this.game.add.sprite(towerRangeSprite.position.x, towerRangeSprite.position.y, 'towerRange' + rangeNow);
 
             if(towerSpriteNow == "blackhole")
             {
@@ -461,8 +462,8 @@ Game.Play.prototype = {
             user.towers.push(tower1);
             attackTowers.push(attackTower);
             attackTowerArray.push(attackTowerSprite);
-            towerRangeSprite.alpha = 0.1;
-            towerRangeArray.push(towerRangeSprite);
+            attackTowerRangeSprite.alpha = 0.1;
+            towerRangeArray.push(attackTowerRangeSprite);
             id++;
         }
     },
@@ -473,6 +474,7 @@ Game.Play.prototype = {
             this.setTower();
 
         towerSprite.kill();
+        towerRangeSprite.kill();
         placingTower = false;
     },
 
@@ -544,6 +546,7 @@ Game.Play.prototype = {
         }
         else {
             towerSprite.kill();
+            towerRangeSprite.kill();
             placingTower = false;
         }
     },
