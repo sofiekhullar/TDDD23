@@ -61,7 +61,8 @@
     var remotePlayers;
     var localName;
     var localType;
-    var test;
+    var opponentName;
+    var opponentType;
 
 
 Game.Play = function (game, output) {
@@ -77,9 +78,11 @@ Game.Play = function (game, output) {
 
 Game.Play.prototype = {
 
-    init: function(type, name){
+    init: function(type, name, type1, name1){
         localName = name;
         localType = type;
+        opponentName = name1;
+        opponentType = type1;
     },
 
 	create: function(game){
@@ -89,9 +92,9 @@ Game.Play.prototype = {
         user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
 
-        console.log("i create " + localName + localType);
         // Initialise the local player
-        localUser = new User("Love", "earth");
+        localUser = new User(localName, localType);
+        opponentUser = new User(opponentName, opponentType);
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -175,11 +178,12 @@ Game.Play.prototype = {
         addTowerButton2.spriteName = "satellite";
         addTowerButton3.spriteName = "blackhole";
 
-        planetSprite1 = this.game.add.sprite(0, this.game.width/4, user.getType());
+        planetSprite1 = this.game.add.sprite(0, this.game.width/4, localUser.getType());
         healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
-        planetSprite1.scale.setTo(0.5, 0.5);
+        planetSprite1.width = 150;
+        planetSprite1.height = 150;
 
-        planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponent.getType());
+        planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponentUser.getType());
         healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
         planetSprite2.scale.setTo(0.3, 0.3);
         this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
@@ -281,15 +285,15 @@ Game.Play.prototype = {
     },
 
     // New player
-    onNewPlayer:function(data) {
-        console.log("New player connected: "+data.id);
+    onNewPlayer:function(data) {  // should not add player!
+        console.log("I onNewPalyer New player connected: "+ data.id);
 
         // Initialise the new player
-        var newUser = new User("Sofie", "saturn");
+        /*var newUser = new User("Sofie", data.getType());
         newUser.id = data.id;
 
         // Add new player to the remote players array
-        remotePlayers.push(newUser);
+        remotePlayers.push(newUser);*/
     },
 
     // Move player

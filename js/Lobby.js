@@ -2,7 +2,8 @@ Game.Lobby = function (game, output) {
 	var planetType = output;
 	var updateText = false;
 	var text;
-	var localUser;
+	var localUser
+	var opponentUser;
 };
 
 Game.Lobby.prototype = {
@@ -63,14 +64,14 @@ Game.Lobby.prototype = {
     // New player
     onNewPlayer:function(data) {
         console.log("New player connected: "+data.id);
+		console.log( "Name and type" + "    " + data.name + "   " + data.type);
 
         // Initialise the new player
-        var newUser = new User("Sofie", "saturn");
-        newUser.id = data.id;
+        opponentUser = new User("Sofie", data.type);
+        opponentUser.id = data.id;
 
         // Add new player to the remote players array
-        remotePlayers.push(newUser);
-
+        remotePlayers.push(opponentUser);
         updateText = true;
     },
 
@@ -91,12 +92,12 @@ Game.Lobby.prototype = {
 
     // Remove player
     onRemovePlayer:function(data) {
-    var removePlayer = playerById(data.id);
-    console.log("onRemovePlayer " + data.id + " id " + removePlayer.getName());
-    // Player not found
-    if (!removePlayer) {
-        console.log("Player not found: "+data.id);
-        return;
+	    var removePlayer = playerById(data.id);
+	    console.log("onRemovePlayer " + data.id + " id " + removePlayer.getName());
+	    // Player not found
+	    if (!removePlayer) {
+	        console.log("Player not found: "+data.id);
+	        return;
     };
 
         // Remove player from array
@@ -114,7 +115,9 @@ Game.Lobby.prototype = {
 		console.log(localUser.getName() + localUser.getType());
 		var type = localUser.getType();
 		var name = localUser.getName();
+		var type1 = opponentUser.getType();
+		var name1 = opponentUser.getName();
 
-		this.state.start('Play', true, false, type, name);
+		this.state.start('Play', true, false, type, name, type1, name1);
 	},
 }
