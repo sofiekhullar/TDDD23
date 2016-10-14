@@ -126,6 +126,7 @@ function onClientReady(){
 		util.log("in onClientReady	if statement" + counter);
 		this.emit("client ready", {id:1});
 		this.broadcast.emit("client ready", {id:2});
+		counter = 0;
 	}
 }
 
@@ -145,9 +146,6 @@ function playerById(id) {
 };
 
 function onAddShip(data){
-	console.log(data);
-	console.log(data.type);
-	console.log("added ship in gameserver.js");
 	this.emit("add ship", {type: data.type, rot: data.rot});
 	this.broadcast.emit("add ship", {type: data.type, rot: data.rot});
 }

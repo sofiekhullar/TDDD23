@@ -194,7 +194,7 @@ Game.Play.prototype = {
 
         console.log(uniqeID);
 
-        if(uniqeID.id == 1){
+        if(uniqeID == 1){
             planetSprite1 = this.game.add.sprite(0, this.game.width/4, localUser.getType());
             healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
 
@@ -205,7 +205,7 @@ Game.Play.prototype = {
             //planetSprite2.enableBody = true;
            // planetSprite2.immovable = true;
             //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
-            console.log("uniqeID 1 " + uniqeID.id);
+
 
             planetSprite1.width = 150;
             planetSprite1.height = 150;
@@ -226,10 +226,7 @@ Game.Play.prototype = {
             planetSprite1.height = 150;
             planetSprite2.width = 150;
             planetSprite2.height = 150;
-
-            console.log("uniqeID 2 " + uniqeID.id);
         }
-
        
         this.plot();
 
@@ -402,8 +399,6 @@ Game.Play.prototype = {
          {
             pathReversed[i] = path[path.length - i - 1];
          }
-
-         console.log(pathReversed);
     },
 
 	update: function(game){
@@ -763,7 +758,6 @@ Game.Play.prototype = {
         // currRot = input.rot;
         // currType = input.type;
 
-
         if(user.getMoney() >= input.cost)
         {
             socket.emit("add ship", {rot: input.rot, type: input.type});
@@ -867,8 +861,6 @@ Game.Play.prototype = {
 
             ship = null;
             spaceShip = null;
-            uniqeID = null;
-
         },
 
 
