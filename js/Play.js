@@ -58,6 +58,7 @@
     var towerRange = 150;
     var towerRangeSprite;
     var localUser;
+    var remotePlayers;
 
 Game.Play = function (game) {
  	this.bmd = null;
@@ -74,6 +75,8 @@ Game.Play.prototype = {
 
 	create: function(game){
         
+        socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
+
         user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
 
@@ -227,7 +230,86 @@ Game.Play.prototype = {
             b.checkWorldBounds = true;
             b.events.onOutOfBounds.add(this.resetBullet, this);
         }
+
+        // Initialise remote players array
+        remotePlayers = [];
+        this.setEventHandlers();
 	},
+
+    /**************************************************
+    ** GAME EVENT HANDLERS
+    **************************************************/
+
+    setEventHandlers: function() {
+        console.log("setEventHandlers");
+        // Socket connection successful
+        socket.on("connect", this.onSocketConnected);
+
+        // Socket disconnection
+        socket.on("disconnect", this.onSocketDisconnect);
+
+        // New player message received
+        socket.on("new player", this.onNewPlayer);
+
+        // Player move message received
+        socket.on("move player", this.onMovePlayer);
+
+        // Player removed message received
+        socket.on("remove player", this.onRemovePlayer);
+    },
+
+    // Socket connected
+    onSocketConnected: function() {
+        console.log("Connected to socket server");
+        // Send local player data to the game server
+        socket.emit("new player", {x: localUser.getName(), y: localUser.getType()});
+    },
+
+    // Socket disconnected
+    onSocketDisconnect:function() {
+        console.log("Disconnected from socket server");
+    },
+
+    // New player
+    onNewPlayer:function(data) {
+        console.log("New player connected: "+data.id);
+
+        // Initialise the new player
+        var newUser = new User("Sofie", "saturn");
+        newUser.id = data.id;
+
+        // Add new player to the remote players array
+        remotePlayers.push(newUser);
+    },
+
+    // Move player
+     onMovePlayer:function(data) {
+        var movePlayer = playerById(data.id);
+
+        // Player not found
+        if (!movePlayer) {
+            console.log("Player not found: "+data.id);
+            return;
+        };
+
+        // Update player position
+        movePlayer.setX(data.x);
+        movePlayer.setY(data.y);
+    },
+
+    // Remove player
+    onRemovePlayer:function(data) {
+    var removePlayer = playerById(data.id);
+
+    // Player not found
+    if (!removePlayer) {
+        console.log("Player not found: "+data.id);
+        return;
+    };
+
+        // Remove player from array
+        remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
+    },
 
 
  	plot: function () {

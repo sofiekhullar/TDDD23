@@ -3,7 +3,7 @@
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io")
-	Player = require("./js/User.js").User;			// Socket.IO;	// Player class
+	User = require("./User.js").User;			// Socket.IO;	// Player class
 
 /**************************************************
 ** GAME VARIABLES
@@ -76,21 +76,21 @@ function onClientDisconnect() {
 // New player has joined
 function onNewPlayer(data) {
 	// Create a new player
-	var newPlayer = new Player(data.x, data.y);
-	newPlayer.id = this.id;
+	var newUser = new User(data.x, data.y);
+	newUser.id = this.id;
 
 	// Broadcast new player to connected socket clients
-	this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
-
+	this.broadcast.emit("new player", {id: newUser.id, x: newUser.getName(), y: newUser.getType()});
+	 util.log("Name : " + newUser.getName() + "	Type: " + newUser.getType());
 	// Send existing players to the new player
 	var i, existingPlayer;
 	for (i = 0; i < players.length; i++) {
 		existingPlayer = players[i];
-		this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
+		this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getName(), y: existingPlayer.getType()});
 	};
 		
 	// Add new player to the players array
-	players.push(newPlayer);
+	players.push(newUser);
 };
 
 // Player has moved
