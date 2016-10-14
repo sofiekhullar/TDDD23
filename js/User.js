@@ -40,4 +40,4 @@ function User(name, type) {
 	this.getType = function(){
 		return type;
 	}
-}
+};

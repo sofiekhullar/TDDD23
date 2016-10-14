@@ -57,7 +57,6 @@
 
     var towerRange = 150;
     var towerRangeSprite;
-    var localUser;
 
 Game.Play = function (game) {
  	this.bmd = null;
@@ -76,9 +75,6 @@ Game.Play.prototype = {
         
         user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
-
-        // Initialise the local player
-        localUser = new User("Love", "earth");
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;

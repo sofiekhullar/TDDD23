@@ -24,8 +24,8 @@ Game.MainMenu.prototype = {
 		this.state.start('Play');
 	},
 	actionOnClickMultiPlay:function(){
-
 	},
+	
 	actionOnClickHelp:function(){
 		this.state.start('HelpMenu');
 

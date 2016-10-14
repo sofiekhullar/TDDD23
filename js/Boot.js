@@ -6,6 +6,9 @@ Game.Boot = function(game){
 
 Game.Boot.prototype = {
 	init: function(){
+
+		socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
+
 		// just one input
 		this.input.maxPointers = 1;
 
