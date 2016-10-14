@@ -146,8 +146,8 @@ function playerById(id) {
 };
 
 function onAddShip(data){
-	this.emit("add ship", {type: data.type, rot: data.rot});
-	this.broadcast.emit("add ship", {type: data.type, rot: data.rot});
+	this.emit("add ship", {type: data.type, rot: data.rot, id: data.id});
+	this.broadcast.emit("add ship", {type: data.type, rot: data.rot, id: data.id});
 }
 
 /**************************************************

@@ -93,7 +93,7 @@ Game.Play.prototype = {
         localType = type;
         opponentName = name1;
         opponentType = type1;
-        uniqeID = data;
+        uniqeID = data.id;
     },
 
 	create: function(game){
@@ -367,7 +367,7 @@ Game.Play.prototype = {
     },
 
     onAddShip:function(data){
-        thisCopy.addShipStep2(data.rot, data.type);
+        thisCopy.addShipStep2(data.rot, data.type, data.id);
     },
 
  	plot: function () {
@@ -419,25 +419,72 @@ Game.Play.prototype = {
             {
                 for( i = 0; i < user.spaceShips.length; i++)
                 {
-                    spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
-                    spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
-                    spaceSpriteArray[i].id = i;
 
-                    healthArray[i+2].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
-                    healthArray[i+2].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
-
-                    if(user.spaceShips[i].getRotation())
+                    if(spaceSpriteArray[i].id == 1)
                     {
-                        if(spaceSpriteArray[i].y > 350)
-                            spaceSpriteArray[i].angle -= 0.45;
-                        else
-                            spaceSpriteArray[i].angle += 0.45;
+                        spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
+                        spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
+                        spaceSpriteArray[i].index = i;
+
+                        healthArray[i+2].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
+                        healthArray[i+2].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
+                        
+                        if(user.spaceShips[i].getRotation())
+                        {
+                            if(spaceSpriteArray[i].y > 350)
+                                spaceSpriteArray[i].angle -= 0.45;
+                            else
+                                spaceSpriteArray[i].angle += 0.45;
+                        }
                     }
+
+                    else if(spaceSpriteArray[i].id == 2)
+                    {
+                        spaceSpriteArray[i].x = pathReversed[user.spaceShips[i].getPathIndex()].x;
+                        spaceSpriteArray[i].y = pathReversed[user.spaceShips[i].getPathIndex()].y;
+                        spaceSpriteArray[i].index = i;
+
+                        healthArray[i+2].x = pathReversed[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
+                        healthArray[i+2].y = pathReversed[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
+
+
+
+                        if(user.spaceShips[i].getRotation())
+                        {
+                            if(spaceSpriteArray[i].y < 350)
+                                spaceSpriteArray[i].angle -= 0.45;
+                            else
+                                spaceSpriteArray[i].angle += 0.45;
+                        }
+                    }
+
 
                     user.spaceShips[i].addPathIndex();
 
-                    if (user.spaceShips[i].getPathIndex() >= path.length)
+                    if (user.spaceShips[i].getPathIndex() >= path.length && spaceSpriteArray[i].id == 1)
                     {
+                        var explosion = explosions.getFirstExists(false);
+                        explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
+                        //explosion.body.velocity.y = enemy.body.velocity.y;
+                        explosion.alpha = 0.7;
+                        explosion.play('explosion', 30, false, true);
+
+                        if(healthArray[1].width > 0){
+                            updateHealthBar(1, user.spaceShips[i].getDamage());
+                        } else {
+                            updateText = true;
+                            this.gameOver(this.game);
+                        }
+
+                        spaceSpriteArray[i].kill();
+                        spaceSpriteArray.splice(i, 1);
+                        healthArray[i+2].kill();
+                        healthArray.splice(i+2,1);
+                        user.spaceShips.splice(i, 1);
+                    }
+                    else if(user.spaceShips[i].getPathIndex() >= path.length && spaceSpriteArray[i].id == 2)
+                    {
+                        console.log("should explode");
                         var explosion = explosions.getFirstExists(false);
                         explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
                         //explosion.body.velocity.y = enemy.body.velocity.y;
@@ -760,25 +807,28 @@ Game.Play.prototype = {
 
         if(user.getMoney() >= input.cost)
         {
-            socket.emit("add ship", {rot: input.rot, type: input.type});
+            socket.emit("add ship", {rot: input.rot, type: input.type, id: uniqeID});
             user.buy(input.cost);
         }
     },
 
-    addShipStep2: function(rot, type){
+    addShipStep2: function(rot, type, idShip){
 
         updateText = true;
         this.ship = this.add.sprite(0,0, type);
         this.ship.anchor.set(0.5);
-        this.ship.id = 0;
+        this.ship.id = idShip;
+        if(idShip == 2)
+            this.ship.angle += 180;
         spaceSpriteArray.push(this.ship);
 
         healthArray.push(this.createHealthBar(40, 5,0,0));
 
         this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
         this.ship.body.immovable = true;
-        spaceShip = new SpaceShip(0, type, rot);
+        spaceShip = new SpaceShip(0, type, rot, idShip);
         user.spaceShips.push(spaceShip);
+        console.log(spaceShip);
 
     },
 
