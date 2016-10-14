@@ -63,9 +63,10 @@
     var localType;
     var opponentName;
     var opponentType;
+    var uniqeID;
 
 
-Game.Play = function (game, output) {
+Game.Play = function (game) {
  	this.bmd = null;
     this.mode = 0;
     var background = null; 
@@ -78,11 +79,12 @@ Game.Play = function (game, output) {
 
 Game.Play.prototype = {
 
-    init: function(type, name, type1, name1){
+    init: function(type, name, type1, name1, data){
         localName = name;
         localType = type;
         opponentName = name1;
         opponentType = type1;
+        uniqeID = data;
     },
 
 	create: function(game){
@@ -178,19 +180,45 @@ Game.Play.prototype = {
         addTowerButton2.spriteName = "satellite";
         addTowerButton3.spriteName = "blackhole";
 
-        planetSprite1 = this.game.add.sprite(0, this.game.width/4, localUser.getType());
-        healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
-        planetSprite1.width = 150;
-        planetSprite1.height = 150;
+        console.log(uniqeID);
 
-        planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponentUser.getType());
-        healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
-        planetSprite2.scale.setTo(0.3, 0.3);
-        this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
-        //planetSprite2.enableBody = true;
-        planetSprite2.immovable = true;
-        planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
+        if(uniqeID.id == 1){
+            planetSprite1 = this.game.add.sprite(0, this.game.width/4, localUser.getType());
+            healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
 
+            //planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponentUser.getType());
+            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, opponentUser.getType());
+            healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
+            //this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
+            //planetSprite2.enableBody = true;
+           // planetSprite2.immovable = true;
+            //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
+            console.log("uniqeID 1 " + uniqeID.id);
+
+            planetSprite1.width = 150;
+            planetSprite1.height = 150;
+            planetSprite2.width = 150;
+            planetSprite2.height = 150;
+
+          }else{
+            planetSprite1 = this.game.add.sprite(0, this.game.width/4, opponentUser.getType());
+            healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
+
+            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, localUser.getType());
+            healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
+            //this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
+            //planetSprite2.enableBody = true;
+           // planetSprite2.immovable = true;
+            //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
+            planetSprite1.width = 150;
+            planetSprite1.height = 150;
+            planetSprite2.width = 150;
+            planetSprite2.height = 150;
+
+            console.log("uniqeID 2 " + uniqeID.id);
+        }
+
+       
         this.plot();
 
         // The enemy's bullets
@@ -352,8 +380,8 @@ Game.Play.prototype = {
     },
 
 	update: function(game){
-		planetSprite2.x = this.game.width - 150;
-        planetSprite2.y = this.game.world.centerY - 70;
+		//planetSprite2.x = this.game.width - 150;
+        //planetSprite2.y = this.game.world.centerY - 70;
 
 	    if(updateText){
 
@@ -798,6 +826,7 @@ Game.Play.prototype = {
 
             ship = null;
             spaceShip = null;
+            uniqeID = null;
 
         },
 

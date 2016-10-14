@@ -58,7 +58,6 @@ Game.PlanetMenu.prototype = {
 		earthButton.alpha = 0.5;
 		planetType = "moon";
 
-
 		chooseButton.alpha = 1;
 		chooseButton.input.enabled = true;
 	},

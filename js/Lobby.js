@@ -6,10 +6,13 @@ Game.Lobby = function (game, output) {
 	var opponentUser;
 };
 
+var startCountDown = false;
+var copyThis;
+
 Game.Lobby.prototype = {
 
 	create:function(game){
-
+		copyThis  = this;
 		socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
@@ -47,9 +50,11 @@ Game.Lobby.prototype = {
 
         // Player removed message received
         socket.on("remove player", this.onRemovePlayer);
+
+       	socket.on("client ready", this.onClientReady);
     },
 
- // Socket connected
+ 	// Socket connected
     onSocketConnected: function() {
         console.log("Connected to socket server");
         // Send local player data to the game server
@@ -103,6 +108,16 @@ Game.Lobby.prototype = {
         // Remove player from array
         remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
     },
+
+    onClientReady:function(data){
+    	var type = localUser.getType();
+		var name = localUser.getName();
+		var type1 = opponentUser.getType();
+		var name1 = opponentUser.getName();
+    	
+    	copyThis.state.start('Play', true, false, type, name, type1, name1, data);
+    },
+
 	update:function(){
 		if(updateText){
 			text.setText("Players conected 2/2");
@@ -111,13 +126,15 @@ Game.Lobby.prototype = {
 		};
 	},
 
-	actionOnClickPlay:function(){
+	actionOnClickPlay:function(game){
+		socket.emit("client ready");
 		console.log(localUser.getName() + localUser.getType());
-		var type = localUser.getType();
-		var name = localUser.getName();
-		var type1 = opponentUser.getType();
-		var name1 = opponentUser.getName();
+		
+		playButton.kill();
 
-		this.state.start('Play', true, false, type, name, type1, name1);
+		var style = { font: "32px Arial", fill: "#ff0044"};
+		this.game.add.text(this.game.world.centerX, 600, "wait", style);
+
+		startCountDown = true;
 	},
 }

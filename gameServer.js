@@ -11,7 +11,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
 var socket,
 	players;	// Socket controller	// Array of connected players
 
-
+var counter = 0;
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
@@ -52,7 +52,7 @@ function onSocketConnection(client) {
 	// Listen for move player message
 	client.on("move player", onMovePlayer);
 
-	client.on("get playerInfo", onPlayerInfo);
+	client.on("client ready", onClientReady);
 
 };
 
@@ -115,8 +115,14 @@ function onMovePlayer(data) {
 	this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
 };
 
-function onPlayerInfo(){
-
+function onClientReady(){
+	counter++;
+	util.log("in onClientReady	" + counter);
+	if(counter == 2){
+		util.log("in onClientReady	if statement" + counter);
+		this.emit("client ready", {id:1});
+		this.broadcast.emit("client ready", {id:2});
+	}
 }
 
 /**************************************************
