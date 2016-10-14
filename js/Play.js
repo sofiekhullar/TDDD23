@@ -59,8 +59,12 @@
     var towerRangeSprite;
     var localUser;
     var remotePlayers;
+    var localName;
+    var localType;
+    var test;
 
-Game.Play = function (game) {
+
+Game.Play = function (game, output) {
  	this.bmd = null;
     this.mode = 0;
     var background = null; 
@@ -73,13 +77,19 @@ Game.Play = function (game) {
 
 Game.Play.prototype = {
 
+    init: function(type, name){
+        localName = name;
+        localType = type;
+    },
+
 	create: function(game){
-        
+
         socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
         user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
 
+        console.log("i create " + localName + localType);
         // Initialise the local player
         localUser = new User("Love", "earth");
 
@@ -300,7 +310,7 @@ Game.Play.prototype = {
     // Remove player
     onRemovePlayer:function(data) {
     var removePlayer = playerById(data.id);
-
+    console.log("onRemovePlayer " + data.id + " id " + removePlayer.getName());
     // Player not found
     if (!removePlayer) {
         console.log("Player not found: "+data.id);
@@ -883,8 +893,4 @@ Game.Play.prototype = {
         };
         
         return false;
-    };
-
-
-
-   
+    };   

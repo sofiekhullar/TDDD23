@@ -81,7 +81,6 @@ function onNewPlayer(data) {
 
 	// Broadcast new player to connected socket clients
 	this.broadcast.emit("new player", {id: newUser.id, x: newUser.getName(), y: newUser.getType()});
-	 util.log("Name : " + newUser.getName() + "	Type: " + newUser.getType());
 	// Send existing players to the new player
 	var i, existingPlayer;
 	for (i = 0; i < players.length; i++) {
@@ -91,6 +90,8 @@ function onNewPlayer(data) {
 		
 	// Add new player to the players array
 	players.push(newUser);
+
+	util.log("Name : " + newUser.getName() + "	Type: " + newUser.getType() +  " "+players.length);
 };
 
 // Player has moved
