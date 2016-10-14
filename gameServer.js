@@ -54,6 +54,7 @@ function onSocketConnection(client) {
 
 	client.on("add ship", onAddShip)
 
+
 };
 
 // Socket client has disconnected
@@ -82,17 +83,18 @@ function onNewPlayer(data) {
 	newUser.id = this.id;
 
 	// Broadcast new player to connected socket clients
-	this.broadcast.emit("new player", {id: newUser.id, x: newUser.getName(), y: newUser.getType()});
-	 util.log("Name : " + newUser.getName() + "	Type: " + newUser.getType());
+	this.broadcast.emit("new player", {id: newUser.id, name: newUser.getName(), type: newUser.getType()});
 	// Send existing players to the new player
 	var i, existingPlayer;
 	for (i = 0; i < players.length; i++) {
 		existingPlayer = players[i];
-		this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getName(), y: existingPlayer.getType()});
+		this.emit("new player", {id: existingPlayer.id, name: existingPlayer.getName(), type: existingPlayer.getType()});
 	};
 		
 	// Add new player to the players array
 	players.push(newUser);
+
+	util.log("Name : " + newUser.getName() + "	Type: " + newUser.getType() +  " " + players.length);
 };
 
 // Player has moved
@@ -113,6 +115,7 @@ function onMovePlayer(data) {
 	// Broadcast updated position to connected socket clients
 	this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
 };
+
 
 /**************************************************
 ** GAME HELPER FUNCTIONS

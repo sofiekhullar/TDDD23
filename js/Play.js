@@ -60,13 +60,20 @@
     var towerRangeSprite;
     var localUser;
     var remotePlayers;
+
     var gameCopy;
     var thisCopy;
     var currType;
     var currRot;
     var pathReversed = [];
+    var localName;
+    var localType;
+    var opponentName;
+    var opponentType;
 
-Game.Play = function (game) {
+
+
+Game.Play = function (game, output) {
  	this.bmd = null;
     this.mode = 0;
     var background = null; 
@@ -79,18 +86,26 @@ Game.Play = function (game) {
 
 Game.Play.prototype = {
 
+    init: function(type, name, type1, name1){
+        localName = name;
+        localType = type;
+        opponentName = name1;
+        opponentType = type1;
+    },
+
 	create: function(game){
 
         gameCopy = this.game;
         thisCopy = this;
-        
+
         socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
         user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
 
         // Initialise the local player
-        localUser = new User("Love", "earth");
+        localUser = new User(localName, localType);
+        opponentUser = new User(opponentName, opponentType);
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -174,11 +189,12 @@ Game.Play.prototype = {
         addTowerButton2.spriteName = "satellite";
         addTowerButton3.spriteName = "blackhole";
 
-        planetSprite1 = this.game.add.sprite(0, this.game.width/4, user.getType());
+        planetSprite1 = this.game.add.sprite(0, this.game.width/4, localUser.getType());
         healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
-        planetSprite1.scale.setTo(0.5, 0.5);
+        planetSprite1.width = 150;
+        planetSprite1.height = 150;
 
-        planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponent.getType());
+        planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponentUser.getType());
         healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
         planetSprite2.scale.setTo(0.3, 0.3);
         this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
@@ -283,15 +299,15 @@ Game.Play.prototype = {
     },
 
     // New player
-    onNewPlayer:function(data) {
-        console.log("New player connected: "+data.id);
+    onNewPlayer:function(data) {  // should not add player!
+        console.log("I onNewPalyer New player connected: "+ data.id);
 
         // Initialise the new player
-        var newUser = new User("Sofie", "saturn");
+        /*var newUser = new User("Sofie", data.getType());
         newUser.id = data.id;
 
         // Add new player to the remote players array
-        remotePlayers.push(newUser);
+        remotePlayers.push(newUser);*/
     },
 
     // Move player
@@ -311,13 +327,14 @@ Game.Play.prototype = {
 
     // Remove player
     onRemovePlayer:function(data) {
-        var removePlayer = playerById(data.id);
 
-        // Player not found
-        if (!removePlayer) {
-            console.log("Player not found: "+data.id);
-            return;
-        };
+    var removePlayer = playerById(data.id);
+    console.log("onRemovePlayer " + data.id + " id " + removePlayer.getName());
+    // Player not found
+    if (!removePlayer) {
+        console.log("Player not found: "+data.id);
+        return;
+    };
 
         // Remove player from array
         remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
@@ -326,7 +343,6 @@ Game.Play.prototype = {
     onAddShip:function(data){
         thisCopy.addShipStep2(data.rot, data.type);
     },
-
 
  	plot: function () {
         var x = 1 / this.game.width;
@@ -911,4 +927,15 @@ Game.Play.prototype = {
 	    }
 	    bullet.kill();
 	};
-   
+
+    // Find player by ID
+    function playerById(id) {
+        var i;
+        for (i = 0; i < remotePlayers.length; i++) {
+            if (remotePlayers[i].id == id)
+                return remotePlayers[i];
+        };
+        
+        return false;
+    };   
+

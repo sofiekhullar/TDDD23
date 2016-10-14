@@ -24,6 +24,7 @@ Game.MainMenu.prototype = {
 		this.state.start('Play');
 	},
 	actionOnClickMultiPlay:function(){
+		this.state.start('PlanetMenu');
 	},
 	
 	actionOnClickHelp:function(){

@@ -22,6 +22,7 @@ Game.Preload.prototype = {
 	    this.load.image('heart', 'assets/health.png');
 	    this.load.image('earth', 'assets/earth.png');
 	    this.load.image('saturn', 'assets/saturn.png');
+	    this.load.image('moon', 'assets/moon.png');
 	    this.load.image('bullet1', 'assets/bullet.png');
 	    this.load.image('bullet2', 'assets/bullet2.png');
 	    this.load.image('bullet3', 'assets/bullet3.png');
