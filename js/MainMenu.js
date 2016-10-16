@@ -10,9 +10,11 @@ Game.MainMenu.prototype = {
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
 		background.scale.setTo(2,2);
 
-		playButton = game.add.button(game.world.centerX - 250, this.game.height - 700, 'play_button', this.actionOnClickPlay, this, 2, 1, 0);
-		multiPlayButton = game.add.button(game.world.centerX - 250, this.game.height - 450, 'multi_button', this.actionOnClickMultiPlay, this, 2, 1, 0);
-		helpButton = game.add.button(game.world.centerX - 250, this.game.height-200, 'help_button', this.actionOnClickHelp, this, 2, 1, 0);
+		game.add.sprite(0,0,'mainMenuTitle');
+
+		playButton = game.add.button(this.game.width/2 - 150, this.game.height/2 - 100, 'playButton', this.actionOnClickPlay, this, 2, 1, 0);
+		helpButton = game.add.button(this.game.width - 130, this.game.height - 150, 'helpButton', this.actionOnClickHelp, this, 2, 1, 0);
+		settingButton = game.add.button(this.game.width - 1000, this.game.height - 150, 'settingsButton', this.actionOnClickMultiSetting, this, 2, 1, 0);
 	
 	},
 
@@ -21,10 +23,11 @@ Game.MainMenu.prototype = {
 	},
 
 	actionOnClickPlay:function(){
-		this.state.start('Play');
-	},
-	actionOnClickMultiPlay:function(){
 		this.state.start('PlanetMenu');
+	},
+
+	actionOnClickMultiSetting:function(){
+		this.state.start('');
 	},
 	
 	actionOnClickHelp:function(){

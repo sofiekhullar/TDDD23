@@ -103,12 +103,12 @@ Game.Play.prototype = {
 
         socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
-        user = new User("Love", "earth");
+        //user = new User("Love", "earth");
         opponent = new User("Sofie", "saturn");
 
         // Initialise the local player
-        localUser = new User(localName, localType);
-        opponentUser = new User(opponentName, opponentType);
+        user = new User(localName, localType);
+        opponent = new User(opponentName, opponentType);
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -195,15 +195,15 @@ Game.Play.prototype = {
         console.log(uniqeID);
 
         if(uniqeID == 1){
-            planetSprite1 = this.game.add.sprite(0, this.game.width/4, localUser.getType());
+            planetSprite1 = this.game.add.sprite(0, this.game.width/4, user.getType());
             healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
 
             //planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponentUser.getType());
-            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, opponentUser.getType());
+            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, opponent.getType());
             healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
-            //this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
-            //planetSprite2.enableBody = true;
-           // planetSprite2.immovable = true;
+            this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
+            planetSprite2.enableBody = true;
+            planetSprite2.immovable = true;
             //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
 
 
@@ -213,14 +213,14 @@ Game.Play.prototype = {
             planetSprite2.height = 150;
 
           }else{
-            planetSprite1 = this.game.add.sprite(0, this.game.width/4, opponentUser.getType());
+            planetSprite1 = this.game.add.sprite(0, this.game.width/4, opponent.getType());
             healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
 
-            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, localUser.getType());
+            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, user.getType());
             healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
-            //this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
-            //planetSprite2.enableBody = true;
-           // planetSprite2.immovable = true;
+            this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
+            planetSprite2.enableBody = true;
+            planetSprite2.immovable = true;
             //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
             planetSprite1.width = 150;
             planetSprite1.height = 150;
@@ -316,7 +316,7 @@ Game.Play.prototype = {
     onSocketConnected: function() {
         console.log("Connected to socket server");
         // Send local player data to the game server
-        socket.emit("new player", {x: localUser.getName(), y: localUser.getType()});
+        socket.emit("new player", {x: user.getName(), y: user.getType()});
     },
 
     // Socket disconnected
@@ -402,11 +402,12 @@ Game.Play.prototype = {
     },
 
 	update: function(game){
-		//planetSprite2.x = this.game.width - 150;
-        //planetSprite2.y = this.game.world.centerY - 70;
-
+            planetSprite1.x = 0;
+            planetSprite1.y = this.game.width/4;
+            planetSprite2.x = this.game.width - 150;
+            planetSprite2.y = this.game.height/2 - 10;
+   
 	    if(updateText){
-
             moneyTextUser.setText(user.getMoney());
             healthTextUser.setText(user.getHealth());
             moneyTextOpponent.setText(opponent.getMoney());
@@ -446,8 +447,6 @@ Game.Play.prototype = {
 
                         healthArray[i+2].x = pathReversed[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
                         healthArray[i+2].y = pathReversed[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
-
-
 
                         if(user.spaceShips[i].getRotation())
                         {
@@ -491,8 +490,8 @@ Game.Play.prototype = {
                         explosion.alpha = 0.7;
                         explosion.play('explosion', 30, false, true);
 
-                        if(healthArray[1].width > 0){
-                            updateHealthBar(1, user.spaceShips[i].getDamage());
+                        if(healthArray[0].width > 0){
+                            updateHealthBar(0, user.spaceShips[i].getDamage());
                         } else {
                             updateText = true;
                             this.gameOver(this.game);
@@ -552,7 +551,12 @@ Game.Play.prototype = {
             }
 
             // check planet health
-            if(healthArray[1].width > 0){
+            if(healthArray[0].width > 0 || healthArray[1].width > 0){
+                this.game.physics.arcade.collide(planetSprite1, ship1Bullet, collisionHandlerPlanet);
+                this.game.physics.arcade.collide(planetSprite1, ship2Bullet, collisionHandlerPlanet);
+                this.game.physics.arcade.collide(planetSprite1, ship3Bullet, collisionHandlerPlanet);
+
+
                 this.game.physics.arcade.collide(planetSprite2, ship1Bullet, collisionHandlerPlanet);
                 this.game.physics.arcade.collide(planetSprite2, ship2Bullet, collisionHandlerPlanet);
                 this.game.physics.arcade.collide(planetSprite2, ship3Bullet, collisionHandlerPlanet);
@@ -855,7 +859,12 @@ Game.Play.prototype = {
         if(bullet)
         {
             bullet.reset(shooter.x, shooter.y);
-            this.game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+            if(id == 1)
+            {
+                this.game.physics.arcade.moveToObject(bullet,planetSprite2,120);
+            } else{
+                this.game.physics.arcade.moveToObject(bullet,planetSprite1,120);
+            }
         }
 
         firingTimer = this.game.time.now + 2000;
@@ -963,7 +972,7 @@ Game.Play.prototype = {
     /******  Collisionhandlers *******/
     /*********************************/
 
-    function collisionHandlerPlanet (planetSprite2, bullet){
+    function collisionHandlerPlanet (planetSprite, bullet){
 
 	    var bulletType = bullet.key;
 	    var damage;
@@ -981,7 +990,7 @@ Game.Play.prototype = {
 	    }
 
 	    bullet.kill();
-	    updateHealthBar(1, damage);
+        updateHealthBar(1, damage);
 	};
 
    function collisionHandlerTower(ship, bullet) {
