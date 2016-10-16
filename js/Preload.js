@@ -47,7 +47,7 @@ Game.Preload.prototype = {
 	    this.load.image('play_button', 'assets/play_button.png');
 	    this.load.image('multi_button', 'assets/multi_button.png');
 	    this.load.image('help_button', 'assets/help_button.png');
-	    this.load.image('mainMenuBackground', 'assets/space.jpeg');
+	    this.load.image('mainMenuBackground', 'assets/space2.jpg');
 	    this.load.image('playButton', 'assets/playButton.png');
 	    this.load.image('helpButton', 'assets/helpButton.png');
 	    this.load.image('settingsButton', 'assets/settingsButton.png');
