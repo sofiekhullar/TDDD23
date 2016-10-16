@@ -20,9 +20,10 @@ Game.Preload.prototype = {
 	    this.load.image('blackhole', 'assets/blackhole.png');
 	    this.load.image('coin', 'assets/diamond.png');
 	    this.load.image('heart', 'assets/health.png');
-	    this.load.image('earth', 'assets/earth.png');
-	    this.load.image('saturn', 'assets/saturn.png');
-	    this.load.image('moon', 'assets/moon.png');
+	    this.load.image('earth', 'assets/planets/earth.png');
+	    this.load.image('venus', 'assets/planets/venus.png');
+	    this.load.image('moon', 'assets/planets/moon.png');
+	    this.load.image('neptune', 'assets/planets/neptune.png');
 	    this.load.image('bullet1', 'assets/bullet.png');
 	    this.load.image('bullet2', 'assets/bullet2.png');
 	    this.load.image('bullet3', 'assets/bullet3.png');
@@ -40,11 +41,20 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('fallingStar', 'assets/falling-star-animation.png', 250, 50);
 	    this.load.spritesheet('blinkingStar', 'assets/star-animation.png', 250, 50);
 
+	    this.load.image('choosePlanetMenu', 'assets/choosePlanetMenu.png');
+	    this.load.image('chooseButton', 'assets/chooseButton.png');
+	    this.load.image('waitingForOpponent', 'assets/waitingForOpponent.png');
+
 	    // MainMenu.js
 	    this.load.image('play_button', 'assets/play_button.png');
 	    this.load.image('multi_button', 'assets/multi_button.png');
 	    this.load.image('help_button', 'assets/help_button.png');
 	    this.load.image('mainMenuBackground', 'assets/background.png');
+
+	    this.load.image('playButton', 'assets/playButton.png');
+	    this.load.image('helpButton', 'assets/helpButton.png');
+	    this.load.image('settingsButton', 'assets/settingsButton.png');
+	    this.load.image('mainMenuTitle', 'assets/mainMenuTitle.png');
 
 	    // HelpMenu.js
 	    this.load.image('help', 'assets/help.jpeg');

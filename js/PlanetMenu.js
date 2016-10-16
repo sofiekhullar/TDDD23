@@ -10,17 +10,22 @@ Game.PlanetMenu.prototype = {
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
 		background.scale.setTo(2,2);
 
-		saturnButton = game.add.button(game.world.centerX + 200, this.game.height - 700, 'saturn', this.actionOnClickSaturn, this, 2, 1, 0);
-		earthButton = game.add.button(game.world.centerX , this.game.height - 700, 'earth', this.actionOnClickEarth, this, 2, 1, 0);
-		moonButton = game.add.button(game.world.centerX - 200, this.game.height - 700, 'moon', this.actionOnClickMoon, this, 2, 1, 0);
-		chooseButton = game.add.button(game.world.centerX - 250, this.game.height - 200, 'play_button', this.actionOnClickChoose, this, 2, 1, 0);
+		game.add.sprite(40,0, 'choosePlanetMenu');
+
+		saturnButton = game.add.button(this.game.width - 270, this.game.height - 500 , 'neptune', this.actionOnClickSaturn, this, 2, 1, 0);
+		earthButton = game.add.button(this.game.width - 470 , this.game.height - 500, 'earth', this.actionOnClickEarth, this, 2, 1, 0);
+		moonButton = game.add.button(this.game.width - 670, this.game.height - 500, 'moon', this.actionOnClickMoon, this, 2, 1, 0);
+		venusButton = game.add.button(this.game.width - 870, this.game.height - 500, 'venus', this.actionOnClickVenus, this, 2, 1, 0);
+		chooseButton = game.add.button(game.world.centerX - 250, this.game.height - 200, 'chooseButton', this.actionOnClickChoose, this, 2, 1, 0);
 		
-		saturnButton.width = 200;
-		saturnButton.height = 200;
-		earthButton.width = 200;
-		earthButton.height = 200;
-		moonButton.width = 200;
-		moonButton.height = 200;
+		saturnButton.width = 150;
+		saturnButton.height = 150;
+		earthButton.width = 150;
+		earthButton.height = 150;
+		moonButton.width = 150;
+		moonButton.height = 150;
+		venusButton.width = 150;
+		venusButton.height = 150;
 
 		chooseButton.alpha = 0.5;
 		chooseButton.input.enabled = false;
@@ -34,6 +39,8 @@ Game.PlanetMenu.prototype = {
 		saturnButton.alpha = 1;
 		earthButton.alpha = 0.5;
 		moonButton.alpha = 0.5;
+		venusButton.alpha = 0.5;
+
 		planetType = "saturn";
 
 		chooseButton.alpha = 1;
@@ -45,8 +52,9 @@ Game.PlanetMenu.prototype = {
 		earthButton.alpha = 1;
 		saturnButton.alpha = 0.5;
 		moonButton.alpha = 0.5;
-		planetType = "earth";
+		venusButton.alpha = 0.5;
 
+		planetType = "earth";
 
 		chooseButton.alpha = 1;
 		chooseButton.input.enabled = true;
@@ -56,10 +64,25 @@ Game.PlanetMenu.prototype = {
 		moonButton.alpha = 1;
 		saturnButton.alpha = 0.5;
 		earthButton.alpha = 0.5;
+		venusButton.alpha = 0.5;
+
 		planetType = "moon";
 
 		chooseButton.alpha = 1;
 		chooseButton.input.enabled = true;
+	},
+
+	actionOnClickVenus:function(){
+		venusButton.alpha = 1;
+		saturnButton.alpha = 0.5;
+		earthButton.alpha = 0.5;
+		moonButton.alpha = 0.5;
+
+		planetType = "venus";
+
+		chooseButton.alpha = 1;
+		chooseButton.input.enabled = true;
+
 	},
 
 	actionOnClickChoose:function(){

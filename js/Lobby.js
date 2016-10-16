@@ -133,7 +133,7 @@ Game.Lobby.prototype = {
 		playButton.kill();
 
 		var style = { font: "32px Arial", fill: "#ff0044"};
-		this.game.add.text(this.game.world.centerX, 600, "wait", style);
+		game.add.sprite(0,0, 'waitingForOpponent');
 
 		startCountDown = true;
 	},
