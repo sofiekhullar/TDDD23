@@ -8,7 +8,7 @@ Game.MainMenu.prototype = {
 	create:function(game){
 
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
-		background.scale.setTo(2,2);
+		// background.scale.setTo(2,2);
 
 		playButton = game.add.button(game.world.centerX - 250, this.game.height - 700, 'play_button', this.actionOnClickPlay, this, 2, 1, 0);
 		multiPlayButton = game.add.button(game.world.centerX - 250, this.game.height - 450, 'multi_button', this.actionOnClickMultiPlay, this, 2, 1, 0);

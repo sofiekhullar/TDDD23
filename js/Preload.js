@@ -32,17 +32,19 @@ Game.Preload.prototype = {
 	    this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
 	    this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
 	    this.load.image('menuItem', 'assets/menu-item.png');
-	    this.load.image('menuBackground', 'assets/menu-background.png');
+	    this.load.image('menuBackground', 'assets/background.png');
 	    this.load.image('towerRange50', 'assets/towerRange_50.png');
 	    this.load.image('towerRange100', 'assets/towerRange_100.png');
 	    this.load.image('towerRange150', 'assets/towerRange_150.png');
 	    this.load.spritesheet('explosion', 'assets/explode.png', 128,128);
+	    this.load.spritesheet('fallingStar', 'assets/falling-star-animation.png', 250, 50);
+	    this.load.spritesheet('blinkingStar', 'assets/star-animation.png', 250, 50);
 
 	    // MainMenu.js
 	    this.load.image('play_button', 'assets/play_button.png');
 	    this.load.image('multi_button', 'assets/multi_button.png');
 	    this.load.image('help_button', 'assets/help_button.png');
-	    this.load.image('mainMenuBackground', 'assets/space.jpeg');
+	    this.load.image('mainMenuBackground', 'assets/background.png');
 
 	    // HelpMenu.js
 	    this.load.image('help', 'assets/help.jpeg');

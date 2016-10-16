@@ -16,7 +16,7 @@ Game.Lobby.prototype = {
 		socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
-		background.scale.setTo(2,2);
+		// background.scale.setTo(2,2);
 
 		var style = { font: "32px Arial", fill: "#ff0044"};
 
