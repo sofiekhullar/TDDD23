@@ -9,6 +9,8 @@ function SpaceShip(pathIndex, type, rotation, id) {
 	this.type = type;
 	this.rotation = rotation;
 	this.id = id;
+	this.lastFiringTime = 10;
+	this.fireTime = 0;
 
 	this.getCost = function(){
 		return cost;
@@ -25,7 +27,6 @@ function SpaceShip(pathIndex, type, rotation, id) {
 			damage = 50;
 		}
 	}
-
 	this.setDamage();
 
 	this.getDamage = function(){
@@ -63,5 +64,9 @@ function SpaceShip(pathIndex, type, rotation, id) {
 	}
 	this.killShip = function(){
 		health = 0;
+	}
+
+	this.setTimer = function(input){
+		lastFiringTime = input;
 	}
 }

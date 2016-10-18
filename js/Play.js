@@ -56,6 +56,14 @@
     var prevTime = 0;
     var bitmaphealth = null;
 
+    var ship1Bullet = null;
+    var ship2Bullet = null;
+    var ship3Bullet = null;
+
+    var ship1Bullets = null;
+    var ship2Bullets = null;
+    var ship3Bullets = null;
+
     var towerRange = 150;
     var towerRangeSprite;
     var localUser;
@@ -81,7 +89,7 @@ Game.Play = function (game) {
     var background = null; 
 
     this.points = {
-        'x': [ 50, 200, 400, 600, 800, 950 ],
+        'x': [ 100, 200, 400, 600, 800, 900 ],
         'y': [ 350, 200, 500, 200, 500, 350 ]
     };
 };
@@ -102,9 +110,6 @@ Game.Play.prototype = {
         thisCopy = this;
 
         socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
-
-        //user = new User("Love", "earth");
-        //opponent = new User("Sofie", "saturn");
 
         // Initialise the local player
         user = new User(localName, localType);
@@ -192,72 +197,37 @@ Game.Play.prototype = {
         addTowerButton2.spriteName = "satellite";
         addTowerButton3.spriteName = "blackhole";
 
-        console.log(uniqeID);
-
         if(uniqeID == 1){
-            planetSprite1 = this.game.add.sprite(0, this.game.width/4, user.getType());
-            healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
+            planetSprite1 = this.game.add.sprite(60, this.game.height/2 - 20, user.getType());
+            healthArray.push(this.createHealthBar(planetSprite1.width, 8, planetSprite1.x , planetSprite1.y - 20));
+            this.game.physics.enable(planetSprite1, Phaser.Physics.ARCADE);
+            planetSprite1.enableBody = true;
+            planetSprite1.immovable = true;
 
-            //planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.world.centerY - 70, opponentUser.getType());
-            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, opponent.getType());
-            healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
+            planetSprite2 = this.game.add.sprite(this.game.width - 140, this.game.height/2 - 60, opponent.getType());
+            healthArray.push(this.createHealthBar(planetSprite2.width , 8, planetSprite2.x , planetSprite2.y - 20));
             this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
             planetSprite2.enableBody = true;
             planetSprite2.immovable = true;
-            //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
+          }
+
+          else
+          {
+            planetSprite1 = this.game.add.sprite(60, this.game.height/2 - 20, opponent.getType());
+            healthArray.push(this.createHealthBar(planetSprite1.width, 8, planetSprite1.xs , planetSprite1.y - 20));
+            this.game.physics.enable(planetSprite1, Phaser.Physics.ARCADE);
+            planetSprite1.enableBody = true;
+            planetSprite1.immovable = true;
 
 
-            planetSprite1.width = 150;
-            planetSprite1.height = 150;
-            planetSprite2.width = 150;
-            planetSprite2.height = 150;
-
-          }else{
-            planetSprite1 = this.game.add.sprite(0, this.game.width/4, opponent.getType());
-            healthArray.push(this.createHealthBar(95, 12, planetSprite1.x + 20 , planetSprite1.y - planetSprite1.y/6));
-
-            planetSprite2 = this.game.add.sprite(this.game.width - 150, this.game.height/2 - 10, user.getType());
-            healthArray.push(this.createHealthBar(95, 12, planetSprite2.x + 20 , planetSprite2.y - planetSprite2.y/6));
+            planetSprite2 = this.game.add.sprite(this.game.width - 140, this.game.height/2 - 60, user.getType());
+            healthArray.push(this.createHealthBar(planetSprite2.width, 8, planetSprite2.x , planetSprite2.y - 20));
             this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
             planetSprite2.enableBody = true;
             planetSprite2.immovable = true;
-            //planetSprite2.physicsBodyType = Phaser.Physics.ARCADE;
-            planetSprite1.width = 150;
-            planetSprite1.height = 150;
-            planetSprite2.width = 150;
-            planetSprite2.height = 150;
         }
        
         this.plot();
-
-        // The enemy's bullets
-        ship1Bullet = this.game.add.group();
-        ship1Bullet.enableBody = true;
-        ship1Bullet.physicsBodyType = Phaser.Physics.ARCADE;
-        ship1Bullet.createMultiple(30, 'bullet1');
-        ship1Bullet.setAll('anchor.x', 0.5);
-        ship1Bullet.setAll('anchor.y', 1);
-        ship1Bullet.setAll('outOfBoundsKill', true);
-        ship1Bullet.setAll('checkWorldBounds', true);
-
-        ship2Bullet = this.game.add.group();
-        ship2Bullet.enableBody = true;
-        ship2Bullet.physicsBodyType = Phaser.Physics.ARCADE;
-        ship2Bullet.createMultiple(30, 'bullet2');
-        ship2Bullet.setAll('anchor.x', 0.5);
-        ship2Bullet.setAll('anchor.y', 1);
-        ship2Bullet.setAll('outOfBoundsKill', true);
-        ship2Bullet.setAll('checkWorldBounds', true);
-
-        ship3Bullet = this.game.add.group();
-        ship3Bullet.enableBody = true;
-        ship3Bullet.physicsBodyType = Phaser.Physics.ARCADE;
-        ship3Bullet.createMultiple(30, 'bullet3');
-        ship3Bullet.setAll('anchor.x', 0.5);
-        ship3Bullet.setAll('anchor.y', 1);
-        ship3Bullet.setAll('outOfBoundsKill', true);
-        ship3Bullet.setAll('checkWorldBounds', true);
-        ship3Bullet.setDamage = 20;
 
         // An explosion pool
         explosions = this.game.add.group();
@@ -271,11 +241,47 @@ Game.Play.prototype = {
 
         towerBullets = this.game.add.group();
         towerBullets.enableBody = true;
-        // towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
 
         for (var i = 0; i < 20; i++)
         {
             var b = towerBullets.create(0, 0, 'bullet1');
+            b.exists = false;
+            b.visible = false;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
+        }
+
+
+        ship1Bullets = this.game.add.group();
+        ship1Bullets.enableBody = true;
+
+        ship2Bullets = this.game.add.group();
+        ship2Bullets.enableBody = true;
+
+        ship3Bullets = this.game.add.group();
+        ship3Bullets.enableBody = true;
+        
+        for (var i = 0; i < 20; i++)
+        {
+            var b = ship1Bullets.create(0, 0, 'bullet1');
+            b.exists = false;
+            b.visible = false;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
+        }
+
+        for (var i = 0; i < 20; i++)
+        {
+            var b = ship2Bullets.create(0, 0, 'bullet2');
+            b.exists = false;
+            b.visible = false;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
+        }
+
+        for (var i = 0; i < 20; i++)
+        {
+            var b = ship3Bullets.create(0, 0, 'bullet3');
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
@@ -409,10 +415,10 @@ Game.Play.prototype = {
     },
 
 	update: function(game){
-            planetSprite1.x = 0;
-            planetSprite1.y = this.game.width/4;
-            planetSprite2.x = this.game.width - 150;
-            planetSprite2.y = this.game.height/2 - 10;
+            planetSprite1.x = 60;
+            planetSprite1.y = this.game.height/2 - 20;
+            planetSprite2.x = this.game.width - 140;
+            planetSprite2.y = this.game.height/2 - 60;
    
 	    if(updateText){
             moneyTextUser.setText(user.getMoney());
@@ -515,13 +521,6 @@ Game.Play.prototype = {
                 }
             }
 
-             if(user.spaceShips.length != 0){
-                if (this.game.time.now > firingTimer)
-                    {
-                        this.fireShip();
-                    }
-             }
-
              if(placingTower)
             {
                 towerSprite.position.x = this.game.input.x - centerTower;
@@ -558,15 +557,14 @@ Game.Play.prototype = {
             }
 
             // check planet health
-            if(healthArray[0].width > 0 || healthArray[1].width > 0){
-                this.game.physics.arcade.collide(planetSprite1, ship1Bullet, collisionHandlerPlanet);
-                this.game.physics.arcade.collide(planetSprite1, ship2Bullet, collisionHandlerPlanet);
-                this.game.physics.arcade.collide(planetSprite1, ship3Bullet, collisionHandlerPlanet);
+            if(healthArray[0].width > 0 && healthArray[1].width > 0){
+                this.game.physics.arcade.collide(planetSprite1, ship1Bullets, collisionHandlerPlanet, null, {i:i, planet:0});
+                this.game.physics.arcade.collide(planetSprite1, ship2Bullets, collisionHandlerPlanet, null, {i:i, planet:0});
+                this.game.physics.arcade.collide(planetSprite1, ship3Bullets, collisionHandlerPlanet, null, {i:i, planet:0});
 
-
-                this.game.physics.arcade.collide(planetSprite2, ship1Bullet, collisionHandlerPlanet);
-                this.game.physics.arcade.collide(planetSprite2, ship2Bullet, collisionHandlerPlanet);
-                this.game.physics.arcade.collide(planetSprite2, ship3Bullet, collisionHandlerPlanet);
+                this.game.physics.arcade.collide(planetSprite2, ship1Bullets, collisionHandlerPlanet, null, {i:i, planet:1});
+                this.game.physics.arcade.collide(planetSprite2, ship2Bullets, collisionHandlerPlanet, null, {i:i, planet:1});
+                this.game.physics.arcade.collide(planetSprite2, ship3Bullets, collisionHandlerPlanet, null, {i:i, planet:1});
             }
              else{
                 updateText = true;
@@ -574,6 +572,43 @@ Game.Play.prototype = {
             }
 
             timer = Math.floor(this.game.time.now / 1000);
+
+            for( var i = 0; i < spaceSpriteArray.length; i++){
+
+                if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
+                {
+                    //console.log(spaceSpriteArray[i].key + "  " + user.spaceShips[i].lastFiringTime + " timer " + timer);
+                    if(spaceSpriteArray[i].id == 1){
+                        if(spaceSpriteArray[i].key == 'ship1'){
+                             this.ship1Fire(i, 1);
+                             user.spaceShips[i].lastFiringTime = timer;
+                        }
+                        if(spaceSpriteArray[i].key == 'ship2'){
+                            this.ship2Fire(i, 1);
+                            user.spaceShips[i].lastFiringTime = timer;
+                        }
+                        if(spaceSpriteArray[i].key == 'ship3'){
+                            this.ship3Fire(i, 1);
+                            user.spaceShips[i].lastFiringTime = timer;
+                        }
+                    }
+
+                    if(spaceSpriteArray[i].id == 2){
+                        if(spaceSpriteArray[i].key == 'ship1'){
+                             this.ship1Fire(i, 2);
+                             user.spaceShips[i].lastFiringTime = timer;
+                        }
+                        if(spaceSpriteArray[i].key== 'ship2'){
+                            this.ship2Fire(i, 2);
+                            user.spaceShips[i].lastFiringTime = timer;
+                        }
+                        if(spaceSpriteArray[i].key == 'ship3'){
+                            this.ship3Fire(i, 2);
+                            user.spaceShips[i].lastFiringTime = timer;
+                        }
+                    }
+                }
+            }
 
             for (var i = 0; i < attackTowers.length; i++)
             {
@@ -606,9 +641,9 @@ Game.Play.prototype = {
             healthArray[i+2].destroy();
         }
 
-        ship1Bullet.callAll('kill');
-        ship2Bullet.callAll('kill');
-        ship3Bullet.callAll('kill');
+        ship1Bullets.callAll('kill');
+        ship2Bullets.callAll('kill');
+        ship3Bullets.callAll('kill');
         towerBullets.callAll('kill');
 
         game.add.sprite(0,0, 'gameoverMenu_win');
@@ -707,6 +742,66 @@ Game.Play.prototype = {
         }
     },
 
+    ship1Fire: function(id1, id2){
+        var shipBullet;
+        var opponetPlanet;
+
+        shipBullet = ship1Bullets.getFirstExists(false);
+
+        if(id2 == 1) {
+            opponetPlanet = planetSprite2;
+        }
+        else{
+            opponetPlanet = planetSprite1;
+        }
+
+        if (shipBullet)
+        {
+            shipBullet.reset(spaceSpriteArray[id1].x, spaceSpriteArray[id1].y);
+            this.game.physics.arcade.moveToObject(shipBullet, opponetPlanet, 300);
+        }
+    },
+
+        ship2Fire: function(id1, id2){
+            var shipBullet;
+            var opponetPlanet;
+
+            shipBullet = ship2Bullets.getFirstExists(false);
+            
+            if(id2 == 1) {
+                opponetPlanet = planetSprite2;
+            }
+            else{
+                opponetPlanet = planetSprite1;
+            }
+
+            if (shipBullet)
+            {
+                shipBullet.reset(spaceSpriteArray[id1].x, spaceSpriteArray[id1].y);
+                this.game.physics.arcade.moveToObject(shipBullet, opponetPlanet, 300);
+            }
+    },
+
+        ship3Fire: function(id1, id2){
+        console.log("ship3fire Key " + this.ship.key);
+        var shipBullet;
+        var opponetPlanet;
+
+        shipBullet = ship3Bullets.getFirstExists(false);
+
+        if(id2 == 1) {
+            opponetPlanet = planetSprite2;
+        }
+        else{
+            opponetPlanet = planetSprite1;
+        }
+
+        if (shipBullet)
+        {
+            shipBullet.reset(spaceSpriteArray[id1].x, spaceSpriteArray[id1].y);
+            this.game.physics.arcade.moveToObject(shipBullet, opponetPlanet, 300);
+        }
+    },
 
     placeTower:function(button){
 
@@ -863,40 +958,6 @@ Game.Play.prototype = {
 
     },
 
-    fireShip: function() {
-
-        // randomly select one of them
-        var random = this.game.rnd.integerInRange(0,spaceSpriteArray.length-1);
-        var shooter = spaceSpriteArray[random];
-        var type = user.spaceShips[random].getType();
-        
-        switch(type){
-            case 'ship1':
-                bullet = ship1Bullet.getFirstExists(false);
-            break;
-            case 'ship2':
-                bullet = ship2Bullet.getFirstExists(false);
-            break;
-            case 'ship3':
-                bullet = ship3Bullet.getFirstExists(false);
-            break;
-        }
-
-        // And fire the bullet from this enemy
-        if(bullet)
-        {
-            bullet.reset(shooter.x, shooter.y);
-            if(id == 1)
-            {
-                this.game.physics.arcade.moveToObject(bullet,planetSprite2,120);
-            } else{
-                this.game.physics.arcade.moveToObject(bullet,planetSprite1,120);
-            }
-        }
-
-        firingTimer = this.game.time.now + 2000;
-   
-    	},
 
         resetVariables:function(){
 
@@ -1000,7 +1061,7 @@ Game.Play.prototype = {
     /*********************************/
 
     function collisionHandlerPlanet (planetSprite, bullet){
-
+        console.log(this);
 	    var bulletType = bullet.key;
 	    var damage;
 
@@ -1015,9 +1076,9 @@ Game.Play.prototype = {
 	        damage = 5;
 	    break;
 	    }
-
+        console.log("damage " + damage +"planernr"+ this.planet);
 	    bullet.kill();
-        updateHealthBar(1, damage);
+        updateHealthBar(this.planet, damage);
 	};
 
    function collisionHandlerTower(ship, bullet) {
