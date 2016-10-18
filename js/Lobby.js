@@ -9,6 +9,10 @@ Game.Lobby = function (game, output) {
 var startCountDown = false;
 var copyThis;
 var connectedText;
+var timer;
+var counter = 0;
+var id;
+var spriteNr;
 
 Game.Lobby.prototype = {
 
@@ -31,6 +35,16 @@ Game.Lobby.prototype = {
         localUser = new User("Love", planetType);
 
         remotePlayers = [];
+
+            //  Create our Timer
+        timer = game.time.create(false);
+
+        //  Set a TimerEvent to occur after 2 seconds
+        timer.loop(1000, this.updateNumber, this);
+
+        spriteNr = copyThis.game.add.sprite(0,0, 'countdown0');
+        spriteNr.alpha = 0;
+
 	},
 
     setEventHandlers: function() {
@@ -81,7 +95,6 @@ Game.Lobby.prototype = {
     // Move player
      onMovePlayer:function(data) {
         var movePlayer = playerById(data.id);
-
         // Player not found
         if (!movePlayer) {
             console.log("Player not found: "+data.id);
@@ -108,12 +121,25 @@ Game.Lobby.prototype = {
     },
 
     onClientReady:function(data){
-    	var type = localUser.getType();
-		var name = localUser.getName();
-		var type1 = opponentUser.getType();
-		var name1 = opponentUser.getName();
-    	
-    	copyThis.state.start('Play', true, false, type, name, type1, name1, data);
+        id = data;
+        console.log("Start timer");
+        timer.start();
+    },
+
+    updateNumber: function(){
+        spriteNr.alpha = 1;
+        spriteNr.loadTexture('countdown' + counter, 0, false);
+        counter++;
+        console.log("counter " + counter);
+    },
+
+    startGame:function(){
+        var type = localUser.getType();
+        var name = localUser.getName();
+        var type1 = opponentUser.getType();
+        var name1 = opponentUser.getName();
+        console.log(id + "  startGame id");
+        copyThis.state.start('Play', true, false, type, name, type1, name1, id);
     },
 
 	update:function(){
@@ -123,6 +149,10 @@ Game.Lobby.prototype = {
 			playButton.alpha = 1;
 			playButton.input.enabled = true;
 		};
+
+        if(counter == 4){
+            this.startGame();
+        }
 	},
 
 	actionOnClickPlay:function(game){
