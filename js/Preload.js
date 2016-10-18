@@ -42,6 +42,10 @@ Game.Preload.prototype = {
 	    this.load.image('1_2connected', 'assets/1_2connected.png');
 	    this.load.image('2_2connected', 'assets/2_2connected.png')
 	    this.load.image('waitingForOpponent', 'assets/waitingForOpponent.png');
+	    this.load.image('countdown2', 'assets/countdown1.png');
+	    this.load.image('countdown1', 'assets/countdown2.png');
+	    this.load.image('countdown0', 'assets/countdown3.png');
+	    this.load.image('countdown3', 'assets/countdownGo.png');
 
 	    // planetMenu.js
 	    this.load.image('choosePlanetMenu', 'assets/choosePlanetMenu.png');
