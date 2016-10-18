@@ -41,7 +41,7 @@ Game.PlanetMenu.prototype = {
 		moonButton.alpha = 0.5;
 		venusButton.alpha = 0.5;
 
-		planetType = "saturn";
+		planetType = "neptune";
 
 		chooseButton.alpha = 1;
 		chooseButton.input.enabled = true;

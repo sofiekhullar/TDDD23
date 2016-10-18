@@ -104,7 +104,7 @@ Game.Play.prototype = {
         socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
 
         //user = new User("Love", "earth");
-        opponent = new User("Sofie", "saturn");
+        //opponent = new User("Sofie", "saturn");
 
         // Initialise the local player
         user = new User(localName, localType);
@@ -611,9 +611,9 @@ Game.Play.prototype = {
         ship3Bullet.callAll('kill');
         towerBullets.callAll('kill');
 
-
-        playAgainButton = game.add.button(game.world.centerX - 250, this.game.height - 700, 'play_button', this.actionOnClickAgainPlay, this, 2, 1, 0);
-        exitButton = game.add.button(game.world.centerX - 250, this.game.height-200, 'help_button', this.actionOnClickExit, this, 2, 1, 0);
+        game.add.sprite(0,0, 'gameoverMenu_win');
+        playAgainButton = game.add.button(game.world.centerX - 250, this.game.height/2, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
+        exitButton = game.add.button(game.world.centerX - 250,  this.game.height/2 + 200, 'backToMenuButton', this.actionOnClickExit, this, 2, 1, 0);
     },
 
     actionOnClickAgainPlay:function(){

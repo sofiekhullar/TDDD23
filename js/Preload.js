@@ -20,10 +20,6 @@ Game.Preload.prototype = {
 	    this.load.image('blackhole', 'assets/blackhole.png');
 	    this.load.image('coin', 'assets/diamond.png');
 	    this.load.image('heart', 'assets/health.png');
-	    this.load.image('earth', 'assets/planets/earth.png');
-	    this.load.image('venus', 'assets/planets/venus.png');
-	    this.load.image('moon', 'assets/planets/moon.png');
-	    this.load.image('neptune', 'assets/planets/neptune.png');
 	    this.load.image('bullet1', 'assets/bullet.png');
 	    this.load.image('bullet2', 'assets/bullet2.png');
 	    this.load.image('bullet3', 'assets/bullet3.png');
@@ -41,9 +37,19 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('fallingStar', 'assets/falling-star-animation.png', 250, 50);
 	    this.load.spritesheet('blinkingStar', 'assets/star-animation.png', 250, 50);
 
+	    // Lobby.sj
+	    this.load.image('readyButton', 'assets/readyButton.png');
+	    this.load.image('1_2connected', 'assets/1_2connected.png');
+	    this.load.image('2_2connected', 'assets/2_2connected.png')
+	    this.load.image('waitingForOpponent', 'assets/waitingForOpponent.png');
+
+	    // planetMenu.js
 	    this.load.image('choosePlanetMenu', 'assets/choosePlanetMenu.png');
 	    this.load.image('chooseButton', 'assets/chooseButton.png');
-	    this.load.image('waitingForOpponent', 'assets/waitingForOpponent.png');
+	   	this.load.image('earth', 'assets/planets/earth.png');
+	    this.load.image('venus', 'assets/planets/venus.png');
+	    this.load.image('moon', 'assets/planets/moon.png');
+	    this.load.image('neptune', 'assets/planets/neptune.png');
 
 	    // MainMenu.js
 	    this.load.image('play_button', 'assets/play_button.png');
@@ -54,6 +60,12 @@ Game.Preload.prototype = {
 	    this.load.image('helpButton', 'assets/helpButton.png');
 	    this.load.image('settingsButton', 'assets/settingsButton.png');
 	    this.load.image('mainMenuTitle', 'assets/mainMenuTitle.png');
+
+	    // gameOver 
+	    this.load.image('gameoverMenu_win', 'assets/gameoverMenu_win.png');
+	    this.load.image('gameoverMenu_lost', 'assets/gameoverMenu_lost.png')
+	    this.load.image('playAgainButton', 'assets/playAgainButton.png');
+	    this.load.image('backToMenuButton', 'assets/backToMenuButton.png');
 
 	    // HelpMenu.js
 	    this.load.image('help', 'assets/help.jpeg');

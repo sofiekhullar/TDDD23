@@ -8,6 +8,7 @@ Game.Lobby = function (game, output) {
 
 var startCountDown = false;
 var copyThis;
+var connectedText;
 
 Game.Lobby.prototype = {
 
@@ -18,12 +19,9 @@ Game.Lobby.prototype = {
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
 		// background.scale.setTo(2,2);
 
-		var style = { font: "32px Arial", fill: "#ff0044"};
-
-    	game.add.text(game.world.centerX, 0, "LOBBY SCREEN", style);
-		text = game.add.text(game.world.centerX, 20, "Players conected 1/2", style);
+        connectedText = game.add.sprite(0,0, '1_2connected');
 		
-		playButton = game.add.button(game.world.centerX - 250, this.game.height - 200, 'play_button', this.actionOnClickPlay, this, 2, 1, 0);	
+		playButton = game.add.button(game.world.centerX - 250, this.game.height - 200, 'readyButton', this.actionOnClickPlay, this, 2, 1, 0);	
 		playButton.input.enabled = false;
 		playButton.alpha = 0.5;
 
@@ -120,7 +118,8 @@ Game.Lobby.prototype = {
 
 	update:function(){
 		if(updateText){
-			text.setText("Players conected 2/2");
+            connectedText.kill();
+			this.game.add.sprite(0,0, '2_2connected');
 			playButton.alpha = 1;
 			playButton.input.enabled = true;
 		};
@@ -133,7 +132,7 @@ Game.Lobby.prototype = {
 		playButton.kill();
 
 		var style = { font: "32px Arial", fill: "#ff0044"};
-		game.add.sprite(0,0, 'waitingForOpponent');
+		this.game.add.sprite(0,0, 'waitingForOpponent');
 
 		startCountDown = true;
 	},
