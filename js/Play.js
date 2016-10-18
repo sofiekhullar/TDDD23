@@ -310,6 +310,8 @@ Game.Play.prototype = {
 
         socket.on("add ship", this.onAddShip);
 
+        socket.on("add tower", this.onAddTower);
+
     },
 
     // Socket connected
@@ -368,6 +370,11 @@ Game.Play.prototype = {
 
     onAddShip:function(data){
         thisCopy.addShipStep2(data.rot, data.type, data.id);
+    },
+
+    onAddTower: function(input){
+        var object = {x: input.x, y: input.y, id: input.id, damage: input.damage, type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY}
+        thisCopy.addTowerStep2(object);
     },
 
  	plot: function () {
@@ -572,7 +579,7 @@ Game.Play.prototype = {
             {
                 for(var j = 0; j < user.spaceShips.length; j++)
                 {
-                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange())
+                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange() && attackTowers[i].id != spaceSpriteArray[j].id)
                     {
                         if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                         {
@@ -629,18 +636,30 @@ Game.Play.prototype = {
         {
             placingTower = false;
             user.buy(costNow);
-            var tower1 = new Tower(towerSprite.position.x, towerSprite.position.y, id, damageNow, typeNow, costNow);
+            socket.emit('add tower',{x: towerSprite.position.x, y: towerSprite.position.y, id: uniqeID, damage: damageNow, 
+                type: typeNow, cost: costNow, range: rangeNow, rangeX: towerRangeSprite.position.x, rangeY: towerRangeSprite.position.y
+            });
+        }
+    },
 
-            attackTower = this.game.add.button(towerSprite.position.x, towerSprite.position.y, towerSpriteNow, this.towerMenu);
+    addTowerStep2: function(input){
+
+            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost);
+
+            attackTower = this.game.add.button(input.x, input.y, input.type, this.towerMenu);
             attackTower.height = 50;
-            attackTower.width = 50;
-            attackTower.id = id;    
+            attackTower.width = 50;   
             attackTower.alpha = 0;
+            attackTower.id = input.id;
+            attackTowerSprite = this.game.add.sprite(input.x, input.y, input.type);
+            var attackTowerRangeSprite = this.game.add.sprite(input.rangeX, input.rangeY, 'towerRange' + input.range);
+            if(input.id == 1)
+                attackTowerSprite.tint = 0xCC3333;
+            else
+                attackTowerSprite.tint = 0x00CC00;
 
-            attackTowerSprite = this.game.add.sprite(towerSprite.position.x, towerSprite.position.y, towerSpriteNow);
-            var attackTowerRangeSprite = this.game.add.sprite(towerRangeSprite.position.x, towerRangeSprite.position.y, 'towerRange' + rangeNow);
 
-            if(towerSpriteNow == "blackhole")
+            if(input.type == "blackhole")
             {
                 attackTowerSprite.loadTexture("blackhole-animation", 1);
                 var spin = attackTowerSprite.animations.add('spins');
@@ -648,8 +667,8 @@ Game.Play.prototype = {
             }
             
             attackTowerSprite.scale.setTo(0.5, 0.5);
-            attackTowerSprite.id = id;
             attackTowerSprite.inputEnabled = true;
+            attackTowerSprite.id = input.id;
             attackTowerSprite.input.useHandCursor = true;
             attackTowerSprite.events.onInputDown.add(this.towerMenu, this);
 
@@ -660,8 +679,6 @@ Game.Play.prototype = {
             attackTowerArray.push(attackTowerSprite);
             attackTowerRangeSprite.alpha = 0.1;
             towerRangeArray.push(attackTowerRangeSprite);
-            id++;
-        }
     },
 
 	availableSpot: function(){
@@ -822,9 +839,19 @@ Game.Play.prototype = {
         this.ship = this.add.sprite(0,0, type);
         this.ship.anchor.set(0.5);
         this.ship.id = idShip;
-        if(idShip == 2)
+
+        if(idShip == 2 && type != "ship2")
+        {
             this.ship.angle += 180;
+        }
+
+        if(idShip == 1)
+            this.ship.tint = 0xCC3333;
+        else
+            this.ship.tint = 0x00CC00;
+
         spaceSpriteArray.push(this.ship);
+
 
         healthArray.push(this.createHealthBar(40, 5,0,0));
 

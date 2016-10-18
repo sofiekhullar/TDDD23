@@ -54,9 +54,9 @@ function onSocketConnection(client) {
 
 	client.on("client ready", onClientReady);
 
-	client.on("add ship", onAddShip)
+	client.on("add ship", onAddShip);
 
-
+	client.on("add tower", onAddTower);
 };
 
 // Socket client has disconnected
@@ -148,7 +148,16 @@ function playerById(id) {
 function onAddShip(data){
 	this.emit("add ship", {type: data.type, rot: data.rot, id: data.id});
 	this.broadcast.emit("add ship", {type: data.type, rot: data.rot, id: data.id});
-}
+};
+
+function onAddTower(input){
+	this.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, 
+                type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
+            });
+	this.broadcast.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, 
+                type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
+            });
+};
 
 /**************************************************
 ** RUN THE GAME
