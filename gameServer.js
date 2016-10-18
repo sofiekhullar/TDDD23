@@ -57,6 +57,10 @@ function onSocketConnection(client) {
 	client.on("add ship", onAddShip);
 
 	client.on("add tower", onAddTower);
+
+	client.on("sell tower", onSellTower);
+
+	client.on("level up", onLevelUp);
 };
 
 // Socket client has disconnected
@@ -157,6 +161,18 @@ function onAddTower(input){
 	this.broadcast.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, 
                 type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
             });
+};
+
+function onSellTower(input){
+
+	this.emit('sell tower', {number: input.number});
+	this.broadcast.emit('sell tower', {number: input.number});
+
+};
+
+function onLevelUp(input){
+
+	this.broadcast.emit('level up', {number: input.number});
 };
 
 /**************************************************
