@@ -49,8 +49,12 @@
     var planetSprite1 = null;
     var planetSprite2 = null;
 
-    var towerBullet = null;
     var towerBullets = null;
+
+    var towerBulletBlackhole = null;
+    var towerBulletsAsteroid = null;
+    var towerbulletsSatellite = null;
+
     var towerFiringTime = 1;
     var timer = 0;
     var prevTime = 0;
@@ -222,7 +226,7 @@ Game.Play.prototype = {
           else
           {
             planetSprite1 = this.game.add.sprite(60, this.game.height/2 - 20, opponent.getType());
-            healthArray.push(this.createHealthBar(planetSprite1.width, 8, planetSprite1.xs , planetSprite1.y - 20));
+            healthArray.push(this.createHealthBar(planetSprite1.width, 8, planetSprite1.x , planetSprite1.y - 20));
             this.game.physics.enable(planetSprite1, Phaser.Physics.ARCADE);
             planetSprite1.enableBody = true;
             planetSprite1.immovable = true;
@@ -251,12 +255,37 @@ Game.Play.prototype = {
 
         // shiningStar.animations.play('blinkingStar', 15, false);
 
-        towerBullets = this.game.add.group();
-        towerBullets.enableBody = true;
+        towerBulletBlackhole = this.game.add.group();
+        towerBulletBlackhole.enableBody = true;
+
+
+        towerbulletsSatellite = this.game.add.group();
+        towerbulletsSatellite.enableBody = true;
+
+        towerBulletsAsteroid = this.game.add.group();
+        towerBulletsAsteroid.enableBody = true;
+
 
         for (var i = 0; i < 20; i++)
         {
-            var b = towerBullets.create(0, 0, 'bullet1');
+            var b = towerBulletBlackhole.create(0, 0, 'bullet1');
+            b.exists = false;
+            b.visible = false;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
+        }
+        
+        for (var i = 0; i < 20; i++)
+        {
+            var b = towerbulletsSatellite.create(0, 0, 'bullet2');
+            b.exists = false;
+            b.visible = false;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
+        }
+                for (var i = 0; i < 20; i++)
+        {
+            var b = towerBulletsAsteroid.create(0, 0, 'bulletAsteroid');
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
@@ -545,7 +574,9 @@ Game.Play.prototype = {
                         user.spaceShips.splice(i, 1);
                     }
 
-                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerBullets, collisionHandlerTower, null, {i:i});
+                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletBlackhole, collisionHandlerTower, null, {i:i});
+                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerbulletsSatellite, collisionHandlerTower, null, {i:i});
+                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletsAsteroid, collisionHandlerTower, null, {i:i});
                 }
             }
 
@@ -669,8 +700,20 @@ Game.Play.prototype = {
                     {
                         if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                         {
-                            this.towerFire(i, j);
-                            user.towers[i].lastFiringTime = timer;
+                            console.log(attackTowers[i].key);
+                            if(attackTowers[i].key == "satellite"){
+                                this.towerFireSatellite(i, j);
+                                user.towers[i].lastFiringTime = timer;
+                            }
+                            if(attackTowers[i].key == "blackhole"){
+                                this.towerFireBlack(i, j);
+                                user.towers[i].lastFiringTime = timer;
+                            }
+                            if(attackTowers[i].key == "asteroid"){
+                                this.towerFireAsteroid(i, j);
+                                user.towers[i].lastFiringTime = timer;
+                            }
+                           
                         }
                     }
                 }
@@ -695,7 +738,9 @@ Game.Play.prototype = {
         ship1Bullets.callAll('kill');
         ship2Bullets.callAll('kill');
         ship3Bullets.callAll('kill');
-        towerBullets.callAll('kill');
+        towerBulletsAsteroid.callAll('kill');
+        towerbulletsSatellite.callAll('kill');
+        towerBulletBlackhole.callAll('kill');
 
         game.add.sprite(0,0, 'gameoverMenu_win');
         playAgainButton = game.add.button(game.world.centerX - 250, this.game.height/2, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
@@ -726,7 +771,7 @@ Game.Play.prototype = {
                 type: typeNow, cost: costNow, range: rangeNow, rangeX: towerRangeSprite.position.x, rangeY: towerRangeSprite.position.y
             });
             attackTowerRangeSprite = this.game.add.sprite(towerRangeSprite.position.x, towerRangeSprite.position.y, 'towerRange' + rangeNow);
-            console.log("placing tower and setting alpha on range");
+            //console.log("placing tower and setting alpha on range");
             attackTowerRangeSprite.alpha = 0.1;
         }
     },
@@ -798,10 +843,31 @@ Game.Play.prototype = {
     },
 
 
+    towerFireBlack: function(id1, id2){
 
-    towerFire: function(id1, id2){
+        towerBullet = towerBulletBlackhole.getFirstExists(false);
 
-        towerBullet = towerBullets.getFirstExists(false);
+        if (towerBullet)
+        {
+            towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            this.game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
+        }
+    },
+
+    towerFireSatellite: function(id1, id2){
+
+        towerBullet = towerbulletsSatellite.getFirstExists(false);
+
+        if (towerBullet)
+        {
+            towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            this.game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
+        }
+    },
+
+    towerFireAsteroid: function(id1, id2){
+
+        towerBullet = towerBulletsAsteroid.getFirstExists(false);
 
         if (towerBullet)
         {
@@ -851,24 +917,23 @@ Game.Play.prototype = {
     },
 
         ship3Fire: function(id1, id2){
-        console.log("ship3fire Key " + this.ship.key);
-        var shipBullet;
-        var opponetPlanet;
+            var shipBullet;
+            var opponetPlanet;
 
-        shipBullet = ship3Bullets.getFirstExists(false);
+            shipBullet = ship3Bullets.getFirstExists(false);
 
-        if(id2 == 1) {
-            opponetPlanet = planetSprite2;
-        }
-        else{
-            opponetPlanet = planetSprite1;
-        }
+            if(id2 == 1) {
+                opponetPlanet = planetSprite2;
+            }
+            else{
+                opponetPlanet = planetSprite1;
+            }
 
-        if (shipBullet)
-        {
-            shipBullet.reset(spaceSpriteArray[id1].x, spaceSpriteArray[id1].y);
-            this.game.physics.arcade.moveToObject(shipBullet, opponetPlanet, 300);
-        }
+            if (shipBullet)
+            {
+                shipBullet.reset(spaceSpriteArray[id1].x, spaceSpriteArray[id1].y);
+                this.game.physics.arcade.moveToObject(shipBullet, opponetPlanet, 300);
+            }
     },
 
     placeTower:function(button){
@@ -902,7 +967,7 @@ Game.Play.prototype = {
                 this.killMenu();
 
             menuActive = true;
-            console.log(button);
+            //console.log(button);
             menuBackground = this.game.add.sprite(user.towers[button.number].x, user.towers[button.number].y, 'menuBackground');
 
             if(menuBackground.position.x > 750)
@@ -974,7 +1039,7 @@ Game.Play.prototype = {
     resetBullet:function (bullet) {
 
         bullet.kill();
-        console.log("bullet out of this world");
+        //console.log("bullet out of this world");
     },
 
     checkCollision:function(spriteA, spriteB){
@@ -1025,8 +1090,6 @@ Game.Play.prototype = {
         this.ship.body.immovable = true;
         spaceShip = new SpaceShip(0, type, rot, idShip);
         user.spaceShips.push(spaceShip);
-        console.log(spaceShip);
-
     },
 
 
@@ -1107,7 +1170,8 @@ Game.Play.prototype = {
                 healthArray[id].width -= damage;  // user.getHealth 
                 opponent.loseHealth(damage);
                 updateText = true;
-             } else
+             } 
+             else
              {
                 healthArray[id].width = 0;
                 opponent.killPlanet();
@@ -1132,30 +1196,45 @@ Game.Play.prototype = {
     /*********************************/
 
     function collisionHandlerPlanet (planetSprite, bullet){
-        console.log(this);
 	    var bulletType = bullet.key;
-	    var damage;
+	    var damage = 0;
 
 	    switch(bulletType){
 	    case 'bullet1':
-	        damage = 1;
+	        damage = 3;
 	    break;
 	    case 'bullet2':
 	        damage = 2;
 	    break;
 	    case 'bullet3':
-	        damage = 5;
+	        damage = 1;
 	    break;
 	    }
-        console.log("damage " + damage +"planernr"+ this.planet);
+
 	    bullet.kill();
         updateHealthBar(this.planet, damage);
 	};
 
    function collisionHandlerTower(ship, bullet) {
+    
+        var bulletType = bullet.key;
+        var damage = 0;
+
 	    if(healthArray[this.i+2].width > 0)
 	    {
-	        updateHealthBar(this.i +2, 7);
+
+            switch(bulletType){
+            case 'bullet1':
+                damage = 3;
+            break;
+            case 'bullet2':
+                damage = 2;
+            break;
+            case 'bullet3':
+                damage = 1;
+            break;
+            }
+	        updateHealthBar(this.i +2, damage);
 	    } 
 	    else 
 	    {

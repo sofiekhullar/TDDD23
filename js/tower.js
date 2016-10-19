@@ -39,12 +39,12 @@ function Tower(x, y, id, damage, type, cost) {
 
 	this.setRange = function(){
 		if(type == "blackhole"){
-			range = 50;
+			range = 100;
 		}
 		if(type == "satellite"){
 			range = 100;
 		}
-		if(type == "meteorite"){
+		if(type == "asteroid"){
 			range = 150;
 		}
 	}
