@@ -13,7 +13,7 @@ Game.Preload.prototype = {
 		this.load.setPreloadSprite(this.preloadBar);
 
 		// Load all assets!
-	    this.load.image('background', 'assets/background_blue-red.png');
+	    this.load.image('background2', 'assets/backgroundw.png');
 	    this.load.image('ship1', 'assets/ships/ship1.png');
 	    this.load.image('ship2', 'assets/ships/ship2.png');
 	    this.load.image('ship3', 'assets/ships/ship3.png');
@@ -29,6 +29,7 @@ Game.Preload.prototype = {
 	    this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
 	    this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
 	    this.load.image('asteroid', 'assets/asteroidsprite.png');
+	    this.load.image('asteroid-denied', 'assets/asteroidsprite-denied.png');
 	    this.load.spritesheet('asteroid-animation', 'assets/asteroidspritesheet2.png', 97, 99);
 	    this.load.image('menuItem', 'assets/menu-item.png');
 	    this.load.image('menuBackground', 'assets/menu-background.png');
@@ -38,6 +39,9 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('explosion', 'assets/explode.png', 128,128);
 	    this.load.spritesheet('fallingStar', 'assets/falling-star-animation.png', 50, 50);
 	    this.load.spritesheet('blinkingStar', 'assets/star-animation.png', 50, 50);
+	    this.load.spritesheet('sun-animation', 'assets/sun-animation.png', 100, 100);
+	    this.load.image('sun', 'assets/sun.png');
+	    this.load.image('sun-denied', 'assets/sun-denied.png');
 
 	    // Lobby.sj
 	    this.load.image('readyButton', 'assets/readyButton.png');
