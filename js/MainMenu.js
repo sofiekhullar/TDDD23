@@ -13,7 +13,6 @@ Game.MainMenu.prototype = {
 
 	create:function(game){
 
-
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
 		game.add.sprite(0,0,'mainMenuTitle');
 
