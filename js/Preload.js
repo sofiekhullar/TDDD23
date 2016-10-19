@@ -43,6 +43,8 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('sun-animation', 'assets/sun-animation.png', 100, 100);
 	    this.load.image('sun', 'assets/sun.png');
 	    this.load.image('sun-denied', 'assets/sun-denied.png');
+	    this.load.image('backgroundTowerMenu', 'assets/backgroundTowerMenu.png');
+	    this.load.image('towerMenuButton','assets/towerMenuButton.png');
 
 	    // Lobby.sj
 	    this.load.image('readyButton', 'assets/readyButton.png');

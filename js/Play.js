@@ -647,6 +647,7 @@ Game.Play.prototype = {
 
                 if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
                 {
+
                     //console.log(spaceSpriteArray[i].key + "  " + user.spaceShips[i].lastFiringTime + " timer " + timer);
                     if(spaceSpriteArray[i].id == 1){
                         if(spaceSpriteArray[i].key == 'ship1'){
@@ -1000,7 +1001,7 @@ Game.Play.prototype = {
 
             menuActive = true;
             //console.log(button);
-            menuBackground = this.game.add.sprite(user.towers[button.number].x, user.towers[button.number].y, 'menuBackground');
+            menuBackground = this.game.add.sprite(user.towers[button.number].x + 30, user.towers[button.number].y, 'backgroundTowerMenu');
 
             if(menuBackground.position.x > 750)
                 menuBackground.position.x = 750;
@@ -1011,14 +1012,13 @@ Game.Play.prototype = {
             if(menuBackground.position.y < 50)
                 menuBackground.position.y = 50;
 
-            levelText = this.game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 20, "Level " + user.towers[button.number].getLevel());
-            menuBackground.scale.setTo(2.5,2);
-            upgrade = this.game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 60, 'menuItem', function() {this.levelUp(button)}, this);
-            upgradeText = this.game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 70, "Upgrade $" + costNow);
-            upgrade.scale.setTo(2.9,2);
-            sell = this.game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 120, 'menuItem', function() {this.sellTower(button)}, this);
-            sellText = this.game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 130, "Sell $" + user.towers[button.number].getLevel() * 100 * 0.9);
-            sell.scale.setTo(2.9,2);
+            var style = { font: "normal 22px DK", fill: "#ffffff", align: "center" };
+
+            levelText = this.game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 3, "Level " + user.towers[button.number].getLevel(), style);
+            upgrade = this.game.add.button(menuBackground.position.x + 6, levelText.position.y + 35, 'towerMenuButton', function() {this.levelUp(button)}, this);
+            upgradeText = this.game.add.text(menuBackground.position.x + 12, upgrade.position.y + 3, "Upgrade $" + costNow, style);
+            sell = this.game.add.button(menuBackground.position.x + 6, upgradeText.position.y + 27, 'towerMenuButton', function() {this.sellTower(button)}, this);
+            sellText = this.game.add.text(menuBackground.position.x + 12, sell.position.y + 3, "Sell $" + user.towers[button.number].getLevel() * 100 * 0.9, style);
         }
         else {
             towerSprite.kill();

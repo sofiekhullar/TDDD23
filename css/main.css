@@ -1,3 +1,15 @@
+@font-face {	font-family: 'DK';	
+				src: url('DKCanoodle.otf') 	
+				format('opentype');
+			}
+
+.workarround
+{
+    font-family: 'DK';
+    position: absolute;
+   
+}
+
 canvas{
 	margin: auto;
 	border: 5px solid gray;
