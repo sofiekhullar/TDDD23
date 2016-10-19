@@ -18,13 +18,13 @@ function SpaceShip(pathIndex, type, rotation, id) {
 
 	this.setDamage = function(){
 		if(type == "ship1"){
-			damage = 10;
+			damage = 5;
 		}
 		if(type == "ship2"){
-			damage = 20;
+			damage = 10;
 		}
 		if(type == "ship3"){
-			damage = 50;
+			damage = 15;
 		}
 	}
 	this.setDamage();
