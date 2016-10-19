@@ -41,7 +41,7 @@ function Tower(x, y, id, damage, type, cost) {
 		if(type == "blackhole"){
 			range = 100;
 		}
-		if(type == "satellite"){
+		if(type == "sun"){
 			range = 100;
 		}
 		if(type == "asteroid"){

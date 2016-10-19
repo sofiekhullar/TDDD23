@@ -23,12 +23,12 @@ Game.Preload.prototype = {
 	    this.load.image('bullet1', 'assets/bullet.png');
 	    this.load.image('bullet2', 'assets/bullet2.png');
 	    this.load.image('bullet3', 'assets/bullet3.png');
-	    this.load.image('towerDenied', 'assets/towerDenied.png');
 	    this.load.image('satellite', 'assets/satellite.png');
 	    this.load.image('satellite-denied', 'assets/satellite-denied.png');
 	    this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
 	    this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
 	    this.load.image('bulletAsteroid', 'assets/bulletAsteroid.png');
+	    this.load.image('bulletSun', 'assets/sun-bullet.png');
 	    this.load.image('asteroid-denied', 'assets/asteroidsprite_denied.png');
 	    this.load.image('asteroid', 'assets/asteroidsprite.png');
 	    this.load.image('asteroid-denied', 'assets/asteroidsprite-denied.png');

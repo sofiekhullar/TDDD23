@@ -53,7 +53,7 @@
 
     var towerBulletBlackhole = null;
     var towerBulletsAsteroid = null;
-    var towerbulletsSatellite = null;
+    var towerbulletsSun = null;
 
     var towerFiringTime = 1;
     var timer = 0;
@@ -259,8 +259,8 @@ Game.Play.prototype = {
         towerBulletBlackhole.enableBody = true;
 
 
-        towerbulletsSatellite = this.game.add.group();
-        towerbulletsSatellite.enableBody = true;
+        towerbulletsSun = this.game.add.group();
+        towerbulletsSun.enableBody = true;
 
         towerBulletsAsteroid = this.game.add.group();
         towerBulletsAsteroid.enableBody = true;
@@ -277,7 +277,7 @@ Game.Play.prototype = {
         
         for (var i = 0; i < 20; i++)
         {
-            var b = towerbulletsSatellite.create(0, 0, 'bullet2');
+            var b = towerbulletsSun.create(0, 0, 'bulletSun');
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
@@ -575,7 +575,7 @@ Game.Play.prototype = {
                     }
 
                     this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletBlackhole, collisionHandlerTower, null, {i:i});
-                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerbulletsSatellite, collisionHandlerTower, null, {i:i});
+                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerbulletsSun, collisionHandlerTower, null, {i:i});
                     this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletsAsteroid, collisionHandlerTower, null, {i:i});
                 }
             }
@@ -701,8 +701,8 @@ Game.Play.prototype = {
                         if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                         {
                             console.log(attackTowers[i].key);
-                            if(attackTowers[i].key == "satellite"){
-                                this.towerFireSatellite(i, j);
+                            if(attackTowers[i].key == "sun"){
+                                this.towerFireSun(i, j);
                                 user.towers[i].lastFiringTime = timer;
                             }
                             if(attackTowers[i].key == "blackhole"){
@@ -739,7 +739,7 @@ Game.Play.prototype = {
         ship2Bullets.callAll('kill');
         ship3Bullets.callAll('kill');
         towerBulletsAsteroid.callAll('kill');
-        towerbulletsSatellite.callAll('kill');
+        towerbulletsSun.callAll('kill');
         towerBulletBlackhole.callAll('kill');
 
         game.add.sprite(0,0, 'gameoverMenu_win');
@@ -861,9 +861,9 @@ Game.Play.prototype = {
         }
     },
 
-    towerFireSatellite: function(id1, id2){
+    towerFireSun: function(id1, id2){
 
-        towerBullet = towerbulletsSatellite.getFirstExists(false);
+        towerBullet = towerbulletsSun.getFirstExists(false);
 
         if (towerBullet)
         {
