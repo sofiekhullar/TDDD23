@@ -91,7 +91,10 @@
     var starFall;
     var starFallTime = 2;
     var lastStarFall = 0;
+    var restartedGame = false;
 
+    var playAgainButton;
+    var exitButton;
 
 
 Game.Play = function (game) {
@@ -109,11 +112,14 @@ Game.Play = function (game) {
 Game.Play.prototype = {
 
     init: function(type, name, type1, name1, data){
-        localName = name;
-        localType = type;
-        opponentName = name1;
-        opponentType = type1;
-        uniqeID = data.id;
+        if(!restartedGame)
+        {
+            localName = name;
+            localType = type;
+            opponentName = name1;
+            opponentType = type1;
+            uniqeID = data.id;
+        }
     },
 
 	create: function(game){
@@ -251,8 +257,6 @@ Game.Play.prototype = {
 
         explosions.forEach( function(explosion) {explosion.animations.add('explosion');});
 
-        
-
         // shiningStar.animations.play('blinkingStar', 15, false);
 
         towerBulletBlackhole = this.game.add.group();
@@ -363,6 +367,8 @@ Game.Play.prototype = {
 
         socket.on("level up", this.onLevelUp);
 
+        socket.on("play again", this.onPlayAgain);
+
     },
 
     // Socket connected
@@ -439,6 +445,11 @@ Game.Play.prototype = {
 
         user.towers[input.number].levelUp();
 
+    },
+
+    onPlayAgain: function(){
+        thisCopy.resetVariables();
+        thisCopy.game.state.start(thisCopy.game.state.current);
     },
 
  	plot: function () {
@@ -712,8 +723,7 @@ Game.Play.prototype = {
                             if(attackTowers[i].key == "asteroid"){
                                 this.towerFireAsteroid(i, j);
                                 user.towers[i].lastFiringTime = timer;
-                            }
-                           
+                            }  
                         }
                     }
                 }
@@ -721,6 +731,8 @@ Game.Play.prototype = {
         },
 
     gameOver: function(game){
+
+        restartedGame = true;
 
         shipButton1.inputEnabled = false;
         shipButton2.inputEnabled = false;
@@ -732,15 +744,26 @@ Game.Play.prototype = {
 
         for(var i = 0; i < spaceSpriteArray.length; i++){
             spaceSpriteArray[i].destroy();
-            healthArray[i+2].destroy();
+            healthArray[i+2].kill();
+        }
+
+        for(var i = 0; i < attackTowerArray.length; i++){
+            attackTowerArray[i].kill();
+        }
+
+        for(var i = 0; i< towerRangeArray.length; i++){
+            towerRangeArray[i].kill();
         }
 
         ship1Bullets.callAll('kill');
         ship2Bullets.callAll('kill');
         ship3Bullets.callAll('kill');
+
         towerBulletsAsteroid.callAll('kill');
         towerbulletsSatellite.callAll('kill');
         towerBulletBlackhole.callAll('kill');
+
+        explosions.callAll('kill');
 
         game.add.sprite(0,0, 'gameoverMenu_win');
         playAgainButton = game.add.button(game.world.centerX - 250, this.game.height/2, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
@@ -748,8 +771,10 @@ Game.Play.prototype = {
     },
 
     actionOnClickAgainPlay:function(){
-        this.resetVariables();
-        this.game.state.start(this.game.state.current);
+        // TODO knapparna ska dö?!?!? går inte
+        playAgainButton.kill();
+        exitButton.kill();
+        socket.emit("play again");
     },
 
     actionOnClickExit:function(){
