@@ -184,7 +184,7 @@ Game.Play.prototype = {
 	    addTowerButton2.width = 50;
         addTowerButton2.range = 100;
 
-	    addTowerButton3 = this.game.add.button(400, 650, "blackhole", this.placeTower);
+	    addTowerButton3 = this.game.add.button(400, 650, "asteroid", this.placeTower);
 	    addTowerButton3.height = 50;
 	    addTowerButton3.width = 50;
         addTowerButton3.range = 150;
@@ -199,11 +199,11 @@ Game.Play.prototype = {
 
 	    addTowerButton1.type = "blackhole";
         addTowerButton2.type = "satellite";
-        addTowerButton3.type = "meteorite";
+        addTowerButton3.type = "asteroid";
 
         addTowerButton1.spriteName = "blackhole";
         addTowerButton2.spriteName = "satellite";
-        addTowerButton3.spriteName = "blackhole";
+        addTowerButton3.spriteName = "asteroid";
 
         if(uniqeID == 1){
             planetSprite1 = this.game.add.sprite(60, this.game.height/2 - 20, user.getType());
@@ -758,7 +758,12 @@ Game.Play.prototype = {
                 attackTowerSprite.animations.play('spins', 8, true);
             }
 
-
+            if(input.type == "asteroid")
+            {
+                attackTowerSprite.loadTexture("asteroid-animation", 1);
+                var spin = attackTowerSprite.animations.add('spins');
+                attackTowerSprite.animations.play('spins', 4, true);
+            }
             
             attackTowerSprite.scale.setTo(0.5, 0.5);
             attackTowerSprite.inputEnabled = true;

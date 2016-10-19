@@ -28,6 +28,8 @@ Game.Preload.prototype = {
 	    this.load.image('satellite-denied', 'assets/satellite-denied.png');
 	    this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
 	    this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
+	    this.load.image('asteroid', 'assets/asteroidsprite.png');
+	    this.load.spritesheet('asteroid-animation', 'assets/asteroidspritesheet2.png', 97, 99);
 	    this.load.image('menuItem', 'assets/menu-item.png');
 	    this.load.image('menuBackground', 'assets/menu-background.png');
 	    this.load.image('towerRange50', 'assets/towerRange_50.png');
