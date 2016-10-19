@@ -139,7 +139,7 @@ Game.Play.prototype = {
         this.scale.maxHeight = 500;
         this.scale.maxWidth = 1000;
 
-        var background = this.game.add.sprite(0,0, 'background'); 
+        var background = this.game.add.sprite(0,0, 'background2'); 
         background.inputEnabled = true;
         background.events.onInputDown.add(this.availableSpot, this);
 
@@ -189,7 +189,7 @@ Game.Play.prototype = {
 	    addTowerButton1.width = 50;
         addTowerButton1.range = 50;
 
-	    addTowerButton2 = this.game.add.button(300, 650, "satellite", this.placeTower);
+	    addTowerButton2 = this.game.add.button(300, 650, "sun", this.placeTower);
 	    addTowerButton2.height = 50;
 	    addTowerButton2.width = 50;
         addTowerButton2.range = 100;
@@ -208,11 +208,11 @@ Game.Play.prototype = {
 	    addTowerButton3.damage = 30;
 
 	    addTowerButton1.type = "blackhole";
-        addTowerButton2.type = "satellite";
+        addTowerButton2.type = "sun";
         addTowerButton3.type = "asteroid";
 
         addTowerButton1.spriteName = "blackhole";
-        addTowerButton2.spriteName = "satellite";
+        addTowerButton2.spriteName = "sun";
         addTowerButton3.spriteName = "asteroid";
 
         if(uniqeID == 1){
@@ -806,7 +806,7 @@ Game.Play.prototype = {
             var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost);
 
             if(!attackTowerRangeSprite)
-                attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'satellite');
+                attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'sun');
 
             towerRangeArray.push(attackTowerRangeSprite);
             attackTower = this.game.add.button(input.x, input.y, input.type, this.towerMenu, this);
@@ -818,7 +818,7 @@ Game.Play.prototype = {
             if(input.id == 1)
                 attackTowerSprite.tint = 0xCC3333;
             else
-                attackTowerSprite.tint = 0x00CC00;
+                attackTowerSprite.tint = 0xff00ff;
 
 
             if(input.type == "blackhole")
@@ -833,6 +833,13 @@ Game.Play.prototype = {
                 attackTowerSprite.loadTexture("asteroid-animation", 1);
                 var spin = attackTowerSprite.animations.add('spins');
                 attackTowerSprite.animations.play('spins', 4, true);
+            }
+
+            if(input.type == 'sun')
+            {
+                attackTowerSprite.loadTexture("sun-animation", 1);
+                var spin = attackTowerSprite.animations.add('spins');
+                attackTowerSprite.animations.play('spins', 8, true);
             }
             
             attackTowerSprite.scale.setTo(0.5, 0.5);
