@@ -11,7 +11,8 @@ var util = require("util"),					// Utility resources (logging, object inspection
 var socket,
 	players;	// Socket controller	// Array of connected players
 
-var counter = 0;
+var clientReadyCounter = 0;
+var playAgainCounter = 0;
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
@@ -61,6 +62,8 @@ function onSocketConnection(client) {
 	client.on("sell tower", onSellTower);
 
 	client.on("level up", onLevelUp);
+
+	client.on("play again", onPlackAgain)
 };
 
 // Socket client has disconnected
@@ -124,16 +127,24 @@ function onMovePlayer(data) {
 
 
 function onClientReady(){
-	counter++;
-	util.log("in onClientReady	" + counter);
-	if(counter == 2){
-		util.log("in onClientReady	if statement" + counter);
+	clientReadyCounter++;
+	util.log("in onClientReady	" + clientReadyCounter);
+	if(clientReadyCounter == 2){
+		util.log("in onClientReady	if statement" + clientReadyCounter);
 		this.emit("client ready", {id:1});
 		this.broadcast.emit("client ready", {id:2});
-		counter = 0;
+		clientReadyCounter = 0;
 	}
-}
+};
 
+function onPlackAgain(){
+	playAgainCounter++;
+	if(playAgainCounter == 2){
+		this.emit("play again");
+		this.broadcast.emit("play again");
+		playAgainCounter = 0;
+	}
+};
 
 /**************************************************
 ** GAME HELPER FUNCTIONS
