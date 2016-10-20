@@ -161,8 +161,8 @@ function playerById(id) {
 };
 
 function onAddShip(data){
-	this.emit("add ship", {type: data.type, rot: data.rot, id: data.id});
-	this.broadcast.emit("add ship", {type: data.type, rot: data.rot, id: data.id});
+	this.emit("add ship", {type: data.type, rot: data.rot, id: data.id, data: data.cost});
+	this.broadcast.emit("add ship", {type: data.type, rot: data.rot, id: data.id, cost: data.cost});
 };
 
 function onAddTower(input){
