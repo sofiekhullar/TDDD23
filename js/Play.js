@@ -547,7 +547,7 @@ Game.Play.prototype = {
                             
                             if(user.spaceShips[i].getRotation())
                             {
-                                if(spaceSpriteArray[i].y > 350)
+                                if(spaceSpriteArray[i].y > path[0].y)
                                     spaceSpriteArray[i].angle -= 0.45;
                                 else
                                     spaceSpriteArray[i].angle += 0.45;
@@ -565,7 +565,7 @@ Game.Play.prototype = {
 
                             if(user.spaceShips[i].getRotation())
                             {
-                                if(spaceSpriteArray[i].y < 350)
+                                if(spaceSpriteArray[i].y < path[0].y)
                                     spaceSpriteArray[i].angle -= 0.45;
                                 else
                                     spaceSpriteArray[i].angle += 0.45;
