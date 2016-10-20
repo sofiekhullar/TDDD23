@@ -517,7 +517,7 @@ Game.Play.prototype = {
                         
                         if(user.spaceShips[i].getRotation())
                         {
-                            if(spaceSpriteArray[i].y > 350)
+                            if(spaceSpriteArray[i].y > path[0].y)
                                 spaceSpriteArray[i].angle -= 0.45;
                             else
                                 spaceSpriteArray[i].angle += 0.45;
@@ -535,7 +535,7 @@ Game.Play.prototype = {
 
                         if(user.spaceShips[i].getRotation())
                         {
-                            if(spaceSpriteArray[i].y < 350)
+                            if(spaceSpriteArray[i].y < path[0].y)
                                 spaceSpriteArray[i].angle -= 0.45;
                             else
                                 spaceSpriteArray[i].angle += 0.45;
@@ -818,12 +818,8 @@ Game.Play.prototype = {
     },
 
     addTowerStep2: function(input){
-<<<<<<< HEAD
 
             var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost, input.range);
-=======
-            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost);
->>>>>>> 8464524a162ed3a6c505585f9d7309085c8783a6
 
             if(!attackTowerRangeSprite)
                 attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'sun');
@@ -835,6 +831,7 @@ Game.Play.prototype = {
             attackTower.alpha = 0;
             attackTower.id = input.id;
             attackTowerSprite = this.game.add.sprite(input.x, input.y, input.type);
+
             if(input.id == 1)
                 attackTowerSprite.tint = 0xCC3333;
             else
