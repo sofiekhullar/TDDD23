@@ -1155,19 +1155,19 @@ Game.Play.prototype = {
     
         if(type == 'ship1')
         {
-            this.ship.loadTexture("ship1-animation", 1);
+            this.ship.loadTexture("ship1-animation-" + localType, 1);
             var spin = this.ship.animations.add('spins');
             this.ship.animations.play('spins', 5, true);
         }
         if(type == 'ship2')
         {
-            this.ship.loadTexture("ship2-animation", 1);
+            this.ship.loadTexture("ship2-animation-" + localType, 1);
             var spin = this.ship.animations.add('spins');
             this.ship.animations.play('spins', 2, true);
         }
         if(type == 'ship3')
         {
-            this.ship.loadTexture("ship3-animation", 1);
+            this.ship.loadTexture("ship3-animation-" + localType, 1);
             var spin = this.ship.animations.add('spins');
             this.ship.animations.play('spins', 5, true);
         }

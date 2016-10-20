@@ -25,7 +25,6 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('ship1-animation-earth', 'assets/ships/ship1_animation_earth.png', 40,50);
 	    this.load.spritesheet('ship1-animation-neptune', 'assets/ships/ship1_animation_neptune.png', 40,50);
 
-
 	    this.load.image('ship2-moon', 'assets/ships/ship2_moon.png');
 	    this.load.image('ship2-venus', 'assets/ships/ship2_venus.png');
 	    this.load.image('ship2-earth', 'assets/ships/ship2_earth.png');
@@ -46,10 +45,6 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('ship3-animation-earth', 'assets/ships/ship3_animation_earth.png', 40,50);
 	    this.load.spritesheet('ship3-animation-neptune', 'assets/ships/ship3_animation_neptune.png', 40,50);
 
-	    this.load.image('ship2', 'assets/ships/ship2.png');
-	    this.load.spritesheet('ship2-animation', 'assets/ships/ship2_animation.png', 50,50);
-	    this.load.image('ship3', 'assets/ships/ship3.png');
-	    this.load.spritesheet('ship3-animation', 'assets/ships/ship3_animation.png', 40,50);
 	    this.load.image('blackhole', 'assets/blackhole.png');
 	    this.load.image('coin', 'assets/diamond.png');
 	    this.load.image('heart', 'assets/health.png');
