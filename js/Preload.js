@@ -34,8 +34,8 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('asteroid-animation', 'assets/asteroidspritesheet2.png', 97, 99);
 	    this.load.image('menuItem', 'assets/menu-item.png');
 	    this.load.image('menuBackground', 'assets/menu-background.png');
-	    this.load.image('towerRange50', 'assets/towerRange_50.png');
 	    this.load.image('towerRange100', 'assets/towerRange_100.png');
+	    this.load.image('towerRange125', 'assets/towerRange_125.png');
 	    this.load.image('towerRange150', 'assets/towerRange_150.png');
 	    this.load.spritesheet('explosion', 'assets/explode.png', 128,128);
 	    this.load.spritesheet('fallingStar', 'assets/falling-star-animation.png', 50, 50);

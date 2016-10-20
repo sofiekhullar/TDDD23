@@ -1,5 +1,5 @@
 
-function Tower(x, y, id, damage, type, cost) {
+function Tower(x, y, id, damage, type, cost, range) {
 
 	this.x = x;
 	this.y = y;
@@ -10,7 +10,7 @@ function Tower(x, y, id, damage, type, cost) {
 	this.cost = cost;
 	this.lastFiringTime = 2;
 	this.fireTime = 0;
-	var range;
+	this.range = range;
 
 	this.getLevel = function(){
 		return level;
@@ -49,6 +49,6 @@ function Tower(x, y, id, damage, type, cost) {
 		}
 	}
 
-	this.setRange();
+	// this.setRange();
 }	
 
