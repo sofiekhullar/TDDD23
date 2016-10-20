@@ -146,7 +146,57 @@ Game.Play.prototype = {
         this.scale.maxHeight = 500;
         this.scale.maxWidth = 1000;
 
-        var background = this.game.add.sprite(0,0, 'background2'); 
+        if((opponentType == "venus" || localType == "venus") && (opponentType == "neptune" || localType == "neptune"))
+        {
+            var background = this.game.add.sprite(0,0, 'background-neptune-venus');
+            console.log("opponent: " + opponentType + " \nlocal: " + localType + "\nID: " + uniqeID);
+            if((uniqeID == 2 && localType == "neptune") || (uniqeID == 1 && localType == "venus"))
+                var background = this.game.add.sprite(0,0, 'background-venus-neptune');
+        }
+
+        if((opponentType == "neptune" || localType == "neptune") && (opponentType == "earth" || localType == "earth"))
+        {
+            var background = this.game.add.sprite(0,0, 'background-neptune-earth');
+            console.log("opponent: " + opponentType + " \nlocal: " + localType + "\nID: " + uniqeID);
+            if((uniqeID == 2 && localType == "neptune") || (uniqeID == 1 && localType == "earth"))
+                var background = this.game.add.sprite(0,0, 'background-earth-neptune');
+        }
+
+        if((opponentType == "neptune" || localType == "neptune") && (opponentType == "moon" || localType == "moon"))
+        {
+            var background = this.game.add.sprite(0,0, 'background-neptune-moon');
+            console.log("opponent: " + opponentType + " \nlocal: " + localType + "\nID: " + uniqeID);
+            if((uniqeID == 2 && localType == "neptune") || (uniqeID == 1 && localType == "moon"))
+                var background = this.game.add.sprite(0,0, 'background-moon-neptune');
+
+        }
+
+        if((opponentType == "earth" || localType == "earth") && (opponentType == "moon" || localType == "moon"))
+        {
+            var background = this.game.add.sprite(0,0, 'background-moon-earth');
+            console.log("opponent: " + opponentType + " \nlocal: " + localType + "\nID: " + uniqeID);
+            if((uniqeID == 2 && localType == "moon") || (uniqeID == 1 && localType == "earth"))
+                var background = this.game.add.sprite(0,0, 'background-earth-moon');
+        }
+
+        if((opponentType == "venus" || localType == "venus") && (opponentType == "moon" || localType == "moon"))
+        {
+            var background = this.game.add.sprite(0,0, 'background-moon-venus');
+            console.log("opponent: " + opponentType + " \nlocal: " + localType + "\nID: " + uniqeID);
+            if((uniqeID == 2 && localType == "moon") || (uniqeID == 1 && localType == "venus"))
+                var background = this.game.add.sprite(0,0, 'background-venus-moon');
+        }
+
+        if((opponentType == "earth" || localType == "earth") && (opponentType == "venus" || localType == "venus"))
+        {
+            var background = this.game.add.sprite(0,0, 'background-earth-venus');
+            console.log("opponent: " + opponentType + " \nlocal: " + localType + "\nID: " + uniqeID);
+            if((uniqeID == 2 && localType == "earth") || (uniqeID == 1 && localType == "venus"))
+                var background = this.game.add.sprite(0,0, 'background-venus-earth');
+        }
+
+
+        // var background = this.game.add.sprite(0,0, 'background2'); 
         background.inputEnabled = true;
         background.events.onInputDown.add(this.availableSpot, this);
 
