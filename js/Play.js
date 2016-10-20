@@ -1151,6 +1151,26 @@ Game.Play.prototype = {
         this.ship.anchor.set(0.5);
         this.ship.id = idShip;
 
+    
+        if(type == 'ship1')
+        {
+            this.ship.loadTexture("ship1-animation", 1);
+            var spin = this.ship.animations.add('spins');
+            this.ship.animations.play('spins', 5, true);
+        }
+        if(type == 'ship2')
+        {
+            this.ship.loadTexture("ship2-animation", 1);
+            var spin = this.ship.animations.add('spins');
+            this.ship.animations.play('spins', 2, true);
+        }
+        if(type == 'ship3')
+        {
+            this.ship.loadTexture("ship3-animation", 1);
+            var spin = this.ship.animations.add('spins');
+            this.ship.animations.play('spins', 5, true);
+        }
+
         if(idShip == 2 && type != "ship2")
         {
             this.ship.angle += 180;

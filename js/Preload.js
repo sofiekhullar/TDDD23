@@ -15,8 +15,11 @@ Game.Preload.prototype = {
 		// Load all assets!
 	    this.load.image('background2', 'assets/backgroundw.png');
 	    this.load.image('ship1', 'assets/ships/ship1.png');
+	    this.load.spritesheet('ship1-animation', 'assets/ships/ship1_animation_new.png', 40,50);
 	    this.load.image('ship2', 'assets/ships/ship2.png');
+	    this.load.spritesheet('ship2-animation', 'assets/ships/ship2_animation.png', 50,50);
 	    this.load.image('ship3', 'assets/ships/ship3.png');
+	    this.load.spritesheet('ship3-animation', 'assets/ships/ship3_animation.png', 40,50);
 	    this.load.image('blackhole', 'assets/blackhole.png');
 	    this.load.image('coin', 'assets/diamond.png');
 	    this.load.image('heart', 'assets/health.png');
