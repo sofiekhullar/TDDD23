@@ -45,21 +45,21 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('ship3-animation-earth', 'assets/ships/ship3_animation_earth.png', 40,50);
 	    this.load.spritesheet('ship3-animation-neptune', 'assets/ships/ship3_animation_neptune.png', 40,50);
 
-	    this.load.image('blackhole', 'assets/blackhole.png');
+	    // this.load.image('blackhole', 'assets/blackhole.png');
 	    this.load.image('coin', 'assets/diamond.png');
 	    this.load.image('heart', 'assets/health.png');
 	    this.load.image('bullet1', 'assets/bullet.png');
 	    this.load.image('bullet2', 'assets/bullet2.png');
 	    this.load.image('bullet3', 'assets/bullet3.png');
-	    this.load.image('satellite', 'assets/satellite.png');
-	    this.load.image('satellite-denied', 'assets/satellite-denied.png');
-	    this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
-	    this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
+	    // this.load.image('satellite', 'assets/satellite.png');
+	    // this.load.image('satellite-denied', 'assets/satellite-denied.png');
+	    // this.load.image('blackhole-denied', 'assets/blackhole-denied.png');
+	    // this.load.spritesheet('blackhole-animation', 'assets/blackhole-animation.png', 100, 100);
 	    this.load.image('bulletAsteroid', 'assets/bulletAsteroid.png');
 	    this.load.image('bulletSun', 'assets/sun-bullet.png');
-	    this.load.image('asteroid', 'assets/asteroidsprite.png');
-	    this.load.image('asteroid-denied', 'assets/asteroidsprite-denied.png');
-	    this.load.spritesheet('asteroid-animation', 'assets/asteroidspritesheet2.png', 97, 99);
+	    // this.load.image('asteroid', 'assets/asteroidsprite.png');
+	    // this.load.image('asteroid-denied', 'assets/asteroidsprite-denied.png');
+	    // this.load.spritesheet('asteroid-animation', 'assets/asteroidspritesheet2.png', 97, 99);
 	    this.load.image('menuItem', 'assets/menu-item.png');
 	    this.load.image('menuBackground', 'assets/menu-background.png');
 	    this.load.image('towerRange100', 'assets/towerRange_100.png');
@@ -69,8 +69,8 @@ Game.Preload.prototype = {
 	    this.load.spritesheet('fallingStar', 'assets/falling-star-animation.png', 50, 50);
 	    this.load.spritesheet('blinkingStar', 'assets/star-animation.png', 50, 50);
 	    this.load.spritesheet('sun-animation', 'assets/sun-animation.png', 100, 100);
-	    this.load.image('sun', 'assets/sun.png');
-	    this.load.image('sun-denied', 'assets/sun-denied.png');
+	    // this.load.image('sun', 'assets/sun.png');
+	    // this.load.image('sun-denied', 'assets/sun-denied.png');
 	    this.load.image('backgroundTowerMenu', 'assets/backgroundTowerMenu.png');
 	    this.load.image('towerMenuButton','assets/towerMenuButton.png');
 
@@ -84,10 +84,20 @@ Game.Preload.prototype = {
 	    this.load.image('blackhole-neptune-denied', 'assets/towers/blackhole-neptune-denied.png');
 	    this.load.image('blackhole-venus-denied', 'assets/towers/blackhole-venus-denied.png');
 
-	    this.load.image('blackhole-animation-moon', 'assets/towers/blackhole-animation-moon.png');
-	    this.load.image('blackhole-animation-earth', 'assets/towers/blackhole-animation-earth.png');
-	    this.load.image('blackhole-animation-neptune', 'assets/towers/blackhole-animation-neptune.png');
-	    this.load.image('blackhole-animation-venus', 'assets/towers/blackhole-animation-venus.png');
+	    this.load.spritesheet('blackhole-animation-moon-level1', 'assets/towers/blackhole-animation-moon.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-earth-level1', 'assets/towers/blackhole-animation-earth.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-neptune-level1', 'assets/towers/blackhole-animation-neptune.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-venus-level1', 'assets/towers/blackhole-animation-venus.png', 100, 100);
+
+	    this.load.spritesheet('blackhole-animation-moon-level2', 'assets/towers/blackhole-animation-moon.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-earth-level2', 'assets/towers/blackhole-animation-earth.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-neptune-level2', 'assets/towers/blackhole-animation-neptune.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-venus-level2', 'assets/towers/blackhole-animation-venus.png', 100, 100);
+
+	    this.load.spritesheet('blackhole-animation-moon-level3', 'assets/towers/blackhole-animation-moon.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-earth-level3', 'assets/towers/blackhole-animation-earth.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-neptune-level3', 'assets/towers/blackhole-animation-neptune.png', 100, 100);
+	    this.load.spritesheet('blackhole-animation-venus-level3', 'assets/towers/blackhole-animation-venus.png', 100, 100);
 
 	    this.load.image('sun-moon', 'assets/towers/sun-moon.png');
 	    this.load.image('sun-earth', 'assets/towers/sun-earth.png');
@@ -99,20 +109,20 @@ Game.Preload.prototype = {
 	    this.load.image('sun-neptune-denied', 'assets/towers/sun-neptune-denied.png');
 	    this.load.image('sun-venus-denied', 'assets/towers/sun-venus-denied.png');
 
-	    this.load.image('sun-animation-moon-level1', 'assets/towers/sun-animation-moon-level1.png');
-	    this.load.image('sun-animation-earth-level1', 'assets/towers/sun-animation-earth-level1.png');
-	    this.load.image('sun-animation-neptune-level1', 'assets/towers/sun-animation-neptune-level1.png');
-	    this.load.image('sun-animation-venus-level1', 'assets/towers/sun-animation-venus-level1.png');
+	    this.load.spritesheet('sun-animation-moon-level1', 'assets/towers/sun-animation-moon-level1.png', 100, 100);
+	    this.load.spritesheet('sun-animation-earth-level1', 'assets/towers/sun-animation-earth-level1.png', 100, 100);
+	    this.load.spritesheet('sun-animation-neptune-level1', 'assets/towers/sun-animation-neptune-level1.png', 100, 100);
+	    this.load.spritesheet('sun-animation-venus-level1', 'assets/towers/sun-animation-venus-level1.png', 100, 100);
 
-	    this.load.image('sun-animation-moon-level2', 'assets/towers/sun-animation-moon-level2.png');
-	    this.load.image('sun-animation-earth-level2', 'assets/towers/sun-animation-earth-level2.png');
-	    this.load.image('sun-animation-neptune-level2', 'assets/towers/sun-animation-neptune-level2.png');
-	    this.load.image('sun-animation-venus-level2', 'assets/towers/sun-animation-venus-level2.png');
+	    this.load.spritesheet('sun-animation-moon-level2', 'assets/towers/sun-animation-moon-level2.png', 100, 100);
+	    this.load.spritesheet('sun-animation-earth-level2', 'assets/towers/sun-animation-earth-level2.png', 100, 100);
+	    this.load.spritesheet('sun-animation-neptune-level2', 'assets/towers/sun-animation-neptune-level2.png', 100, 100);
+	    this.load.spritesheet('sun-animation-venus-level2', 'assets/towers/sun-animation-venus-level2.png', 100, 100);
 
-	    this.load.image('sun-animation-moon-level3', 'assets/towers/sun-animation-moon-level3.png');
-	    this.load.image('sun-animation-earth-level3', 'assets/towers/sun-animation-earth-level3.png');
-	    this.load.image('sun-animation-neptune-level3', 'assets/towers/sun-animation-neptune-level3.png');
-	    this.load.image('sun-animation-venus-level3', 'assets/towers/sun-animation-venus-level3.png');
+	    this.load.spritesheet('sun-animation-moon-level3', 'assets/towers/sun-animation-moon-level3.png', 100, 100);
+	    this.load.spritesheet('sun-animation-earth-level3', 'assets/towers/sun-animation-earth-level3.png', 100, 100);
+	    this.load.spritesheet('sun-animation-neptune-level3', 'assets/towers/sun-animation-neptune-level3.png', 100, 100);
+	    this.load.spritesheet('sun-animation-venus-level3', 'assets/towers/sun-animation-venus-level3.png', 100, 100);
 
 	    this.load.image('asteroidsprite-moon', 'assets/towers/asteroidsprite-moon.png');
 	    this.load.image('asteroidsprite-earth', 'assets/towers/asteroidsprite-earth.png');
@@ -124,20 +134,20 @@ Game.Preload.prototype = {
 	    this.load.image('asteroidsprite-neptune-denied', 'assets/towers/asteroidsprite-neptune-denied.png');
 	    this.load.image('asteroidsprite-venus-denied', 'assets/towers/asteroidsprite-venus-denied.png');
 
-	    this.load.image('asteroidsprite-animation-moon-level1', 'assets/towers/asteroidsprite-animation-moon-level1.png');
-	    this.load.image('asteroidsprite-animation-earth-level1', 'assets/towers/asteroidsprite-animation-earth-level1.png');
-	    this.load.image('asteroidsprite-animation-neptune-level1', 'assets/towers/asteroidsprite-animation-neptune-level1.png');
-	    this.load.image('asteroidsprite-animation-venus-level1', 'assets/towers/asteroidsprite-animation-venus-level1.png');
+	    this.load.spritesheet('asteroidsprite-animation-moon-level1', 'assets/towers/asteroidsprite-animation-moon-level1.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-earth-level1', 'assets/towers/asteroidsprite-animation-earth-level1.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-neptune-level1', 'assets/towers/asteroidsprite-animation-neptune-level1.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-venus-level1', 'assets/towers/asteroidsprite-animation-venus-level1.png', 98, 99);
 
-	    this.load.image('asteroidsprite-animation-moon-level2', 'assets/towers/asteroidsprite-animation-moon-level2.png');
-	    this.load.image('asteroidsprite-animation-earth-level2', 'assets/towers/asteroidsprite-animation-earth-level2.png');
-	    this.load.image('asteroidsprite-animation-neptune-level2', 'assets/towers/asteroidsprite-animation-neptune-level2.png');
-	    this.load.image('asteroidsprite-animation-venus-level2', 'assets/towers/asteroidsprite-animation-venus-level2.png');
+	    this.load.spritesheet('asteroidsprite-animation-moon-level2', 'assets/towers/asteroidsprite-animation-moon-level2.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-earth-level2', 'assets/towers/asteroidsprite-animation-earth-level2.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-neptune-level2', 'assets/towers/asteroidsprite-animation-neptune-level2.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-venus-level2', 'assets/towers/asteroidsprite-animation-venus-level2.png',98, 99);
 
-	    this.load.image('asteroidsprite-animation-moon-level3', 'assets/towers/asteroidsprite-animation-moon-level3.png');
-	    this.load.image('asteroidsprite-animation-earth-level3', 'assets/towers/asteroidsprite-animation-earth-level3.png');
-	    this.load.image('asteroidsprite-animation-neptune-level3', 'assets/towers/asteroidsprite-animation-neptune-level3.png');
-	    this.load.image('asteroidsprite-animation-venus-level3', 'assets/towers/asteroidsprite-animation-venus-level3.png');
+	    this.load.spritesheet('asteroidsprite-animation-moon-level3', 'assets/towers/asteroidsprite-animation-moon-level3.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-earth-level3', 'assets/towers/asteroidsprite-animation-earth-level3.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-neptune-level3', 'assets/towers/asteroidsprite-animation-neptune-level3.png', 98, 99);
+	    this.load.spritesheet('asteroidsprite-animation-venus-level3', 'assets/towers/asteroidsprite-animation-venus-level3.png', 98, 99);
 
 	    // Lobby.sj
 	    this.load.image('readyButton', 'assets/readyButton.png');

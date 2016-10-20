@@ -25,7 +25,6 @@ function Tower(x, y, id, damage, type, cost, range) {
 	}
 
 	this.levelUp = function(){
-		console.log(level);
 		level++;
 		damage += damage +5;
 	}

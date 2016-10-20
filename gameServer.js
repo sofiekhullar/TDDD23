@@ -166,10 +166,10 @@ function onAddShip(data){
 };
 
 function onAddTower(input){
-	this.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, 
+	this.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, localType: input.localType, 
                 type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
             });
-	this.broadcast.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, 
+	this.broadcast.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, localType: input.localType, 
                 type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
             });
 };
@@ -182,8 +182,8 @@ function onSellTower(input){
 };
 
 function onLevelUp(input){
-
-	this.broadcast.emit('level up', {number: input.number});
+	this.emit('level up', {number: input.number, texture: input.texture + ""});
+	this.broadcast.emit('level up', {number: input.number, texture: input.texture + ""});
 };
 
 /**************************************************

@@ -34,7 +34,6 @@
     var spaceShip = null;
     var spaceSpriteArray = [];
     var attackTowerArray = [];
-    var attackTowers = [];
     var healthArray = [];
     var towerRangeArray = [];
 
@@ -100,6 +99,7 @@
     var esc;
     var gameOverBool = false;
     var gameoverSprite;
+    var localType;
 
 
 Game.Play = function (game) {
@@ -212,9 +212,9 @@ Game.Play.prototype = {
 	    addTowerButton2.damage = 20;
 	    addTowerButton3.damage = 30;
 
-	    addTowerButton1.type = "blackhole";
-        addTowerButton2.type = "sun";
-        addTowerButton3.type = "asteroidsprite";
+	    addTowerButton1.type = "blackhole-";
+        addTowerButton2.type = "sun-";
+        addTowerButton3.type = "asteroidsprite-";
 
         addTowerButton1.spriteName = "blackhole-" + localType;
         addTowerButton2.spriteName = "sun-" + localType;
@@ -436,7 +436,7 @@ Game.Play.prototype = {
     },
 
     onAddTower: function(input){
-        var object = {x: input.x, y: input.y, id: input.id, damage: input.damage, type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY}
+        var object = {x: input.x, y: input.y, id: input.id, damage: input.damage, type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY, localType: input.localType}
         thisCopy.addTowerStep2(object);
         console.log("onAddTower");
     },
@@ -444,12 +444,15 @@ Game.Play.prototype = {
     onSellTower: function(input){
 
         attackTowerArray[input.number].position.x = 2000;
-        attackTowers[input.number].position.x = 2000;
         towerRangeArray[input.number].position.x = 2000;
     },
 
     onLevelUp: function(input){
 
+        console.log(input.texture);
+        attackTowerArray[input.number].loadTexture(String(input.texture));
+        var spin = attackTowerArray[input.number].animations.add('spins');
+        attackTowerArray[input.number].animations.play('spins', 8, true);
         user.towers[input.number].levelUp();
 
     },
@@ -744,24 +747,24 @@ Game.Play.prototype = {
                     lastStarFall = timer;
                 }
 
-                for (var i = 0; i < attackTowers.length; i++)
+                for (var i = 0; i < attackTowerArray.length; i++)
                 {
                     for(var j = 0; j < user.spaceShips.length; j++)
                     {
-                        if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange() && attackTowers[i].id != spaceSpriteArray[j].id)
+                        if(Math.abs(attackTowerArray[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowerArray[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange() && attackTowerArray[i].id != spaceSpriteArray[j].id)
                         {
                             if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
                             {
                                 //console.log(attackTowers[i].key);
-                                if(attackTowers[i].key == "sun"){
+                                if(attackTowerArray[i].key.indexOf("sun") >= 0){
                                     this.towerFireSun(i, j);
                                     user.towers[i].lastFiringTime = timer;
                                 }
-                                if(attackTowers[i].key == "blackhole"){
+                                if(attackTowerArray[i].key.indexOf("blackhole") >= 0){
                                     this.towerFireBlack(i, j);
                                     user.towers[i].lastFiringTime = timer;
                                 }
-                                if(attackTowers[i].key == "asteroid"){
+                                if(attackTowerArray[i].key.indexOf("asteroidsprite") >= 0){
                                     this.towerFireAsteroid(i, j);
                                     user.towers[i].lastFiringTime = timer;
                                 }  
@@ -900,7 +903,7 @@ Game.Play.prototype = {
             placingTower = false;
             user.buy(costNow);
             updateText = true;
-            socket.emit('add tower',{x: towerSprite.position.x, y: towerSprite.position.y, id: uniqeID, damage: damageNow, 
+            socket.emit('add tower',{x: towerSprite.position.x, y: towerSprite.position.y, id: uniqeID, damage: damageNow, localType: localType,
                 type: typeNow, cost: costNow, range: rangeNow, rangeX: towerRangeSprite.position.x, rangeY: towerRangeSprite.position.y
             });
             attackTowerRangeSprite = this.game.add.sprite(towerRangeSprite.position.x, towerRangeSprite.position.y, 'towerRange' + rangeNow);
@@ -911,41 +914,32 @@ Game.Play.prototype = {
 
     addTowerStep2: function(input){
 
-            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost, input.range);
+            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type + input.localType, input.cost, input.range);
 
             if(!attackTowerRangeSprite)
                 attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'sun');
 
             towerRangeArray.push(attackTowerRangeSprite);
-            attackTower = this.game.add.button(input.x, input.y, input.type, this.towerMenu, this);
-            attackTower.height = 50;
-            attackTower.width = 50;   
-            attackTower.alpha = 0;
-            attackTower.id = input.id;
-            attackTowerSprite = this.game.add.sprite(input.x, input.y, input.type);
-            if(input.id == 1)
-                attackTowerSprite.tint = 0xCC3333;
-            else
-                attackTowerSprite.tint = 0xff00ff;
+            attackTowerSprite = this.game.add.sprite(input.x, input.y, input.type + "" + input.localType);
 
 
-            if(input.type == "blackhole")
+            if(input.type == "blackhole-")
             {
-                attackTowerSprite.loadTexture("blackhole-animation", 1);
+                attackTowerSprite.loadTexture("blackhole-animation-" + input.localType + "-level1", 1);
                 var spin = attackTowerSprite.animations.add('spins');
                 attackTowerSprite.animations.play('spins', 8, true);
             }
 
-            if(input.type == "asteroid")
+            if(input.type == "asteroidsprite-")
             {
-                attackTowerSprite.loadTexture("asteroid-animation", 1);
+                attackTowerSprite.loadTexture("asteroidsprite-animation-" + input.localType + "-level1", 1);
                 var spin = attackTowerSprite.animations.add('spins');
                 attackTowerSprite.animations.play('spins', 4, true);
             }
 
-            if(input.type == 'sun')
+            if(input.type == 'sun-')
             {
-                attackTowerSprite.loadTexture("sun-animation", 1);
+                attackTowerSprite.loadTexture("sun-animation-" + input.localType + "-level1", 1);
                 var spin = attackTowerSprite.animations.add('spins');
                 attackTowerSprite.animations.play('spins', 8, true);
             }
@@ -954,6 +948,8 @@ Game.Play.prototype = {
             attackTowerSprite.inputEnabled = true;
             attackTowerSprite.id = input.id;
             attackTowerSprite.number = number;
+            attackTowerSprite.type = input.type;
+            attackTowerSprite.localType = input.localType;
 
             if(input.id == uniqeID)
             {
@@ -964,7 +960,6 @@ Game.Play.prototype = {
             updateText = true;
 
             user.towers.push(tower1);
-            attackTowers.push(attackTower);
             attackTowerArray.push(attackTowerSprite);
             number++;
     },
@@ -1065,6 +1060,13 @@ Game.Play.prototype = {
             levelText = this.game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 3, "Level " + user.towers[button.number].getLevel(), style);
             upgrade = this.game.add.button(menuBackground.position.x + 6, levelText.position.y + 35, 'towerMenuButton', function() {this.levelUp(button)}, this);
             upgradeText = this.game.add.text(menuBackground.position.x + 12, upgrade.position.y + 3, "Upgrade $" + costNow, style);
+            if(user.towers[button.number].getLevel() == 3)
+            {
+                upgrade.input.enabled = false;
+                upgrade.alpha = 0.1;
+                upgradeText.text = "Max Level";
+            }
+
             sell = this.game.add.button(menuBackground.position.x + 6, upgradeText.position.y + 27, 'towerMenuButton', function() {this.sellTower(button)}, this);
             sellText = this.game.add.text(menuBackground.position.x + 12, sell.position.y + 3, "Sell $" + user.towers[button.number].getLevel() * 100 * 0.9, style);
         }
@@ -1080,7 +1082,6 @@ Game.Play.prototype = {
         user.sell(user.towers[button.number].cost);
         updateText = true;
         attackTowerArray[button.number].position.x = 2000;
-        attackTowers[button.number].position.x = 2000;
         towerRangeArray[button.number].position.x = 2000;
 
         socket.emit("sell tower", {number: button.number});
@@ -1094,9 +1095,10 @@ Game.Play.prototype = {
 
     levelUp:function(button){
 
-        user.towers[button.number].levelUp();
+        var level = user.towers[button.number].getLevel() + 1;
+        var texture = button.type + "animation-" + button.localType +  "-level" + level;
 
-        socket.emit("level up", {number : button.number});
+        socket.emit("level up", {number: button.number, texture: texture});
 
         if(menuActive)
         {            
@@ -1259,7 +1261,6 @@ Game.Play.prototype = {
             healthArray = [];
             spaceSpriteArray = [];
             attackTowerArray = [];
-            attackTowers = [];
             healthArray = [];
             towerRangeArray = [];
 
