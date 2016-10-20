@@ -12,6 +12,20 @@ Game.Preload.prototype = {
 		// Makes the loadingbar working automagic!
 		this.load.setPreloadSprite(this.preloadBar);
 
+		//Backgrounds
+		this.load.image('background-earth-venus','assets/background-earth-venus.png');
+		this.load.image('background-moon-earth','assets/background-moon-earth.png');
+		this.load.image('background-moon-venus','assets/background-moon-venus.png');
+		this.load.image('background-neptune-earth','assets/background-neptune-earth.png');
+		this.load.image('background-neptune-moon','assets/background-neptune-moon.png');
+		this.load.image('background-neptune-venus','assets/background-neptune-venus.png');
+		this.load.image('background-venus-earth','assets/background-venus-earth.png');
+		this.load.image('background-earth-moon','assets/background-earth-moon.png');
+		this.load.image('background-venus-moon','assets/background-venus-moon.png');
+		this.load.image('background-earth-neptune','assets/background-earth-neptune.png');
+		this.load.image('background-moone-neptune','assets/background-moon-neptune.png');
+		this.load.image('background-venus-neptune','assets/background-venus-neptune.png');
+
 		// Load all assets!
 	    this.load.image('background2', 'assets/backgroundw.png');
 	    this.load.image('helpmenu', 'assets/helpmenu.png')
