@@ -172,9 +172,10 @@ Game.Play.prototype = {
         this.bitmaphealth = this.add.bitmapData(this.game.width, this.game.height);
         this.bitmaphealth.addToWorld();
 
-        shipButton1 = this.game.add.button(this.game.width - 150, 650, 'ship1', this.addShip , this, 2, 1, 0);
-        shipButton2 = this.game.add.button(this.game.width - 250, 650, 'ship2', this.addShip, this, 2, 1, 0);
-        shipButton3 = this.game.add.button(this.game.width - 350, 650, 'ship3', this.addShip, this, 2, 1, 0);
+
+        shipButton1 = this.game.add.button(this.game.width - 150, 650, 'ship1-' + localType, this.addShip , this, 2, 1, 0);
+        shipButton2 = this.game.add.button(this.game.width - 250, 650, 'ship2-' + localType, this.addShip, this, 2, 1, 0);
+        shipButton3 = this.game.add.button(this.game.width - 350, 650, 'ship3-' + localType, this.addShip, this, 2, 1, 0);
 
         shipButton1.type = "ship1";
         shipButton2.type = "ship2";
