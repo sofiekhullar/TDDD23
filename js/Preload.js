@@ -49,6 +49,71 @@ Game.Preload.prototype = {
 	    this.load.image('backgroundTowerMenu', 'assets/backgroundTowerMenu.png');
 	    this.load.image('towerMenuButton','assets/towerMenuButton.png');
 
+	    this.load.image('blackhole-moon', 'assets/towers/blackhole-moon.png');
+	    this.load.image('blackhole-earth', 'assets/towers/blackhole-earth.png');
+	    this.load.image('blackhole-neptune', 'assets/towers/blackhole-neptune.png');
+	    this.load.image('blackhole-venus', 'assets/towers/blackhole-venus.png');
+
+	    this.load.image('blackhole-moon-denied', 'assets/towers/blackhole-moon-denied.png');
+	    this.load.image('blackhole-earth-denied', 'assets/towers/blackhole-earth-denied.png');
+	    this.load.image('blackhole-neptune-denied', 'assets/towers/blackhole-neptune-denied.png');
+	    this.load.image('blackhole-venus-denied', 'assets/towers/blackhole-venus-denied.png');
+
+	    this.load.image('blackhole-animation-moon', 'assets/towers/blackhole-animation-moon.png');
+	    this.load.image('blackhole-animation-earth', 'assets/towers/blackhole-animation-earth.png');
+	    this.load.image('blackhole-animation-neptune', 'assets/towers/blackhole-animation-neptune.png');
+	    this.load.image('blackhole-animation-venus', 'assets/towers/blackhole-animation-venus.png');
+
+	    this.load.image('sun-moon', 'assets/towers/sun-moon.png');
+	    this.load.image('sun-earth', 'assets/towers/sun-earth.png');
+	    this.load.image('sun-neptune', 'assets/towers/sun-neptune.png');
+	    this.load.image('sun-venus', 'assets/towers/sun-venus.png');
+
+	    this.load.image('sun-moon-denied', 'assets/towers/sun-moon-denied.png');
+	    this.load.image('sun-earth-denied', 'assets/towers/sun-earth-denied.png');
+	    this.load.image('sun-neptune-denied', 'assets/towers/sun-neptune-denied.png');
+	    this.load.image('sun-venus-denied', 'assets/towers/sun-venus-denied.png');
+
+	    this.load.image('sun-animation-moon-level1', 'assets/towers/sun-animation-moon-level1.png');
+	    this.load.image('sun-animation-earth-level1', 'assets/towers/sun-animation-earth-level1.png');
+	    this.load.image('sun-animation-neptune-level1', 'assets/towers/sun-animation-neptune-level1.png');
+	    this.load.image('sun-animation-venus-level1', 'assets/towers/sun-animation-venus-level1.png');
+
+	    this.load.image('sun-animation-moon-level2', 'assets/towers/sun-animation-moon-level2.png');
+	    this.load.image('sun-animation-earth-level2', 'assets/towers/sun-animation-earth-level2.png');
+	    this.load.image('sun-animation-neptune-level2', 'assets/towers/sun-animation-neptune-level2.png');
+	    this.load.image('sun-animation-venus-level2', 'assets/towers/sun-animation-venus-level2.png');
+
+	    this.load.image('sun-animation-moon-level3', 'assets/towers/sun-animation-moon-level3.png');
+	    this.load.image('sun-animation-earth-level3', 'assets/towers/sun-animation-earth-level3.png');
+	    this.load.image('sun-animation-neptune-level3', 'assets/towers/sun-animation-neptune-level3.png');
+	    this.load.image('sun-animation-venus-level3', 'assets/towers/sun-animation-venus-level3.png');
+
+	    this.load.image('asteroidsprite-moon', 'assets/towers/asteroidsprite-moon.png');
+	    this.load.image('asteroidsprite-earth', 'assets/towers/asteroidsprite-earth.png');
+	    this.load.image('asteroidsprite-neptune', 'assets/towers/asteroidsprite-neptune.png');
+	    this.load.image('asteroidsprite-venus', 'assets/towers/asteroidsprite-venus.png');
+
+	    this.load.image('asteroidsprite-moon-denied', 'assets/towers/asteroidsprite-moon-denied.png');
+	    this.load.image('asteroidsprite-earth-denied', 'assets/towers/asteroidsprite-earth-denied.png');
+	    this.load.image('asteroidsprite-neptune-denied', 'assets/towers/asteroidsprite-neptune-denied.png');
+	    this.load.image('asteroidsprite-venus-denied', 'assets/towers/asteroidsprite-venus-denied.png');
+
+	    this.load.image('asteroidsprite-animation-moon-level1', 'assets/towers/asteroidsprite-animation-moon-level1.png');
+	    this.load.image('asteroidsprite-animation-earth-level1', 'assets/towers/asteroidsprite-animation-earth-level1.png');
+	    this.load.image('asteroidsprite-animation-neptune-level1', 'assets/towers/asteroidsprite-animation-neptune-level1.png');
+	    this.load.image('asteroidsprite-animation-venus-level1', 'assets/towers/asteroidsprite-animation-venus-level1.png');
+
+	    this.load.image('asteroidsprite-animation-moon-level2', 'assets/towers/asteroidsprite-animation-moon-level2.png');
+	    this.load.image('asteroidsprite-animation-earth-level2', 'assets/towers/asteroidsprite-animation-earth-level2.png');
+	    this.load.image('asteroidsprite-animation-neptune-level2', 'assets/towers/asteroidsprite-animation-neptune-level2.png');
+	    this.load.image('asteroidsprite-animation-venus-level2', 'assets/towers/asteroidsprite-animation-venus-level2.png');
+
+	    this.load.image('asteroidsprite-animation-moon-level3', 'assets/towers/asteroidsprite-animation-moon-level3.png');
+	    this.load.image('asteroidsprite-animation-earth-level3', 'assets/towers/asteroidsprite-animation-earth-level3.png');
+	    this.load.image('asteroidsprite-animation-neptune-level3', 'assets/towers/asteroidsprite-animation-neptune-level3.png');
+	    this.load.image('asteroidsprite-animation-venus-level3', 'assets/towers/asteroidsprite-animation-venus-level3.png');
+
 	    // Lobby.sj
 	    this.load.image('readyButton', 'assets/readyButton.png');
 	    this.load.image('1_2connected', 'assets/1_2connected_new.png');
