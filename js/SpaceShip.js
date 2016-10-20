@@ -7,12 +7,13 @@ function SpaceShip(pathIndex, type, rotation, id, cost) {
 
 	this.pathIndex = pathIndex; 
 	this.type = type;
+	console.log(type);
 	this.rotation = rotation;
 	this.id = id;
 	this.lastFiringTime = 10;
 	this.fireTime = 0;
 	this.cost = cost;
-	
+
 	this.getCost = function(){
 		return cost;
 	}

@@ -172,7 +172,6 @@ Game.Play.prototype = {
         this.bitmaphealth = this.add.bitmapData(this.game.width, this.game.height);
         this.bitmaphealth.addToWorld();
 
-
         shipButton1 = this.game.add.button(this.game.width - 150, 650, 'ship1-' + localType, this.addShip , this, 2, 1, 0);
         shipButton2 = this.game.add.button(this.game.width - 250, 650, 'ship2-' + localType, this.addShip, this, 2, 1, 0);
         shipButton3 = this.game.add.button(this.game.width - 350, 650, 'ship3-' + localType, this.addShip, this, 2, 1, 0);
@@ -687,38 +686,72 @@ Game.Play.prototype = {
                 timer = Math.floor(this.game.time.now / 1000);
 
                 for( var i = 0; i < spaceSpriteArray.length; i++){
+                    console.log(spaceSpriteArray[i].key);
 
                     if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
                     {
 
-                        //console.log(spaceSpriteArray[i].key + "  " + user.spaceShips[i].lastFiringTime + " timer " + timer);
-                        if(spaceSpriteArray[i].id == 1){
-                            if(spaceSpriteArray[i].key == 'ship1'){
-                                 this.ship1Fire(i, 1);
-                                 user.spaceShips[i].lastFiringTime = timer;
+                        if(uniqeID == 1){
+                            if(spaceSpriteArray[i].id == 1){
+                                if(spaceSpriteArray[i].key == 'ship1-animation-' + localType){
+                                     this.ship1Fire(i, 1);
+                                     user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key == 'ship2-animation-' + localType){
+                                    this.ship2Fire(i, 1);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key == 'ship3-animation-' + localType){
+                                    this.ship3Fire(i, 1);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
                             }
-                            if(spaceSpriteArray[i].key == 'ship2'){
-                                this.ship2Fire(i, 1);
-                                user.spaceShips[i].lastFiringTime = timer;
-                            }
-                            if(spaceSpriteArray[i].key == 'ship3'){
-                                this.ship3Fire(i, 1);
-                                user.spaceShips[i].lastFiringTime = timer;
+
+                            if(spaceSpriteArray[i].id == 2){
+                                if(spaceSpriteArray[i].key == 'ship1-animation-' + opponentType){
+                                     this.ship1Fire(i, 2);
+                                     user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key== 'ship2-animation-' + opponentType){
+                                    this.ship2Fire(i, 2);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key == 'ship3-animation-' + opponentType){
+                                    this.ship3Fire(i, 2);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
                             }
                         }
 
-                        if(spaceSpriteArray[i].id == 2){
-                            if(spaceSpriteArray[i].key == 'ship1'){
-                                 this.ship1Fire(i, 2);
-                                 user.spaceShips[i].lastFiringTime = timer;
+                        if(uniqeID == 2){
+                            if(spaceSpriteArray[i].id == 1){
+                                if(spaceSpriteArray[i].key == 'ship1-animation-' + opponentType){
+                                     this.ship1Fire(i, 1);
+                                     user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key == 'ship2-animation-' + opponentType){
+                                    this.ship2Fire(i, 1);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key == 'ship3-animation-' + opponentType){
+                                    this.ship3Fire(i, 1);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
                             }
-                            if(spaceSpriteArray[i].key== 'ship2'){
-                                this.ship2Fire(i, 2);
-                                user.spaceShips[i].lastFiringTime = timer;
-                            }
-                            if(spaceSpriteArray[i].key == 'ship3'){
-                                this.ship3Fire(i, 2);
-                                user.spaceShips[i].lastFiringTime = timer;
+
+                            if(spaceSpriteArray[i].id == 2){
+                                if(spaceSpriteArray[i].key == 'ship1-animation-' + localType){
+                                     this.ship1Fire(i, 2);
+                                     user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key== 'ship2-animation-' + localType){
+                                    this.ship2Fire(i, 2);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
+                                if(spaceSpriteArray[i].key == 'ship3-animation-' + localType){
+                                    this.ship3Fire(i, 2);
+                                    user.spaceShips[i].lastFiringTime = timer;
+                                }
                             }
                         }
                     }
@@ -857,7 +890,6 @@ Game.Play.prototype = {
 
             explosions.callAll('kill');
 
-            console.log("id, uniqeID : " + id +"   ,  " + uniqeID);
             
             if(id == 2 && uniqeID == 1)
             {
@@ -1136,9 +1168,6 @@ Game.Play.prototype = {
     /*********************************/
     addShip: function(input){
 
-        // currRot = input.rot;
-        // currType = input.type;
-
         if(user.getMoney() >= input.cost)
         {
             socket.emit("add ship", {rot: input.rot, type: input.type, id: uniqeID, cost: input.cost});
@@ -1148,28 +1177,48 @@ Game.Play.prototype = {
     },
 
     addShipStep2: function(rot, type, idShip, cost){
+        var whatType;
 
         updateText = true;
         this.ship = this.add.sprite(0,0, type);
         this.ship.anchor.set(0.5);
         this.ship.id = idShip;
 
-    
+        if(uniqeID == 1){
+            if(idShip == 1)
+            {
+                whatType = localType;
+            }
+            else{
+                whatType = opponentType;
+            }
+        }
+
+        if(uniqeID == 2){
+            if(idShip == 2)
+            {
+                whatType = localType;
+            }
+            else{
+                whatType = opponentType;
+            }
+        }
+
         if(type == 'ship1')
         {
-            this.ship.loadTexture("ship1-animation-" + localType, 1);
+            this.ship.loadTexture("ship1-animation-" + whatType, 1);
             var spin = this.ship.animations.add('spins');
             this.ship.animations.play('spins', 5, true);
         }
         if(type == 'ship2')
         {
-            this.ship.loadTexture("ship2-animation-" + localType, 1);
+            this.ship.loadTexture("ship2-animation-" + whatType, 1);
             var spin = this.ship.animations.add('spins');
             this.ship.animations.play('spins', 2, true);
         }
         if(type == 'ship3')
         {
-            this.ship.loadTexture("ship3-animation-" + localType, 1);
+            this.ship.loadTexture("ship3-animation-" + whatType, 1);
             var spin = this.ship.animations.add('spins');
             this.ship.animations.play('spins', 5, true);
         }
@@ -1179,14 +1228,8 @@ Game.Play.prototype = {
             this.ship.angle += 180;
         }
 
-        if(idShip == 1)
-            this.ship.tint = 0xCC3333;
-        else
-            this.ship.tint = 0x00CC00;
-
+        console.log(this.ship);
         spaceSpriteArray.push(this.ship);
-
-
         healthArray.push(this.createHealthBar(40, 5,0,0));
 
         this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
@@ -1409,8 +1452,6 @@ Game.Play.prototype = {
                 user.sell(user.spaceShips[this.i].getCost() * 0.5);
                 updateText = true;
             }
-
-            console.log("Kill ship");
 
             var explosion = explosions.getFirstExists(false);
             explosion.reset(ship.x, ship.y);

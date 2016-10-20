@@ -18,7 +18,8 @@ Game.Preload.prototype = {
 	    this.load.image('ship1-moon', 'assets/ships/ship1_moon.png');
 	    this.load.image('ship1-venus', 'assets/ships/ship1_venus.png');
 	    this.load.image('ship1-earth', 'assets/ships/ship1_earth.png');
-	    this.load.image('ship1-nepute', 'assets/ships/ship1_neptune.png');
+	    this.load.image('ship1-neptune', 'assets/ships/ship1_neptune.png');
+	    this.load.image('ship1', 'assets/ships/ship1.png');
 
 	    this.load.spritesheet('ship1-animation-moon', 'assets/ships/ship1_animation_moon.png', 40,50);
 	    this.load.spritesheet('ship1-animation-venus', 'assets/ships/ship1_animation_venus.png', 40,50);
@@ -28,7 +29,7 @@ Game.Preload.prototype = {
 	    this.load.image('ship2-moon', 'assets/ships/ship2_moon.png');
 	    this.load.image('ship2-venus', 'assets/ships/ship2_venus.png');
 	    this.load.image('ship2-earth', 'assets/ships/ship2_earth.png');
-	    this.load.image('ship2-nepute', 'assets/ships/ship2_neptune.png');
+	    this.load.image('ship2-neptune', 'assets/ships/ship2_neptune.png');
 
 	    this.load.spritesheet('ship2-animation-moon', 'assets/ships/ship2_animation_moon.png', 40,50);
 	    this.load.spritesheet('ship2-animation-venus', 'assets/ships/ship2_animation_venus.png', 40,50);
@@ -38,7 +39,7 @@ Game.Preload.prototype = {
 	    this.load.image('ship3-moon', 'assets/ships/ship3_moon.png');
 	    this.load.image('ship3-venus', 'assets/ships/ship3_venus.png');
 	    this.load.image('ship3-earth', 'assets/ships/ship3_earth.png');
-	    this.load.image('ship3-nepute', 'assets/ships/ship3_neptune.png');
+	    this.load.image('ship3-neptune', 'assets/ships/ship3_neptune.png');
 
 	    this.load.spritesheet('ship3-animation-moon', 'assets/ships/ship3_animation_moon.png', 40,50);
 	    this.load.spritesheet('ship3-animation-venus', 'assets/ships/ship3_animation_venus.png', 40,50);
