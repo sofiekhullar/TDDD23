@@ -150,21 +150,25 @@ Game.Play.prototype = {
         background.inputEnabled = true;
         background.events.onInputDown.add(this.availableSpot, this);
 
-	 	var graphics = this.game.add.graphics(100, 100);
-        graphics.beginFill(0x999999);
-        graphics.drawRect(-100, this.game.height - 150, 1000, 50);
+	 	var graphics = this.game.add.graphics(0, 0);
+        graphics.beginFill(0x000000);
+        graphics.alpha = 0.6;
+        graphics.drawRect(0, this.game.height - 80, 1000, 120);
         window.graphics = graphics;
 
-        var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 
-        moneyTextUser = this.game.add.text(30, this.game.height - 50, user.getMoney() , style);
-        this.game.add.sprite(0, this.game.height - 50, 'coin');
+        var style = { font: "bold 25px DK", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+        var style1 = { font: "bold 35px DK", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 
-        healthTextUser = this.game.add.text(30, this.game.height - 20, user.getHealth(), style);
-        this.game.add.sprite(0, this.game.height - 20, 'heart');
+        moneyTextUser = this.game.add.text(90, this.game.height - 77, user.getMoney() , style1);
+        var coinSprite = this.game.add.sprite(30, this.game.height - 75, 'coin');
+        coinSprite.width = 35;
+        coinSprite.height = 35;
 
-        healthTextOpponent = this.game.add.text(this.game.width - 50, this.game.height - 20, opponent.getHealth(), style);
-        this.game.add.sprite(this.game.width - 80, this.game.height - 20, 'heart');
+        healthTextUser = this.game.add.text(90, this.game.height - 40, user.getHealth(), style1);
+        var lifeSprite = this.game.add.sprite(30, this.game.height - 40, 'heart');
+        lifeSprite.width = 35;
+        lifeSprite.height = 35;
 
         this.bmd = this.add.bitmapData(this.game.width, this.game.height);
         this.bmd.addToWorld();
@@ -172,9 +176,17 @@ Game.Play.prototype = {
         this.bitmaphealth = this.add.bitmapData(this.game.width, this.game.height);
         this.bitmaphealth.addToWorld();
 
-        shipButton1 = this.game.add.button(this.game.width - 150, 650, 'ship1-' + localType, this.addShip , this, 2, 1, 0);
-        shipButton2 = this.game.add.button(this.game.width - 250, 650, 'ship2-' + localType, this.addShip, this, 2, 1, 0);
-        shipButton3 = this.game.add.button(this.game.width - 350, 650, 'ship3-' + localType, this.addShip, this, 2, 1, 0);
+        shipButton1 = this.game.add.button(this.game.width - 150, 625, 'ship1-' + localType, this.addShip , this, 2, 1, 0);
+        shipButton2 = this.game.add.button(this.game.width - 250, 625, 'ship2-' + localType, this.addShip, this, 2, 1, 0);
+        shipButton3 = this.game.add.button(this.game.width - 350, 625, 'ship3-' + localType, this.addShip, this, 2, 1, 0);
+
+
+        shipButton1.height = 50;
+        shipButton1.width = 50;
+        shipButton2.height = 50;
+        shipButton2.width = 50;
+        shipButton3.height = 50;
+        shipButton3.width = 50;
 
         shipButton1.type = "ship1";
         shipButton2.type = "ship2";
@@ -187,18 +199,22 @@ Game.Play.prototype = {
         shipButton1.rot = true;
         shipButton2.rot = false;
         shipButton3.rot = true;
- 	
-	 	addTowerButton1 = this.game.add.button(200, 650, "blackhole-" + localType, this.placeTower);
-	    addTowerButton1.height = 50;
-	    addTowerButton1.width = 50;
+    
+        shipCostText1 = this.game.add.text(this.game.width - 150, 675, "$ " + shipButton1.cost, style);
+        shipCostText2 = this.game.add.text(this.game.width - 250, 675, "$ " + shipButton2.cost, style);
+        shipCostText3 = this.game.add.text(this.game.width - 350, 675, "$ " + shipButton3.cost, style);
+        
+        addTowerButton1 = this.game.add.button(230, 625, "blackhole-" + localType, this.placeTower);
+        addTowerButton1.height = 50;
+        addTowerButton1.width = 50;
         addTowerButton1.range = 100;
 
-	    addTowerButton2 = this.game.add.button(300, 650, "sun-" + localType, this.placeTower);
+	    addTowerButton2 = this.game.add.button(330, 625, "sun-" + localType, this.placeTower);
 	    addTowerButton2.height = 50;
 	    addTowerButton2.width = 50;
         addTowerButton2.range = 125;
 
-	    addTowerButton3 = this.game.add.button(400, 650, "asteroidsprite-" + localType, this.placeTower);
+	    addTowerButton3 = this.game.add.button(430, 625, "asteroidsprite-" + localType, this.placeTower);
 	    addTowerButton3.height = 50;
 	    addTowerButton3.width = 50;
         addTowerButton3.range = 150;
@@ -218,6 +234,10 @@ Game.Play.prototype = {
         addTowerButton1.spriteName = "blackhole-" + localType;
         addTowerButton2.spriteName = "sun-" + localType;
         addTowerButton3.spriteName = "asteroidsprite-" + localType;
+
+        towerCostText1 = this.game.add.text(232, 675, "$ " + addTowerButton1.cost, style);
+        towerCostText2 = this.game.add.text(332, 675, "$ " + addTowerButton2.cost, style);
+        towerCostText3 = this.game.add.text(432, 675, "$ " + addTowerButton3.cost, style);
 
         if(uniqeID == 1){
             planetSprite1 = this.game.add.sprite(60, this.game.height/2 + moveUp - 20, user.getType());
@@ -260,8 +280,6 @@ Game.Play.prototype = {
         explosions.setAll('anchor.y', 0.5);
 
         explosions.forEach( function(explosion) {explosion.animations.add('explosion');});
-
-        // shiningStar.animations.play('blinkingStar', 15, false);
 
         towerBulletBlackhole = this.game.add.group();
         towerBulletBlackhole.enableBody = true;
@@ -454,6 +472,14 @@ Game.Play.prototype = {
         attackTowerArray[input.number].animations.play('spins', 8, true);
         user.towers[input.number].levelUp();
 
+        if(attackTowerArray[input.number].key.indexOf("blackhole") >= 0)
+        {
+            attackTowerArray[input.number].width += 20;
+            attackTowerArray[input.number].position.x -= 10;
+            attackTowerArray[input.number].height += 20;
+            attackTowerArray[input.number].position.y -= 10;
+        }
+
     },
 
     onPlayAgain: function(){
@@ -530,7 +556,6 @@ Game.Play.prototype = {
     	    if(updateText){
                 moneyTextUser.setText(user.getMoney());
                 healthTextUser.setText(user.getHealth());
-                healthTextOpponent.setText(opponent.getHealth());
 
                 updateText = false;
     	     }
@@ -657,7 +682,7 @@ Game.Play.prototype = {
                     for (var i = 0; i < pathArray.length; i++)
                     {
                         
-                            if(this.checkCollision(towerSprite, pathArray[i]))
+                            if(this.checkCollision(towerSprite, pathArray[i]) || towerSprite.position.y > 580)
                             {
                                 towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
                                 towerRangeSprite.tint = 0xff0000;
@@ -686,7 +711,6 @@ Game.Play.prototype = {
                 timer = Math.floor(this.game.time.now / 1000);
 
                 for( var i = 0; i < spaceSpriteArray.length; i++){
-                    console.log(spaceSpriteArray[i].key);
 
                     if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
                     {
@@ -806,6 +830,7 @@ Game.Play.prototype = {
                     }
                 }
             }
+
         },
 
     checkIfAfford: function(){
