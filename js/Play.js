@@ -163,9 +163,6 @@ Game.Play.prototype = {
         healthTextUser = this.game.add.text(30, this.game.height - 20, user.getHealth(), style);
         this.game.add.sprite(0, this.game.height - 20, 'heart');
 
-        healthTextOpponent = this.game.add.text(this.game.width - 50, this.game.height - 20, opponent.getHealth(), style);
-        this.game.add.sprite(this.game.width - 80, this.game.height - 20, 'heart');
-
         this.bmd = this.add.bitmapData(this.game.width, this.game.height);
         this.bmd.addToWorld();
 
@@ -231,6 +228,7 @@ Game.Play.prototype = {
             this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
             planetSprite2.enableBody = true;
             planetSprite2.immovable = true;
+            console.log(planetSprite1.width + ", " + planetSprite2.width);
           }
 
           else
@@ -530,7 +528,6 @@ Game.Play.prototype = {
     	    if(updateText){
                 moneyTextUser.setText(user.getMoney());
                 healthTextUser.setText(user.getHealth());
-                healthTextOpponent.setText(opponent.getHealth());
 
                 updateText = false;
     	     }
@@ -686,7 +683,7 @@ Game.Play.prototype = {
                 timer = Math.floor(this.game.time.now / 1000);
 
                 for( var i = 0; i < spaceSpriteArray.length; i++){
-                    console.log(spaceSpriteArray[i].key);
+                   // console.log(spaceSpriteArray[i].key);
 
                     if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
                     {
@@ -1228,7 +1225,6 @@ Game.Play.prototype = {
             this.ship.angle += 180;
         }
 
-        console.log(this.ship);
         spaceSpriteArray.push(this.ship);
         healthArray.push(this.createHealthBar(40, 5,0,0));
 
@@ -1368,32 +1364,74 @@ Game.Play.prototype = {
 };
 
 	function updateHealthBar(id, damage) {
-        if(id < 2)
-        {
-            if((opponent.getHealth() - damage) > 0)
+            if(id < 2)
             {
-                healthArray[id].width -= damage;  // user.getHealth 
-                opponent.loseHealth(damage);
-                updateText = true;
-             } 
-             else
-             {
-                healthArray[id].width = 0;
-                opponent.killPlanet();
-            }
-        } else{
-
-            if((user.spaceShips[id-2].getHealth() - damage) > 0)
-            {
-                //console.log("In updateHealthBar " + damage );
-                healthArray[id].width -= damage;
-                user.spaceShips[id -2].loseHealth(damage);
-            }else
-            {
-                healthArray[id].width = 0;
-                user.spaceShips[id-2].killShip();
-            } 
-        }
+                if((opponent.getHealth() - damage) > 0)
+                {
+                    if(id == 0){
+                        if(uniqeID == 2){
+                            console.log("for uniqeID 1");
+                            user.loseHealth(damage);
+                            healthArray[0].width  = 77 * ((user.getHealth()/100));
+                        }
+                        if(uniqeID == 1){
+                            console.log("for uniqeID 2");
+                            opponent.loseHealth(damage);
+                            healthArray[0].width  = 77 * ((opponent.getHealth()/100)); 
+                        }
+                    } 
+                   
+                     if(id == 1) {
+                        if(uniqeID == 1){
+                            console.log("for uniqeID 2");
+                            user.loseHealth(damage);
+                            healthArray[1].width  = 77 * ((user.getHealth()/100));
+                        }
+                        if(uniqeID == 2){
+                            console.log("for uniqeID 1");
+                            opponent.loseHealth(damage);
+                            healthArray[1].width  = 77 * ((opponent.getHealth()/100)); 
+                        }
+                    } 
+                    updateText = true;
+                } 
+                    else
+                    {
+                         if(id == 0){
+                            if(uniqeID == 2){
+                                healthArray[0].width = 0;
+                                user.killPlanet();
+                            }
+                            if(uniqeID == 1){
+                                healthArray[0].width = 0;
+                                opponent.killPlanet();
+                            }
+                        } 
+                         if(id == 1) {
+                            if(uniqeID == 1){
+                                healthArray[1].width = 0;
+                                user.killPlanet();
+                            }
+                            if(uniqeID == 2){
+                                healthArray[1].width = 0;
+                                opponent.killPlanet();
+                            }
+                        } 
+                    }
+                }
+                 else{
+                    if((user.spaceShips[id-2].getHealth() - damage) > 0)
+                    {
+                        console.log("In updateHealthBar " + damage  + " uniqeID " + uniqeID);
+                        healthArray[id].width -= damage;
+                        user.spaceShips[id -2].loseHealth(damage);
+                        updateText = true;
+                    }else
+                    {
+                        healthArray[id].width = 0;
+                        user.spaceShips[id-2].killShip();
+                    } 
+                }
 	};
 
 	/*********************************/
