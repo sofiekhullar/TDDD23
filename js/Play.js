@@ -215,9 +215,9 @@ Game.Play.prototype = {
         addTowerButton2.type = "sun";
         addTowerButton3.type = "asteroidsprite";
 
-        addTowerButton1.spriteName = "blackhole";
-        addTowerButton2.spriteName = "sun";
-        addTowerButton3.spriteName = "asteroidsprite";
+        addTowerButton1.spriteName = "blackhole-" + localType;
+        addTowerButton2.spriteName = "sun-" + localType;
+        addTowerButton3.spriteName = "asteroidsprite-" + localType;
 
         if(uniqeID == 1){
             planetSprite1 = this.game.add.sprite(60, this.game.height/2 + moveUp - 20, user.getType());
