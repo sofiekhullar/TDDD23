@@ -1427,21 +1427,21 @@ Game.Play.prototype = {
                     else
                     {
                          if(id == 0){
-                            if(uniqeID == 2){
+                            if(uniqeID == 1){
                                 healthArray[0].width = 0;
                                 user.killPlanet();
                             }
-                            if(uniqeID == 1){
+                            if(uniqeID == 2){
                                 healthArray[0].width = 0;
                                 opponent.killPlanet();
                             }
                         } 
                          if(id == 1) {
-                            if(uniqeID == 1){
+                            if(uniqeID == 2){
                                 healthArray[1].width = 0;
                                 user.killPlanet();
                             }
-                            if(uniqeID == 2){
+                            if(uniqeID == 1){
                                 healthArray[1].width = 0;
                                 opponent.killPlanet();
                             }
