@@ -14,6 +14,9 @@ Game.Preload.prototype = {
 
 		// Load all assets!
 	    this.load.image('background2', 'assets/backgroundw.png');
+	    this.load.image('helpmenu', 'assets/helpmenu.png')
+	    this.load.image('noThanksButton', 'assets/noThanksButton.png');
+	    this.load.image('yesShowMeButton', 'assets/yesShowMeButton.png')
 
 	    this.load.image('ship1-moon', 'assets/ships/ship1_moon.png');
 	    this.load.image('ship1-venus', 'assets/ships/ship1_venus.png');
