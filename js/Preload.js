@@ -34,10 +34,10 @@ Game.Preload.prototype = {
 	    this.load.image('ship2-earth', 'assets/ships/ship2_earth.png');
 	    this.load.image('ship2-neptune', 'assets/ships/ship2_neptune.png');
 
-	    this.load.spritesheet('ship2-animation-moon', 'assets/ships/ship2_animation_moon.png', 40,50);
-	    this.load.spritesheet('ship2-animation-venus', 'assets/ships/ship2_animation_venus.png', 40,50);
-	    this.load.spritesheet('ship2-animation-earth', 'assets/ships/ship2_animation_earth.png', 40,50);
-	    this.load.spritesheet('ship2-animation-neptune', 'assets/ships/ship2_animation_neptune.png', 40,50);
+	    this.load.spritesheet('ship2-animation-moon', 'assets/ships/ship2_animation_moon.png', 50,50);
+	    this.load.spritesheet('ship2-animation-venus', 'assets/ships/ship2_animation_venus.png', 50,50);
+	    this.load.spritesheet('ship2-animation-earth', 'assets/ships/ship2_animation_earth.png', 50,50);
+	    this.load.spritesheet('ship2-animation-neptune', 'assets/ships/ship2_animation_neptune.png', 50,50);
 
 	    this.load.image('ship3-moon', 'assets/ships/ship3_moon.png');
 	    this.load.image('ship3-venus', 'assets/ships/ship3_venus.png');
