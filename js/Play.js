@@ -188,17 +188,17 @@ Game.Play.prototype = {
         shipButton2.rot = false;
         shipButton3.rot = true;
  	
-	 	addTowerButton1 = this.game.add.button(200, 650, "blackhole", this.placeTower);
+	 	addTowerButton1 = this.game.add.button(200, 650, "blackhole-" + localType, this.placeTower);
 	    addTowerButton1.height = 50;
 	    addTowerButton1.width = 50;
         addTowerButton1.range = 100;
 
-	    addTowerButton2 = this.game.add.button(300, 650, "sun", this.placeTower);
+	    addTowerButton2 = this.game.add.button(300, 650, "sun-" + localType, this.placeTower);
 	    addTowerButton2.height = 50;
 	    addTowerButton2.width = 50;
         addTowerButton2.range = 125;
 
-	    addTowerButton3 = this.game.add.button(400, 650, "asteroid", this.placeTower);
+	    addTowerButton3 = this.game.add.button(400, 650, "asteroidsprite-" + localType, this.placeTower);
 	    addTowerButton3.height = 50;
 	    addTowerButton3.width = 50;
         addTowerButton3.range = 150;
@@ -213,11 +213,11 @@ Game.Play.prototype = {
 
 	    addTowerButton1.type = "blackhole";
         addTowerButton2.type = "sun";
-        addTowerButton3.type = "asteroid";
+        addTowerButton3.type = "asteroidsprite";
 
         addTowerButton1.spriteName = "blackhole";
         addTowerButton2.spriteName = "sun";
-        addTowerButton3.spriteName = "asteroid";
+        addTowerButton3.spriteName = "asteroidsprite";
 
         if(uniqeID == 1){
             planetSprite1 = this.game.add.sprite(60, this.game.height/2 + moveUp - 20, user.getType());

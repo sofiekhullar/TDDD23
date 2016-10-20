@@ -45,7 +45,7 @@ function Tower(x, y, id, damage, type, cost, range) {
 		if(type == "sun"){
 			range = 100;
 		}
-		if(type == "asteroid"){
+		if(type == "asteroidsprite"){
 			range = 150;
 		}
 	}
