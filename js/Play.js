@@ -818,12 +818,8 @@ Game.Play.prototype = {
     },
 
     addTowerStep2: function(input){
-<<<<<<< HEAD
 
             var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost, input.range);
-=======
-            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost);
->>>>>>> 8464524a162ed3a6c505585f9d7309085c8783a6
 
             if(!attackTowerRangeSprite)
                 attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'sun');

@@ -45,7 +45,6 @@ Game.Preload.prototype = {
 	    this.load.image('sun-denied', 'assets/sun-denied.png');
 	    this.load.image('backgroundTowerMenu', 'assets/backgroundTowerMenu.png');
 	    this.load.image('towerMenuButton','assets/towerMenuButton.png');
-	    this.load.spritesheet('shipExplode', 'assets/shipexplode_spriteSheet.png', 40, 50)
 
 	    // Lobby.sj
 	    this.load.image('readyButton', 'assets/readyButton.png');
