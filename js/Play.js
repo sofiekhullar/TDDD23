@@ -44,6 +44,7 @@
     var ship3Bullet  = null;
 
     var explosions = null;
+    var explosions2 = null;
     var firingTimer = 0;
 
     var planetSprite1 = null;
@@ -159,9 +160,6 @@ Game.Play.prototype = {
 
         healthTextUser = this.game.add.text(30, this.game.height - 20, user.getHealth(), style);
         this.game.add.sprite(0, this.game.height - 20, 'heart');
-
-        moneyTextOpponent = this.game.add.text(this.game.width - 50, this.game.height - 50, opponent.getMoney() , style);
-        this.game.add.sprite(this.game.width - 80, this.game.height - 50, 'coin');
 
         healthTextOpponent = this.game.add.text(this.game.width - 50, this.game.height - 20, opponent.getHealth(), style);
         this.game.add.sprite(this.game.width - 80, this.game.height - 20, 'heart');
@@ -430,12 +428,14 @@ Game.Play.prototype = {
     },
 
     onAddShip:function(data){
-        thisCopy.addShipStep2(data.rot, data.type, data.id);
+        thisCopy.addShipStep2(data.rot, data.type, data.id, data.cost);
+
     },
 
     onAddTower: function(input){
         var object = {x: input.x, y: input.y, id: input.id, damage: input.damage, type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY}
         thisCopy.addTowerStep2(object);
+        console.log("onAddTower");
     },
 
     onSellTower: function(input){
@@ -496,7 +496,6 @@ Game.Play.prototype = {
 	    if(updateText){
             moneyTextUser.setText(user.getMoney());
             healthTextUser.setText(user.getHealth());
-            moneyTextOpponent.setText(opponent.getMoney());
             healthTextOpponent.setText(opponent.getHealth());
 
             updateText = false;
@@ -662,6 +661,7 @@ Game.Play.prototype = {
 
                 if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
                 {
+
                     //console.log(spaceSpriteArray[i].key + "  " + user.spaceShips[i].lastFiringTime + " timer " + timer);
                     if(spaceSpriteArray[i].id == 1){
                         if(spaceSpriteArray[i].key == 'ship1'){
@@ -807,6 +807,7 @@ Game.Play.prototype = {
         {
             placingTower = false;
             user.buy(costNow);
+            updateText = true;
             socket.emit('add tower',{x: towerSprite.position.x, y: towerSprite.position.y, id: uniqeID, damage: damageNow, 
                 type: typeNow, cost: costNow, range: rangeNow, rangeX: towerRangeSprite.position.x, rangeY: towerRangeSprite.position.y
             });
@@ -817,8 +818,12 @@ Game.Play.prototype = {
     },
 
     addTowerStep2: function(input){
+<<<<<<< HEAD
 
             var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost, input.range);
+=======
+            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type, input.cost);
+>>>>>>> 8464524a162ed3a6c505585f9d7309085c8783a6
 
             if(!attackTowerRangeSprite)
                 attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'sun');
@@ -956,7 +961,7 @@ Game.Play.prototype = {
 
             menuActive = true;
             //console.log(button);
-            menuBackground = this.game.add.sprite(user.towers[button.number].x, user.towers[button.number].y, 'menuBackground');
+            menuBackground = this.game.add.sprite(user.towers[button.number].x + 30, user.towers[button.number].y, 'backgroundTowerMenu');
 
             if(menuBackground.position.x > 750)
                 menuBackground.position.x = 750;
@@ -967,14 +972,13 @@ Game.Play.prototype = {
             if(menuBackground.position.y < 50)
                 menuBackground.position.y = 50;
 
-            levelText = this.game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 20, "Level " + user.towers[button.number].getLevel());
-            menuBackground.scale.setTo(2.5,2);
-            upgrade = this.game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 60, 'menuItem', function() {this.levelUp(button)}, this);
-            upgradeText = this.game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 70, "Upgrade $" + costNow);
-            upgrade.scale.setTo(2.9,2);
-            sell = this.game.add.button(menuBackground.position.x + 25, menuBackground.position.y + 120, 'menuItem', function() {this.sellTower(button)}, this);
-            sellText = this.game.add.text(menuBackground.position.x + 35, menuBackground.position.y + 130, "Sell $" + user.towers[button.number].getLevel() * 100 * 0.9);
-            sell.scale.setTo(2.9,2);
+            var style = { font: "normal 22px DK", fill: "#ffffff", align: "center" };
+
+            levelText = this.game.add.text(menuBackground.position.x + 50, menuBackground.position.y + 3, "Level " + user.towers[button.number].getLevel(), style);
+            upgrade = this.game.add.button(menuBackground.position.x + 6, levelText.position.y + 35, 'towerMenuButton', function() {this.levelUp(button)}, this);
+            upgradeText = this.game.add.text(menuBackground.position.x + 12, upgrade.position.y + 3, "Upgrade $" + costNow, style);
+            sell = this.game.add.button(menuBackground.position.x + 6, upgradeText.position.y + 27, 'towerMenuButton', function() {this.sellTower(button)}, this);
+            sellText = this.game.add.text(menuBackground.position.x + 12, sell.position.y + 3, "Sell $" + user.towers[button.number].getLevel() * 100 * 0.9, style);
         }
         else {
             towerSprite.kill();
@@ -1047,12 +1051,13 @@ Game.Play.prototype = {
 
         if(user.getMoney() >= input.cost)
         {
-            socket.emit("add ship", {rot: input.rot, type: input.type, id: uniqeID});
+            socket.emit("add ship", {rot: input.rot, type: input.type, id: uniqeID, cost: input.cost});
             user.buy(input.cost);
+            updateText = true;
         }
     },
 
-    addShipStep2: function(rot, type, idShip){
+    addShipStep2: function(rot, type, idShip, cost){
 
         updateText = true;
         this.ship = this.add.sprite(0,0, type);
@@ -1076,7 +1081,7 @@ Game.Play.prototype = {
 
         this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
         this.ship.body.immovable = true;
-        spaceShip = new SpaceShip(0, type, rot, idShip);
+        spaceShip = new SpaceShip(0, type, rot, idShip, cost);
         user.spaceShips.push(spaceShip);
     },
 
@@ -1186,7 +1191,6 @@ Game.Play.prototype = {
             shipButton3 = null;
 
             moneyTextUser = null;
-            moneyTextOpponent = null;
 
             ship = null;
             spaceShip = null;
@@ -1228,6 +1232,7 @@ Game.Play.prototype = {
 
             if((user.spaceShips[id-2].getHealth() - damage) > 0)
             {
+                console.log("In updateHealthBar " + damage );
                 healthArray[id].width -= damage;
                 user.spaceShips[id -2].loseHealth(damage);
             }else
@@ -1237,7 +1242,6 @@ Game.Play.prototype = {
             } 
         }
 	};
-
 
 	/*********************************/
     /******  Collisionhandlers *******/
@@ -1268,29 +1272,48 @@ Game.Play.prototype = {
         var bulletType = bullet.key;
         var damage = 0;
 
+
+        switch(bulletType){
+        case 'bulletAsteroid':
+            damage = 30;
+        break;
+        case 'bulletSun':
+            damage = 5;
+        break;
+        case 'bullet1':  // ÄNDRA TILL BLACKHOLE SEN!!!
+            damage = 10;
+        break;
+        }
+
 	    if(healthArray[this.i+2].width > 0)
 	    {
-
-            switch(bulletType){
-            case 'bullet1':
-                damage = 3;
-            break;
-            case 'bullet2':
-                damage = 2;
-            break;
-            case 'bullet3':
-                damage = 1;
-            break;
-            }
 	        updateHealthBar(this.i +2, damage);
 	    } 
 	    else 
 	    {
+            if(ship.id == 2 && uniqeID == 1){
+                user.sell(user.spaceShips[this.i].getCost() * 0.5);
+                updateText = true;
+            }
+            if(ship.id == 1 && uniqeID == 2){
+                user.sell(user.spaceShips[this.i].getCost() * 0.5);
+                updateText = true;
+            }
+
+            console.log("Kill ship");
+
+            var explosion = explosions.getFirstExists(false);
+            explosion.reset(ship.x, ship.y);
+            //explosion.body.velocity.y = enemy.body.velocity.y;
+            explosion.alpha = 0.7;
+            explosion.play('explosion', 30, false, true);
+
 	        spaceSpriteArray.splice(this.i, 1);
 	        user.spaceShips.splice(this.i, 1);
 	        healthArray[this.i+2].kill();
 	        healthArray.splice(this.i+2,1); 
 	        ship.kill();
+            
 	    }
 	    bullet.kill();
 	};

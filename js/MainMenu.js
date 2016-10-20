@@ -16,6 +16,9 @@ Game.MainMenu.prototype = {
 		var background = game.add.sprite(0,0, 'mainMenuBackground'); 
 		game.add.sprite(0,0,'mainMenuTitle');
 
+		var style = { font: "normal 65px DK", fill: "#ff0044", align: "center" };
+		text = game.add.text(0, 0, "", style);
+
 		playButton = game.add.button(this.game.width/2 - 150, this.game.height/2 - 100, 'playButton', this.actionOnClickPlay, this, 2, 1, 0);
 		helpButton = game.add.button(this.game.width - 140, this.game.height - 150, 'helpButton', this.actionOnClickHelp, this, 2, 1, 0);
 		settingButton = game.add.button(this.game.width - 980, this.game.height - 150, 'settingsButton', this.actionOnClickMultiSetting, this, 2, 1, 0);
