@@ -519,7 +519,8 @@ Game.Play.prototype = {
                         this.gameOver(this.game, 2);
                     }
                 }
-        
+
+            this.checkIfAfford();
 
             if(!gameOverBool){
 
@@ -763,12 +764,57 @@ Game.Play.prototype = {
                                     this.towerFireAsteroid(i, j);
                                     user.towers[i].lastFiringTime = timer;
                                 }  
+                            }
                         }
                     }
                 }
             }
-            }
         },
+
+    checkIfAfford: function(){
+        if(user.getMoney() < shipButton1.cost){
+            shipButton1.input.enabled = false;
+            shipButton1.alpha = 0.5;
+        }else{
+            shipButton1.input.enabled = true;
+            shipButton1.alpha = 1;
+        }
+        if(user.getMoney() < shipButton2.cost){
+            shipButton2.input.enabled = false;
+            shipButton2.alpha = 0.5;
+        }else{
+            shipButton2.input.enabled = true;
+            shipButton2.alpha = 1;
+        }
+        if(user.getMoney() < shipButton3.cost){
+            shipButton3.input.enabled = false;
+            shipButton3.alpha = 0.5;
+        }else{
+            shipButton3.input.enabled = true;
+            shipButton3.alpha = 1;
+        }
+        if(user.getMoney() < addTowerButton1.cost){
+            addTowerButton1.input.enabled = false;
+            addTowerButton1.alpha = 0.5;
+        }else{
+            addTowerButton1.input.enabled = true;
+            addTowerButton1.alpha = 1;
+        }
+        if(user.getMoney() < addTowerButton2.cost){
+            addTowerButton2.input.enabled = false;
+            addTowerButton2.alpha = 0.5;
+        }else{
+            addTowerButton2.input.enabled = true;
+            addTowerButton2.alpha = 1;
+        }
+        if(user.getMoney() < addTowerButton3.cost){
+            addTowerButton3.input.enabled = false;
+            addTowerButton3.alpha = 0.5;
+        }else{
+            addTowerButton3.input.enabled = true;
+            addTowerButton3.alpha = 1;
+        }
+    },
 
     gameOver: function(game, id){
         if(!gameOverBool){
