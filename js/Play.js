@@ -98,6 +98,8 @@
     var exitButton;
     var moveUp = -50;
     var esc;
+    var gameOverBool = false;
+    var gameoverSprite;
 
 
 Game.Play = function (game) {
@@ -492,155 +494,8 @@ Game.Play.prototype = {
             planetSprite1.y = this.game.height/2 - 20 + moveUp;
             planetSprite2.x = this.game.width - 140;
             planetSprite2.y = this.game.height/2 - 60 + moveUp;
-   
-	    if(updateText){
-            moneyTextUser.setText(user.getMoney());
-            healthTextUser.setText(user.getHealth());
-            healthTextOpponent.setText(opponent.getHealth());
 
-            updateText = false;
-	     }
-
-	      if(user.spaceShips.length != 0 && healthArray.length != 0)
-            {
-                for( i = 0; i < user.spaceShips.length; i++)
-                {
-
-                    if(spaceSpriteArray[i].id == 1)
-                    {
-                        spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
-                        spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
-                        spaceSpriteArray[i].index = i;
-
-                        healthArray[i+2].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
-                        healthArray[i+2].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
-                        
-                        if(user.spaceShips[i].getRotation())
-                        {
-                            if(spaceSpriteArray[i].y > path[0].y)
-                                spaceSpriteArray[i].angle -= 0.45;
-                            else
-                                spaceSpriteArray[i].angle += 0.45;
-                        }
-                    }
-
-                    else if(spaceSpriteArray[i].id == 2)
-                    {
-                        spaceSpriteArray[i].x = pathReversed[user.spaceShips[i].getPathIndex()].x;
-                        spaceSpriteArray[i].y = pathReversed[user.spaceShips[i].getPathIndex()].y;
-                        spaceSpriteArray[i].index = i;
-
-                        healthArray[i+2].x = pathReversed[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
-                        healthArray[i+2].y = pathReversed[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
-
-                        if(user.spaceShips[i].getRotation())
-                        {
-                            if(spaceSpriteArray[i].y < path[0].y)
-                                spaceSpriteArray[i].angle -= 0.45;
-                            else
-                                spaceSpriteArray[i].angle += 0.45;
-                        }
-                    }
-
-
-                    user.spaceShips[i].addPathIndex();
-
-                    if (user.spaceShips[i].getPathIndex() >= path.length && spaceSpriteArray[i].id == 1)
-                    {
-                        var explosion = explosions.getFirstExists(false);
-                        explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
-                        //explosion.body.velocity.y = enemy.body.velocity.y;
-                        explosion.alpha = 0.7;
-                        explosion.play('explosion', 30, false, true);
-
-                        if(healthArray[1].width > 0){
-                            updateHealthBar(1, user.spaceShips[i].getDamage());
-                        } else {
-                            updateText = true;
-                            this.gameOver(this.game);
-                        }
-
-                        spaceSpriteArray[i].kill();
-                        spaceSpriteArray.splice(i, 1);
-                        healthArray[i+2].kill();
-                        healthArray.splice(i+2,1);
-                        user.spaceShips.splice(i, 1);
-                    }
-                    else if(user.spaceShips[i].getPathIndex() >= path.length && spaceSpriteArray[i].id == 2)
-                    {
-                        var explosion = explosions.getFirstExists(false);
-                        explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
-                        //explosion.body.velocity.y = enemy.body.velocity.y;
-                        explosion.alpha = 0.7;
-                        explosion.play('explosion', 30, false, true);
-
-                        if(healthArray[0].width > 0){
-                            updateHealthBar(0, user.spaceShips[i].getDamage());
-                        } else {
-                            updateText = true;
-                            this.gameOver(this.game);
-                        }
-
-                        spaceSpriteArray[i].kill();
-                        spaceSpriteArray.splice(i, 1);
-                        healthArray[i+2].kill();
-                        healthArray.splice(i+2,1);
-                        user.spaceShips.splice(i, 1);
-                    }
-
-                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletBlackhole, collisionHandlerTower, null, {i:i});
-                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerbulletsSun, collisionHandlerTower, null, {i:i});
-                    this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletsAsteroid, collisionHandlerTower, null, {i:i});
-                }
-            }
-
-            if(placingTower)
-            {
-
-                if(esc.isDown || this.game.input.activePointer.rightButton.isDown)
-                {
-                    console.log("come on");
-                    towerSprite.kill();
-                    towerRangeSprite.kill();
-                    placingTower = false;
-                }
-
-                towerSprite.position.x = this.game.input.x - centerTower;
-                towerSprite.position.y = this.game.input.y - centerTower;
-                towerRangeSprite.position.x = this.game.input.x - 150;
-                towerRangeSprite.position.y = this.game.input.y -150;
-
-                available = true;
-
-                for (var i = 0; i < pathArray.length; i++)
-                {
-                    
-                        if(this.checkCollision(towerSprite, pathArray[i]))
-                        {
-                            towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
-                            towerRangeSprite.tint = 0xff0000;
-                            available = false;
-                            break;
-                        }
-                        else
-                        {
-                            towerRangeSprite.tint = 0xffffff;
-                            towerSprite.loadTexture(towerSpriteNow, 1);
-                        }
-                }
-
-                for (var i = 0; i < attackTowerArray.length; i++)
-                {
-                        if(this.checkCollision(towerSprite, attackTowerArray[i]))
-                        {
-                            towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
-                            available = false;
-                            break;
-                        }
-                }
-            }
-
-            // check planet health
+             // check planet health
             if(healthArray[0].width > 0 && healthArray[1].width > 0){
                 this.game.physics.arcade.collide(planetSprite1, ship1Bullets, collisionHandlerPlanet, null, {i:i, planet:0});
                 this.game.physics.arcade.collide(planetSprite1, ship2Bullets, collisionHandlerPlanet, null, {i:i, planet:0});
@@ -651,144 +506,334 @@ Game.Play.prototype = {
                 this.game.physics.arcade.collide(planetSprite2, ship3Bullets, collisionHandlerPlanet, null, {i:i, planet:1});
             }
              else{
-                updateText = true;
-                this.gameOver(this.game);
-            }
 
-            timer = Math.floor(this.game.time.now / 1000);
-
-            for( var i = 0; i < spaceSpriteArray.length; i++){
-
-                if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
-                {
-
-                    //console.log(spaceSpriteArray[i].key + "  " + user.spaceShips[i].lastFiringTime + " timer " + timer);
-                    if(spaceSpriteArray[i].id == 1){
-                        if(spaceSpriteArray[i].key == 'ship1'){
-                             this.ship1Fire(i, 1);
-                             user.spaceShips[i].lastFiringTime = timer;
-                        }
-                        if(spaceSpriteArray[i].key == 'ship2'){
-                            this.ship2Fire(i, 1);
-                            user.spaceShips[i].lastFiringTime = timer;
-                        }
-                        if(spaceSpriteArray[i].key == 'ship3'){
-                            this.ship3Fire(i, 1);
-                            user.spaceShips[i].lastFiringTime = timer;
-                        }
-                    }
-
-                    if(spaceSpriteArray[i].id == 2){
-                        if(spaceSpriteArray[i].key == 'ship1'){
-                             this.ship1Fire(i, 2);
-                             user.spaceShips[i].lastFiringTime = timer;
-                        }
-                        if(spaceSpriteArray[i].key== 'ship2'){
-                            this.ship2Fire(i, 2);
-                            user.spaceShips[i].lastFiringTime = timer;
-                        }
-                        if(spaceSpriteArray[i].key == 'ship3'){
-                            this.ship3Fire(i, 2);
-                            user.spaceShips[i].lastFiringTime = timer;
-                        }
+                if(healthArray[0].width <= 0){
+                    updateText = true;
+                    if(!gameOverBool){
+                        this.gameOver(this.game, 1);
                     }
                 }
-            }
+                if(healthArray[1].width <= 0)
+                    updateText = true;
+                    if(!gameOverBool){
+                        this.gameOver(this.game, 2);
+                    }
+                }
+        
 
+            if(!gameOverBool){
 
-            if(timer > lastBlink + blinkingTime)
-            {
-                shiningStar = game.add.sprite(100, 100, 'blinkingStar');
-                var blink = shiningStar.animations.add("blinkingStar");
-                shiningStar.position.x = this.rnd.integerInRange(100, 900);
-                shiningStar.position.y = this.rnd.integerInRange(100, 600);
-                shiningStar.animations.play("blinkingStar", 15, false, true);
-                lastBlink = timer;
-            }
+    	    if(updateText){
+                moneyTextUser.setText(user.getMoney());
+                healthTextUser.setText(user.getHealth());
+                healthTextOpponent.setText(opponent.getHealth());
 
-            if(timer > lastStarFall + starFallTime)
-            {
-                starFall = game.add.sprite(200, 200, 'fallingStar');
-                var fall = starFall.animations.add('fallingStar');
-                starFall.width = 200;
-                starFall.position.x = this.rnd.integerInRange(100, 900);
-                starFall.position.y = this.rnd.integerInRange(100, 600);
-                starFall.angle = this.rnd.integerInRange(-180, 180);
-                starFall.animations.play("fallingStar", 15, false, true);
-                lastStarFall = timer;
-            }
+                updateText = false;
+    	     }
 
-            for (var i = 0; i < attackTowers.length; i++)
-            {
-                for(var j = 0; j < user.spaceShips.length; j++)
+    	      if(user.spaceShips.length != 0 && healthArray.length != 0)
                 {
-                    if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange() && attackTowers[i].id != spaceSpriteArray[j].id)
+                    for( i = 0; i < user.spaceShips.length; i++)
                     {
-                        if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
+
+                        if(spaceSpriteArray[i].id == 1)
                         {
-                            console.log(attackTowers[i].key);
-                            if(attackTowers[i].key == "sun"){
-                                this.towerFireSun(i, j);
-                                user.towers[i].lastFiringTime = timer;
+                            spaceSpriteArray[i].x = path[user.spaceShips[i].getPathIndex()].x;
+                            spaceSpriteArray[i].y = path[user.spaceShips[i].getPathIndex()].y;
+                            spaceSpriteArray[i].index = i;
+
+                            healthArray[i+2].x = path[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
+                            healthArray[i+2].y = path[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
+                            
+                            if(user.spaceShips[i].getRotation())
+                            {
+                                if(spaceSpriteArray[i].y > 350)
+                                    spaceSpriteArray[i].angle -= 0.45;
+                                else
+                                    spaceSpriteArray[i].angle += 0.45;
                             }
-                            if(attackTowers[i].key == "blackhole"){
-                                this.towerFireBlack(i, j);
-                                user.towers[i].lastFiringTime = timer;
+                        }
+
+                        else if(spaceSpriteArray[i].id == 2)
+                        {
+                            spaceSpriteArray[i].x = pathReversed[user.spaceShips[i].getPathIndex()].x;
+                            spaceSpriteArray[i].y = pathReversed[user.spaceShips[i].getPathIndex()].y;
+                            spaceSpriteArray[i].index = i;
+
+                            healthArray[i+2].x = pathReversed[user.spaceShips[i].getPathIndex()].x - spaceSpriteArray[i].width/2;
+                            healthArray[i+2].y = pathReversed[user.spaceShips[i].getPathIndex()].y - spaceSpriteArray[i].height;
+
+                            if(user.spaceShips[i].getRotation())
+                            {
+                                if(spaceSpriteArray[i].y < 350)
+                                    spaceSpriteArray[i].angle -= 0.45;
+                                else
+                                    spaceSpriteArray[i].angle += 0.45;
                             }
-                            if(attackTowers[i].key == "asteroid"){
-                                this.towerFireAsteroid(i, j);
-                                user.towers[i].lastFiringTime = timer;
-                            }  
+                        }
+
+
+                        user.spaceShips[i].addPathIndex();
+
+                        if (user.spaceShips[i].getPathIndex() >= path.length && spaceSpriteArray[i].id == 1)
+                        {
+                            var explosion = explosions.getFirstExists(false);
+                            explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
+                            //explosion.body.velocity.y = enemy.body.velocity.y;
+                            explosion.alpha = 0.7;
+                            explosion.play('explosion', 30, false, true);
+
+                            if(healthArray[1].width > 0)
+                            {
+                                updateHealthBar(1, user.spaceShips[i].getDamage());
+                            } 
+                            else 
+                            {
+                                if(!gameOverBool){
+                                    this.gameOver(this.game, 2);
+                                }
+                            }
+                            updateText = true;
+                            
+
+                            spaceSpriteArray[i].kill();
+                            spaceSpriteArray.splice(i, 1);
+                            healthArray[i+2].kill();
+                            healthArray.splice(i+2,1);
+                            user.spaceShips.splice(i, 1);
+                        }
+                        else if(user.spaceShips[i].getPathIndex() >= path.length && spaceSpriteArray[i].id == 2)
+                        {
+                            var explosion = explosions.getFirstExists(false);
+                            explosion.reset(spaceSpriteArray[i].x, spaceSpriteArray[i].y);
+                            //explosion.body.velocity.y = enemy.body.velocity.y;
+                            explosion.alpha = 0.7;
+                            explosion.play('explosion', 30, false, true);
+
+                            if(healthArray[0].width > 0){
+                                updateHealthBar(0, user.spaceShips[i].getDamage());
+                            } else {
+                                updateText = true;
+                                if(!gameOverBool){
+                                    this.gameOver(this.game,1);
+                                }
+                            }
+
+                            spaceSpriteArray[i].kill();
+                            spaceSpriteArray.splice(i, 1);
+                            healthArray[i+2].kill();
+                            healthArray.splice(i+2,1);
+                            user.spaceShips.splice(i, 1);
+                        }
+
+                        this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletBlackhole, collisionHandlerTower, null, {i:i});
+                        this.game.physics.arcade.collide(spaceSpriteArray[i], towerbulletsSun, collisionHandlerTower, null, {i:i});
+                        this.game.physics.arcade.collide(spaceSpriteArray[i], towerBulletsAsteroid, collisionHandlerTower, null, {i:i});
+                    }
+                }
+
+                if(placingTower)
+                {
+
+                    if(esc.isDown || this.game.input.activePointer.rightButton.isDown)
+                    {
+                        //console.log("come on");
+                        towerSprite.kill();
+                        towerRangeSprite.kill();
+                        placingTower = false;
+                    }
+
+                    towerSprite.position.x = this.game.input.x - centerTower;
+                    towerSprite.position.y = this.game.input.y - centerTower;
+                    towerRangeSprite.position.x = this.game.input.x - 150;
+                    towerRangeSprite.position.y = this.game.input.y -150;
+
+                    available = true;
+
+                    for (var i = 0; i < pathArray.length; i++)
+                    {
+                        
+                            if(this.checkCollision(towerSprite, pathArray[i]))
+                            {
+                                towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
+                                towerRangeSprite.tint = 0xff0000;
+                                available = false;
+                                break;
+                            }
+                            else
+                            {
+                                towerRangeSprite.tint = 0xffffff;
+                                towerSprite.loadTexture(towerSpriteNow, 1);
+                            }
+                    }
+
+                    for (var i = 0; i < attackTowerArray.length; i++)
+                    {
+                            if(this.checkCollision(towerSprite, attackTowerArray[i]))
+                            {
+                                towerSprite.loadTexture(towerSpriteNow + "-denied", 1);
+                                available = false;
+                                break;
+                            }
+                    }
+                }
+
+
+                timer = Math.floor(this.game.time.now / 1000);
+
+                for( var i = 0; i < spaceSpriteArray.length; i++){
+
+                    if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
+                    {
+
+                        //console.log(spaceSpriteArray[i].key + "  " + user.spaceShips[i].lastFiringTime + " timer " + timer);
+                        if(spaceSpriteArray[i].id == 1){
+                            if(spaceSpriteArray[i].key == 'ship1'){
+                                 this.ship1Fire(i, 1);
+                                 user.spaceShips[i].lastFiringTime = timer;
+                            }
+                            if(spaceSpriteArray[i].key == 'ship2'){
+                                this.ship2Fire(i, 1);
+                                user.spaceShips[i].lastFiringTime = timer;
+                            }
+                            if(spaceSpriteArray[i].key == 'ship3'){
+                                this.ship3Fire(i, 1);
+                                user.spaceShips[i].lastFiringTime = timer;
+                            }
+                        }
+
+                        if(spaceSpriteArray[i].id == 2){
+                            if(spaceSpriteArray[i].key == 'ship1'){
+                                 this.ship1Fire(i, 2);
+                                 user.spaceShips[i].lastFiringTime = timer;
+                            }
+                            if(spaceSpriteArray[i].key== 'ship2'){
+                                this.ship2Fire(i, 2);
+                                user.spaceShips[i].lastFiringTime = timer;
+                            }
+                            if(spaceSpriteArray[i].key == 'ship3'){
+                                this.ship3Fire(i, 2);
+                                user.spaceShips[i].lastFiringTime = timer;
+                            }
                         }
                     }
                 }
+
+
+                if(timer > lastBlink + blinkingTime)
+                {
+                    shiningStar = game.add.sprite(100, 100, 'blinkingStar');
+                    var blink = shiningStar.animations.add("blinkingStar");
+                    shiningStar.position.x = this.rnd.integerInRange(100, 900);
+                    shiningStar.position.y = this.rnd.integerInRange(100, 600);
+                    shiningStar.animations.play("blinkingStar", 15, false, true);
+                    lastBlink = timer;
+                }
+
+                if(timer > lastStarFall + starFallTime)
+                {
+                    starFall = game.add.sprite(200, 200, 'fallingStar');
+                    var fall = starFall.animations.add('fallingStar');
+                    starFall.width = 200;
+                    starFall.position.x = this.rnd.integerInRange(100, 900);
+                    starFall.position.y = this.rnd.integerInRange(100, 600);
+                    starFall.angle = this.rnd.integerInRange(-180, 180);
+                    starFall.animations.play("fallingStar", 15, false, true);
+                    lastStarFall = timer;
+                }
+
+                for (var i = 0; i < attackTowers.length; i++)
+                {
+                    for(var j = 0; j < user.spaceShips.length; j++)
+                    {
+                        if(Math.abs(attackTowers[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowers[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange() && attackTowers[i].id != spaceSpriteArray[j].id)
+                        {
+                            if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
+                            {
+                                //console.log(attackTowers[i].key);
+                                if(attackTowers[i].key == "sun"){
+                                    this.towerFireSun(i, j);
+                                    user.towers[i].lastFiringTime = timer;
+                                }
+                                if(attackTowers[i].key == "blackhole"){
+                                    this.towerFireBlack(i, j);
+                                    user.towers[i].lastFiringTime = timer;
+                                }
+                                if(attackTowers[i].key == "asteroid"){
+                                    this.towerFireAsteroid(i, j);
+                                    user.towers[i].lastFiringTime = timer;
+                                }  
+                        }
+                    }
+                }
+            }
             }
         },
 
-    gameOver: function(game){
+    gameOver: function(game, id){
+        if(!gameOverBool){
+            gameOverBool = true;
 
-        restartedGame = true;
+            restartedGame = true;
 
-        shipButton1.inputEnabled = false;
-        shipButton2.inputEnabled = false;
-        shipButton3.inputEnabled = false;
+            shipButton1.inputEnabled = false;
+            shipButton2.inputEnabled = false;
+            shipButton3.inputEnabled = false;
 
-        addTowerButton1.inputEnabled = false;
-        addTowerButton2.inputEnabled = false;
-        addTowerButton3.inputEnabled = false;
+            addTowerButton1.inputEnabled = false;
+            addTowerButton2.inputEnabled = false;
+            addTowerButton3.inputEnabled = false;
 
-        for(var i = 0; i < spaceSpriteArray.length; i++){
-            spaceSpriteArray[i].destroy();
-            healthArray[i+2].kill();
+            for(var i = 0; i < spaceSpriteArray.length; i++){
+                spaceSpriteArray[i].destroy();
+                healthArray[i+2].kill();
+            }
+
+            for(var i = 0; i < attackTowerArray.length; i++){
+                attackTowerArray[i].kill();
+            }
+
+            for(var i = 0; i< towerRangeArray.length; i++){
+                towerRangeArray[i].kill();
+            }
+
+            ship1Bullets.callAll('kill');
+            ship2Bullets.callAll('kill');
+            ship3Bullets.callAll('kill');
+
+            towerBulletsAsteroid.callAll('kill');
+            towerbulletsSun.callAll('kill');
+            towerBulletBlackhole.callAll('kill');
+
+            explosions.callAll('kill');
+
+            console.log("id, uniqeID : " + id +"   ,  " + uniqeID);
+            
+            if(id == 2 && uniqeID == 1)
+            {
+                gameoverSprite =  game.add.sprite(0,0, 'gameoverMenu_win');
+            }
+            if(id == 2 && uniqeID == 2){
+                gameoverSprite = game.add.sprite(0,0, 'gameoverMenu_lost');
+            }
+            if(id == 1 && uniqeID == 1)
+            {
+                gameoverSprite =  game.add.sprite(0,0, 'gameoverMenu_lost');
+            }
+            if(id == 1 && uniqeID == 2){
+                gameoverSprite = game.add.sprite(0,0, 'gameoverMenu_win');
+            }
+            
+            playAgainButton = game.add.button(game.world.centerX - 250, this.game.height/2, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
+            exitButton = game.add.button(game.world.centerX - 250,  this.game.height/2 + 200, 'backToMenuButton', this.actionOnClickExit, this, 2, 1, 0);
         }
-
-        for(var i = 0; i < attackTowerArray.length; i++){
-            attackTowerArray[i].kill();
-        }
-
-        for(var i = 0; i< towerRangeArray.length; i++){
-            towerRangeArray[i].kill();
-        }
-
-        ship1Bullets.callAll('kill');
-        ship2Bullets.callAll('kill');
-        ship3Bullets.callAll('kill');
-
-        towerBulletsAsteroid.callAll('kill');
-        towerbulletsSun.callAll('kill');
-        towerBulletBlackhole.callAll('kill');
-
-        explosions.callAll('kill');
-
-        game.add.sprite(0,0, 'gameoverMenu_win');
-        playAgainButton = game.add.button(game.world.centerX - 250, this.game.height/2, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
-        exitButton = game.add.button(game.world.centerX - 250,  this.game.height/2 + 200, 'backToMenuButton', this.actionOnClickExit, this, 2, 1, 0);
     },
 
     actionOnClickAgainPlay:function(){
-        // TODO knapparna ska dö?!?!? går inte
         playAgainButton.kill();
         exitButton.kill();
+        gameCopy.add.sprite(0,0, 'waitingForOpponent');
+
         socket.emit("play again");
     },
 
@@ -831,7 +876,6 @@ Game.Play.prototype = {
             attackTower.alpha = 0;
             attackTower.id = input.id;
             attackTowerSprite = this.game.add.sprite(input.x, input.y, input.type);
-
             if(input.id == 1)
                 attackTowerSprite.tint = 0xCC3333;
             else
@@ -1191,6 +1235,7 @@ Game.Play.prototype = {
 
             ship = null;
             spaceShip = null;
+            gameOverBool = false;
         },
 
 
@@ -1229,7 +1274,7 @@ Game.Play.prototype = {
 
             if((user.spaceShips[id-2].getHealth() - damage) > 0)
             {
-                console.log("In updateHealthBar " + damage );
+                //console.log("In updateHealthBar " + damage );
                 healthArray[id].width -= damage;
                 user.spaceShips[id -2].loseHealth(damage);
             }else
