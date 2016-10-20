@@ -931,8 +931,8 @@ Game.Play.prototype = {
                 gameoverSprite = game.add.sprite(0,0, 'gameoverMenu_win');
             }
             
-            playAgainButton = game.add.button(game.world.centerX - 250, this.game.height/2, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
-            exitButton = game.add.button(game.world.centerX - 250,  this.game.height/2 + 200, 'backToMenuButton', this.actionOnClickExit, this, 2, 1, 0);
+            playAgainButton = game.add.button(game.world.centerX - 250, 270, 'playAgainButton', this.actionOnClickAgainPlay, this, 2, 1, 0);
+            exitButton = game.add.button(game.world.centerX - 250,  450, 'backToMenuButton', this.actionOnClickExit, this, 2, 1, 0);
         }
     },
 
