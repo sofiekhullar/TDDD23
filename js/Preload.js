@@ -36,6 +36,7 @@ Game.Preload.prototype = {
 
 		this.load.image('buttonSkip', 'assets/help/buttonSkip.png');
 		this.load.image('buttonNext', 'assets/help/buttonNext.png');
+		this.load.image('buttonGotIt', 'assets/help/buttonGotIt.png');
 		// Load all assets!
 	    this.load.image('background2', 'assets/backgroundw.png');
 	    this.load.image('helpmenu', 'assets/helpmenu.png');

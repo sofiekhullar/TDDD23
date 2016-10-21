@@ -33,10 +33,15 @@ Game.HelpMenu.prototype = {
 		this.state.start('MainMenu');
 	},
 
+	actionOnClickGotIt: function(){
+		this.state.start('MainMenu');
+	},
+
 	update:function(){
 		if(counter == 7){
-			buttonNext.alpha = 0.5;
-			buttonNext.input.enable = false;
+			buttonNext.kill();
+			buttonSkip.kill();
+			buttonGotIt = this.game.add.button(this.game.width/2 + 100, this.game.height/2 + 240, 'buttonGotIt', this.actionOnClickGotIt, this, 2, 1, 0);
 		}
 	}
 }

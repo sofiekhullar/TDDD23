@@ -230,7 +230,6 @@ Game.Play.prototype = {
         shipButton2 = this.game.add.button(this.game.width - 250, 625, 'ship2-' + localType, this.addShip, this, 2, 1, 0);
         shipButton3 = this.game.add.button(this.game.width - 350, 625, 'ship3-' + localType, this.addShip, this, 2, 1, 0);
 
-
         shipButton1.height = 50;
         shipButton1.width = 50;
         shipButton2.height = 50;
@@ -1503,8 +1502,9 @@ Game.Play.prototype = {
                     if((user.spaceShips[id-2].getHealth() - damage) > 0)
                     {
                         console.log("In updateHealthBar " + damage  + " uniqeID " + uniqeID);
-                        healthArray[id].width -= damage;
                         user.spaceShips[id -2].loseHealth(damage);
+                        healthArray[id].width = 40 * ((user.spaceShips[id -2].getHealth()/100)); ;
+                        
                         updateText = true;
                     }else
                     {

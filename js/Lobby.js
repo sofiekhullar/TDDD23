@@ -150,7 +150,7 @@ Game.Lobby.prototype = {
 			playButton.input.enabled = true;
 		};
 
-        if(counter == 4){
+        if(counter >= 4){
             this.startGame();
         }
 	},
