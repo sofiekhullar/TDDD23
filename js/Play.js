@@ -242,9 +242,9 @@ Game.Play.prototype = {
         shipButton2.type = "ship2";
         shipButton3.type = "ship3";
 
-        shipButton1.cost = 200;
+        shipButton1.cost = 500;
         shipButton2.cost = 300;
-        shipButton3.cost = 500;
+        shipButton3.cost = 200;
 
         shipButton1.fireTime = 20;
         shipButton2.fireTime = 30;
@@ -1454,6 +1454,7 @@ Game.Play.prototype = {
 };
 
 	function updateHealthBar(id, damage) {
+            console.log(damage);
             if(id < 2)
             {
                 if((opponent.getHealth() - damage) > 0)
