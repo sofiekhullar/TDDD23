@@ -26,9 +26,20 @@ Game.Preload.prototype = {
 		this.load.image('background-moone-neptune','assets/background-moon-neptune.png');
 		this.load.image('background-venus-neptune','assets/background-venus-neptune.png');
 
+		this.load.image('step1', 'assets/help/step1.png');
+		this.load.image('step2', 'assets/help/step2.png');
+		this.load.image('step3', 'assets/help/step3.png');
+		this.load.image('step4', 'assets/help/step4.png');
+		this.load.image('step5', 'assets/help/step5.png');
+		this.load.image('step6', 'assets/help/step6.png');
+		this.load.image('step7', 'assets/help/step7.png');
+
+		this.load.image('buttonSkip', 'assets/help/buttonSkip.png');
+		this.load.image('buttonNext', 'assets/help/buttonNext.png');
 		// Load all assets!
 	    this.load.image('background2', 'assets/backgroundw.png');
-	    this.load.image('helpmenu', 'assets/helpmenu.png')
+	    this.load.image('helpmenu', 'assets/helpmenu.png');
+
 	    this.load.image('noThanksButton', 'assets/noThanksButton.png');
 	    this.load.image('yesShowMeButton', 'assets/yesShowMeButton.png')
 
