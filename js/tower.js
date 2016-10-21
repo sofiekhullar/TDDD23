@@ -1,16 +1,20 @@
 
-function Tower(x, y, id, damage, type, cost, range) {
+function Tower(x, y, id, damage, type, cost, range, fireTime) {
 
 	this.x = x;
 	this.y = y;
-	this.damage = damage;
+	var damage = damage;
 	var level = 1;
 	this.id = id;
 	this.type = type;
 	this.cost = cost;
-	this.lastFiringTime = 2;
-	this.fireTime = 0;
+	this.lastFiringTime = 0;
+	var fireTime = fireTime;
 	this.range = range;
+
+	this.getFireTime = function(){
+		return fireTime;
+	}
 
 	this.getLevel = function(){
 		return level;
@@ -26,7 +30,8 @@ function Tower(x, y, id, damage, type, cost, range) {
 
 	this.levelUp = function(){
 		level++;
-		damage += damage +5;
+		damage += damage + 10;
+		fireTime /= 2;
 	}
 
 	this.getID = function(){
@@ -48,7 +53,4 @@ function Tower(x, y, id, damage, type, cost, range) {
 			range = 150;
 		}
 	}
-
-	// this.setRange();
 }	
-

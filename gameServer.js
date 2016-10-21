@@ -161,16 +161,16 @@ function playerById(id) {
 };
 
 function onAddShip(data){
-	this.emit("add ship", {type: data.type, rot: data.rot, id: data.id, data: data.cost});
-	this.broadcast.emit("add ship", {type: data.type, rot: data.rot, id: data.id, cost: data.cost});
+	this.emit("add ship", {type: data.type, rot: data.rot, id: data.id, data: data.cost, fireTime: data.fireTime});
+	this.broadcast.emit("add ship", {type: data.type, rot: data.rot, id: data.id, cost: data.cost, fireTime: data.fireTime});
 };
 
 function onAddTower(input){
 	this.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, localType: input.localType, 
-                type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
+                type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY, fireTime: input.fireTime
             });
 	this.broadcast.emit('add tower',{x: input.x, y: input.y, id: input.id, damage: input.damage, localType: input.localType, 
-                type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY
+                type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY, fireTime: input.fireTime
             });
 };
 

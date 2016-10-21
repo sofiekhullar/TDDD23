@@ -245,6 +245,10 @@ Game.Play.prototype = {
         shipButton2.cost = 300;
         shipButton3.cost = 200;
 
+        shipButton1.fireTime = 20;
+        shipButton2.fireTime = 30;
+        shipButton3.fireTime = 50;
+
         shipButton1.rot = true;
         shipButton2.rot = false;
         shipButton3.rot = true;
@@ -276,6 +280,10 @@ Game.Play.prototype = {
 	    addTowerButton2.damage = 20;
 	    addTowerButton3.damage = 30;
 
+        addTowerButton1.fireTime = 10;
+        addTowerButton2.fireTime = 20;
+        addTowerButton3.fireTime = 30;        
+
 	    addTowerButton1.type = "blackhole-";
         addTowerButton2.type = "sun-";
         addTowerButton3.type = "asteroidsprite-";
@@ -300,7 +308,6 @@ Game.Play.prototype = {
             this.game.physics.enable(planetSprite2, Phaser.Physics.ARCADE);
             planetSprite2.enableBody = true;
             planetSprite2.immovable = true;
-            console.log(planetSprite1.width + ", " + planetSprite2.width);
           }
 
           else
@@ -498,12 +505,12 @@ Game.Play.prototype = {
     },
 
     onAddShip:function(data){
-        thisCopy.addShipStep2(data.rot, data.type, data.id, data.cost);
+        thisCopy.addShipStep2(data.rot, data.type, data.id, data.cost, data.fireTime);
 
     },
 
     onAddTower: function(input){
-        var object = {x: input.x, y: input.y, id: input.id, damage: input.damage, type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY, localType: input.localType}
+        var object = {x: input.x, y: input.y, id: input.id, damage: input.damage, type: input.type, cost: input.cost, range: input.range, rangeX: input.rangeX, rangeY: input.rangeY, localType: input.localType, fireTime: input.fireTime}
         thisCopy.addTowerStep2(object);
         console.log("onAddTower");
     },
@@ -758,11 +765,11 @@ Game.Play.prototype = {
                 }
 
 
-                timer = Math.floor(this.game.time.now / 1000);
+                timer = Math.floor(this.game.time.now / 100);
 
                 for( var i = 0; i < spaceSpriteArray.length; i++){
 
-                    if(timer > (user.spaceShips[i].fireTime + user.spaceShips[i].lastFiringTime))
+                    if((user.spaceShips[i].lastFiringTime +  user.spaceShips[i].fireTime) < (timer))
                     {
 
                         if(uniqeID == 1){
@@ -860,7 +867,7 @@ Game.Play.prototype = {
                     {
                         if(Math.abs(attackTowerArray[i].position.x - spaceSpriteArray[j].x) < user.towers[i].getRange() && Math.abs(attackTowerArray[i].position.y - spaceSpriteArray[j].y) < user.towers[i].getRange() && attackTowerArray[i].id != spaceSpriteArray[j].id)
                         {
-                            if(user.towers[i].lastFiringTime < timer + user.towers[i].fireTime)
+                            if(user.towers[i].lastFiringTime + user.towers[i].getFireTime() < timer)
                             {
                                 //console.log(attackTowers[i].key);
                                 if(attackTowerArray[i].key.indexOf("sun") >= 0){
@@ -1011,7 +1018,7 @@ Game.Play.prototype = {
             user.buy(costNow);
             updateText = true;
             socket.emit('add tower',{x: towerSprite.position.x, y: towerSprite.position.y, id: uniqeID, damage: damageNow, localType: localType,
-                type: typeNow, cost: costNow, range: rangeNow, rangeX: towerRangeSprite.position.x, rangeY: towerRangeSprite.position.y
+                type: typeNow, cost: costNow, range: rangeNow, rangeX: towerRangeSprite.position.x, rangeY: towerRangeSprite.position.y, fireTime: fireTimeNow
             });
             attackTowerRangeSprite = this.game.add.sprite(towerRangeSprite.position.x, towerRangeSprite.position.y, 'towerRange' + rangeNow);
             //console.log("placing tower and setting alpha on range");
@@ -1021,7 +1028,7 @@ Game.Play.prototype = {
 
     addTowerStep2: function(input){
 
-            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type + input.localType, input.cost, input.range);
+            var tower1 = new Tower(input.x, input.y, input.id, input.damage, input.type + input.localType, input.cost, input.range, input.fireTime);
 
             if(!attackTowerRangeSprite)
                 attackTowerRangeSprite = this.game.add.sprite(2000, 2000, 'sun');
@@ -1092,6 +1099,7 @@ Game.Play.prototype = {
         if (towerBullet)
         {
             towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            towerBullet.towerIndex = id1;
             this.game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
         }
     },
@@ -1103,6 +1111,7 @@ Game.Play.prototype = {
         if (towerBullet)
         {
             towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            towerBullet.towerIndex = id1;
             this.game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
         }
     },
@@ -1114,6 +1123,7 @@ Game.Play.prototype = {
         if (towerBullet)
         {
             towerBullet.reset(user.towers[id1].x, user.towers[id1].y);
+            towerBullet.towerIndex = id1;
             this.game.physics.arcade.moveToObject(towerBullet, spaceSpriteArray[id2], 400);
         }
     },
@@ -1126,6 +1136,7 @@ Game.Play.prototype = {
         towerSpriteNow = button.spriteName;
         typeNow = button.type;
         rangeNow = button.range;
+        fireTimeNow = button.fireTime;
         placingTower = true;
 
         towerRangeSprite = this.game.add.sprite(this.game.input.x - 150 , this.game.input.y - 150, 'towerRange' + rangeNow);
@@ -1245,13 +1256,13 @@ Game.Play.prototype = {
 
         if(user.getMoney() >= input.cost)
         {
-            socket.emit("add ship", {rot: input.rot, type: input.type, id: uniqeID, cost: input.cost});
+            socket.emit("add ship", {rot: input.rot, type: input.type, id: uniqeID, cost: input.cost, fireTime: input.fireTime});
             user.buy(input.cost);
             updateText = true;
         }
     },
 
-    addShipStep2: function(rot, type, idShip, cost){
+    addShipStep2: function(rot, type, idShip, cost, fireTime){
         var whatType;
 
         updateText = true;
@@ -1308,7 +1319,7 @@ Game.Play.prototype = {
 
         this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
         this.ship.body.immovable = true;
-        spaceShip = new SpaceShip(0, type, rot, idShip, cost);
+        spaceShip = new SpaceShip(0, type, rot, idShip, cost, fireTime);
         user.spaceShips.push(spaceShip);
     },
 
@@ -1449,12 +1460,10 @@ Game.Play.prototype = {
                 {
                     if(id == 0){
                         if(uniqeID == 1){
-                            console.log("for uniqeID 1");
                             user.loseHealth(damage);
                             healthArray[0].width  = 77 * ((user.getHealth()/100));
                         }
                         if(uniqeID == 2){
-                            console.log("for uniqeID 2");
                             opponent.loseHealth(damage);
                             healthArray[0].width  = 77 * ((opponent.getHealth()/100)); 
                         }
@@ -1462,12 +1471,10 @@ Game.Play.prototype = {
                    
                      if(id == 1) {
                         if(uniqeID == 2){
-                            console.log("for uniqeID 2");
                             user.loseHealth(damage);
                             healthArray[1].width  = 77 * ((user.getHealth()/100));
                         }
                         if(uniqeID == 1){
-                            console.log("for uniqeID 1");
                             opponent.loseHealth(damage);
                             healthArray[1].width  = 77 * ((opponent.getHealth()/100)); 
                         }
@@ -1546,7 +1553,9 @@ Game.Play.prototype = {
 
         switch(bulletType){
         case 'bulletAsteroid':
-            damage = 30;
+            damage = user.towers[bullet.towerIndex].damage;
+            console.log(user.towers[bullet.towerIndex]);
+            console.log(bullet.towerIndex);
         break;
         case 'bulletSun':
             damage = 5;
