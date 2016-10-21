@@ -25,7 +25,7 @@ Game.MainMenu.prototype = {
 
 		var style = { font: "normal 65px DK", fill: "#ff0044", align: "center" };
 		text = game.add.text(0, 0, "", style);
-
+		
 		var playButton = game.add.button(this.game.width/2 - 150, this.game.height/2 - 100, 'playButton', this.actionOnClickPlay, this, 2, 1, 0);
 		helpButton = game.add.button(this.game.width - 170, this.game.height - 170, 'helpButton', this.actionOnClickHelp, this, 2, 1, 0);
 		helpButton.width = 150;
